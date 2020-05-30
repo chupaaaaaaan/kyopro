@@ -1,0 +1,4242 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 4a90acf5629b74438cfad7ac8038edce914e2574d9e7f9f6b426aef9fb268c90
+
+name:           kyopro
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/kyopro#readme>
+homepage:       https://github.com/githubuser/kyopro#readme
+bug-reports:    https://github.com/githubuser/kyopro/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/kyopro
+
+library
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      lib
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-001-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/001/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-001-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/001/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-002-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/002/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-002-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/002/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-003-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/003/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-003-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/003/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-004-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/004/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-005-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/005/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-006-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/006/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-007-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/007/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-008-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/008/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-009-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/009/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-010-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/010/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-011-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/011/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-012-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/012/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-013-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/013/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-014-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/014/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-015-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/015/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-016-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/016/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-017-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/017/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-018-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/018/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-019-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/019/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-020-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/020/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-021-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/021/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-022-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/022/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-022-b2
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/022/b2
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-023-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/023/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-024-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/024/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-025-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/025/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-026-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/026/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-027-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/027/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-028-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/028/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-029-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/029/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-030-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/030/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-031-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/031/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-032-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/032/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-033-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/033/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-034-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/034/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-035-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/035/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-035-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/035/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-036-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/036/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-037-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/037/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-038-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/038/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-039-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/039/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-040-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/040/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-040-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/040/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-041-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/041/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-041-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/041/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-042-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/042/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-043-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/043/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-043-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/043/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-044-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/044/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-044-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/044/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-045-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/045/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-045-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/045/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-046-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/046/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-046-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/046/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-047-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/047/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-047-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/047/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-047-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/047/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-047-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/047/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-048-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/048/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-049-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/049/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-050-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/050/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-051-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/051/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-052-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/052/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-053-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/053/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-054-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/054/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-055-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/055/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-056-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/056/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-057-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/057/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-058-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/058/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-059-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/059/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-060-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/060/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-061-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/061/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-062-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/062/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-063-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/063/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-064-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/064/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-065-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/065/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-066-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/066/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-067-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/067/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-068-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/068/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-069-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/069/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-070-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/070/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-071-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/071/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-072-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/072/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-073-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/073/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-074-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/074/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-075-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/075/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-076-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/076/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-077-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/077/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-078-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/078/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-079-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/079/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-079-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/079/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-079-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/079/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-080-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/080/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-081-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/081/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-082-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/082/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-083-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/083/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-084-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/084/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-085-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/085/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-085-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/085/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-086-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/086/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-087-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/087/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-088-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/088/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-088-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/088/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-089-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/089/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-089-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/089/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-090-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/090/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-090-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/090/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-091-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/091/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-091-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/091/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-092-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/092/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-092-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/092/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-093-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/093/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-094-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/094/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-095-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/095/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-095-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/095/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-096-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/096/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-096-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/096/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-097-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/097/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-098-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/098/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-098-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/098/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-099-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/099/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-100-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/100/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-100-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/100/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-100-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/100/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-101-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/101/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-102-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/102/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-103-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/103/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-103-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/103/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-104-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/104/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-104-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/104/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-105-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/105/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-106-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/106/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-106-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/106/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-106-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/106/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-112-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/112/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-112-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/112/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-112-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/112/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-113-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/113/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-114-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/114/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-114-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/114/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-114-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/114/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-117-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/117/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-117-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/117/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-117-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/117/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-117-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/117/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-119-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/119/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-119-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/119/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-119-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/119/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-119-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/119/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-120-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/120/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-120-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/120/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-120-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/120/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-120-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/120/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-121-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/121/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-121-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/121/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-121-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/121/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-122-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/122/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-122-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/122/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-122-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/122/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-122-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/122/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-123-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/123/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-123-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/123/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-123-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/123/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-123-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/123/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-124-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/124/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-124-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/124/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-124-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/124/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-124-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/124/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-125-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/125/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-125-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/125/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-125-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/125/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-125-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/125/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-125-d2
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/125/d2
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-126-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/126/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-126-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/126/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-126-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/126/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-126-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/126/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-128-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/128/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-128-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/128/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-128-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/128/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-128-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/128/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-129-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/129/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-129-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/129/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-129-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/129/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-129-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/129/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-131-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/131/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-131-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/131/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-131-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/131/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-131-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/131/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-132-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/132/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-132-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/132/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-132-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/132/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-132-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/132/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-154-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/154/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-154-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/154/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-154-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/154/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-154-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/154/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-154-e
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/154/e
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-155-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/155/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-155-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/155/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-155-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/155/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-155-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/155/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-155-e
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/155/e
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-156-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/156/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-156-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/156/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-156-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/156/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-156-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/156/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-160-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/160/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-160-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/160/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-160-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/160/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-160-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/160/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_abc-161-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_abc/161/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_other-edpc-a
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_other/edpc/a
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_other-edpc-b
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_other/edpc/b
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_other-edpc-c
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_other/edpc/c
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_other-edpc-d
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_other/edpc/d
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_other-edpc-e
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_other/edpc/e
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable atcoder_other-edpc-f
+  main-is: Main.hs
+  other-modules:
+      Paths_kyopro
+  hs-source-dirs:
+      atcoder_other/edpc/f
+  ghc-options: -with-rtsopts=-M1G -dynamic
+  build-depends:
+      array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , kyopro
+    , mtl
+    , primitive
+    , text
+    , vector
+  default-language: Haskell2010
