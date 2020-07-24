@@ -31,20 +31,25 @@ main = do
 
 
 
--- for unboxed value
+-- converter
 unconsChar :: StateT BS.ByteString Maybe Char
 unconsChar = StateT BS.uncons
 
 unconsInt :: StateT BS.ByteString Maybe Int
 unconsInt = StateT $ BS.readInt . BS.dropWhile isSpace
 
-readLnAsUVecNWith :: VU.Unbox a => Int -> StateT BS.ByteString Maybe a -> IO (VU.Vector a)
-readLnAsUVecNWith !n !st = VU.unfoldrN n (runStateT st) <$> BS.getLine
-
--- for boxed Values
 unconsInteger :: StateT BS.ByteString Maybe Integer
 unconsInteger = StateT $ BS.readInteger . BS.dropWhile isSpace
 
+-- for list
+readLnAsListWith :: StateT BS.ByteString Maybe a -> IO [a]
+readLnAsListWith st = unfoldr (runStateT st) <$> BS.getLine
+
+-- for unboxed vector
+readLnAsUVecNWith :: VU.Unbox a => Int -> StateT BS.ByteString Maybe a -> IO (VU.Vector a)
+readLnAsUVecNWith !n !st = VU.unfoldrN n (runStateT st) <$> BS.getLine
+
+-- for boxed vector
 readLnAsVecNWith :: Int -> StateT BS.ByteString Maybe a -> IO (V.Vector a)
 readLnAsVecNWith !n !st = V.unfoldrN n (runStateT st) <$> BS.getLine
 
