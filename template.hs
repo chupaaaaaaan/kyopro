@@ -21,7 +21,7 @@ import           Data.Sequence             (Seq, (<|), (><), (|>))
 import qualified Data.Sequence             as Seq
 import qualified Data.Set                  as S
 import           Data.STRef
-import           Data.Vector.Unboxed       (Vector)
+import qualified Data.Vector               as V
 import qualified Data.Vector.Unboxed       as VU
 import           Numeric
 
@@ -31,15 +31,22 @@ main = do
 
 
 
-
+-- for unboxed value
 unconsChar :: StateT BS.ByteString Maybe Char
 unconsChar = StateT BS.uncons
 
 unconsInt :: StateT BS.ByteString Maybe Int
 unconsInt = StateT $ BS.readInt . BS.dropWhile isSpace
 
-readLnAsVecNWith :: VU.Unbox a => Int -> StateT BS.ByteString Maybe a -> IO (Vector a)
-readLnAsVecNWith n st = VU.unfoldrN n (runStateT st) <$> BS.getLine
+readLnAsUVecNWith :: VU.Unbox a => Int -> StateT BS.ByteString Maybe a -> IO (VU.Vector a)
+readLnAsUVecNWith !n !st = VU.unfoldrN n (runStateT st) <$> BS.getLine
+
+-- for boxed Values
+unconsInteger :: StateT BS.ByteString Maybe Integer
+unconsInteger = StateT $ BS.readInteger . BS.dropWhile isSpace
+
+readLnAsVecNWith :: Int -> StateT BS.ByteString Maybe a -> IO (V.Vector a)
+readLnAsVecNWith !n !st = V.unfoldrN n (runStateT st) <$> BS.getLine
 
 getAsString :: IO [String]
 getAsString = map BS.unpack . BS.words <$> BS.getLine
