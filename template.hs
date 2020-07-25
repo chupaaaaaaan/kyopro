@@ -1,5 +1,6 @@
 {-# LANGUAGE BangPatterns     #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MultiWayIf       #-}
 import           Control.Monad
 import           Control.Monad.ST
 import           Control.Monad.State
