@@ -7,10 +7,8 @@ import           Control.Monad.State
 import           Control.Monad.Trans.State
 import           Data.Array.IArray
 import           Data.Array.ST
-import           Data.Array.Unboxed        (UArray)
-import qualified Data.Array.Unboxed        as U
+import           Data.Array.Unboxed
 import           Data.Bits
-import           Data.ByteString.Char8     (ByteString)
 import qualified Data.ByteString.Char8     as BS
 import           Data.Char
 import           Data.Graph
@@ -42,28 +40,47 @@ unconsInt = StateT $ BS.readInt . BS.dropWhile isSpace
 unconsInteger :: StateT BS.ByteString Maybe Integer
 unconsInteger = StateT $ BS.readInteger . BS.dropWhile isSpace
 
+-- 1D Data
 -- for list
 readLnAsListWith :: StateT BS.ByteString Maybe a -> IO [a]
-readLnAsListWith st = unfoldr (runStateT st) <$> BS.getLine
+readLnAsListWith !st = unfoldr (runStateT st) <$> BS.getLine
 
--- for unboxed vector
-readLnAsUVecNWith :: VU.Unbox a => Int -> StateT BS.ByteString Maybe a -> IO (VU.Vector a)
-readLnAsUVecNWith !n !st = VU.unfoldrN n (runStateT st) <$> BS.getLine
+-- for boxed array
+readLnAsArrayWith :: StateT BS.ByteString Maybe a -> Int -> IO (Array Int a)
+readLnAsArrayWith !st !n = listArray (1,n) <$> readLnAsListWith st
+
+-- for unboxed array
+readLnAsUArrayInt :: Int -> IO (UArray Int Int)
+readLnAsUArrayInt !n = listArray (1,n) <$> readLnAsListWith unconsInt
+
+readLnAsUArrayChar :: Int -> IO (UArray Int Char)
+readLnAsUArrayChar !n = listArray (1,n) <$> readLnAsListWith unconsChar
 
 -- for boxed vector
-readLnAsVecNWith :: Int -> StateT BS.ByteString Maybe a -> IO (V.Vector a)
-readLnAsVecNWith !n !st = V.unfoldrN n (runStateT st) <$> BS.getLine
+readLnAsVecWith :: StateT BS.ByteString Maybe a -> Int -> IO (V.Vector a)
+readLnAsVecWith !st !n = V.unfoldrN n (runStateT st) <$> BS.getLine
 
-getAsString :: IO [String]
-getAsString = map BS.unpack . BS.words <$> BS.getLine
+-- for unboxed vector
+readLnAsUVecWith :: VU.Unbox a => StateT BS.ByteString Maybe a -> Int -> IO (VU.Vector a)
+readLnAsUVecWith !st !n = VU.unfoldrN n (runStateT st) <$> BS.getLine
 
-getAsCharArray1DWithLength :: IO (Int, UArray Int Char)
-getAsCharArray1DWithLength = BS.getLine >>= \ !cs ->
-  let !n = BS.length cs
-      !ary = (U.listArray (1,n) $ unfoldr BS.uncons cs) :: UArray Int Char
-  in return (n, ary)
+-- example: 1D tuple vector
+readLnAsUVecWith2Tuple :: VU.Unbox a => StateT BS.ByteString Maybe a -> Int -> IO (VU.Vector (a,a))
+readLnAsUVecWith2Tuple !st !n = VU.replicateM n $ (\vec -> (vec VU.! 0, vec VU.! 1)) <$> readLnAsUVecWith st 2
 
+
+-- 2D Data
 -- n: number of lines
--- m: number of chars per a line
-getAsCharArray2D :: Int -> Int -> IO (UArray (Int,Int) Char)
-getAsCharArray2D !n !m = U.listArray ((1,1),(n,m)) . unfoldr BS.uncons . BS.concat <$> replicateM n BS.getLine
+-- m: number of values per a line
+
+-- for boxed array
+readLnAs2DArrayWith :: StateT BS.ByteString Maybe a -> Int -> Int -> IO (Array (Int,Int) a)
+readLnAs2DArrayWith !st !n !m = listArray ((1,1),(n,m)) . unfoldr (runStateT st) . BS.concat <$> replicateM n BS.getLine
+
+-- for boxed vector
+readLnAs2DVecWith :: StateT BS.ByteString Maybe a -> Int -> Int -> IO (V.Vector (V.Vector a))
+readLnAs2DVecWith !st !n !m = V.replicateM n $ V.unfoldrN m (runStateT st) <$> BS.getLine
+
+-- for unboxed vector
+readLnAs2DUVecWith :: VU.Unbox a => StateT BS.ByteString Maybe a -> Int -> Int -> IO (V.Vector (VU.Vector a))
+readLnAs2DUVecWith !st !n !m = V.replicateM n $ VU.unfoldrN m (runStateT st) <$> BS.getLine
