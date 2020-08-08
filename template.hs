@@ -11,7 +11,6 @@ import           Data.Array.Unboxed
 import           Data.Bits
 import qualified Data.ByteString.Char8     as BS
 import           Data.Char
-import           Data.Graph
 import           Data.Int                  (Int64)
 import           Data.List
 import           Data.Maybe
