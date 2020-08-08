@@ -1,4 +1,4 @@
-module My.Algorithm.BinSearch where
+module My.BinSearch where
 
 import qualified Data.Vector as V
 

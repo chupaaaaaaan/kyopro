@@ -1,18 +1,17 @@
-module My.Data.Prime ( primeList
-                     , primeFactors
-                     )where
+module My.Prime ( primeList
+                , primeFactors
+                )where
 
-import Control.Monad
-import Data.STRef
-import qualified Data.Vector.Unboxed as VU
+import           Control.Monad
+import           Data.STRef
+import qualified Data.Vector.Unboxed         as VU
 import qualified Data.Vector.Unboxed.Mutable as VUM
-import Debug.Trace
 
 -- n以下の素数のリスト
 primeList :: Int -> [Int]
 primeList n = [i | i <- [0..n], sieve n VU.! i]
 
--- 添字の数字が素数か否かをBoolで表現した配列を作る
+-- 添字の数字が素数か否かをBoolで表現した配列を作る(Eratosthenesの篩)
 sieve :: Int -> VU.Vector Bool
 sieve n = VU.create $ do
   vec <- VUM.replicate (n+1) True
@@ -75,8 +74,8 @@ ff k p = go k 0
 
 
 -- nのユニークな素因数の個数の（ナイーブな）上界を求める
--- sqrtn n の（非ユニークな）素因数の個数の上限を求め、
--- それに1を加える。（sqrt n より大きな素因数は高々1個しかないため）
+-- sqrtn n の（非ユニークな）素因数の個数は、sqrt n <= 2^m を満たすm以下である。
+-- そのため、mに1を加えたものが、上界となる。（sqrt n より大きな素因数は高々1個しかないため）
 gg :: Int -> Int
 gg n = let m = ceiling $ logBase 2 $ fromIntegral $ sqrtn n
        in if n <= 2^m then m + 1 else m + 2

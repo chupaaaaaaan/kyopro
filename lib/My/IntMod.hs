@@ -1,6 +1,6 @@
 {-# LANGUAGE BangPatterns #-}
 
-module My.Data.IntMod where
+module My.IntMod where
 
 import           Data.Int (Int64)
 

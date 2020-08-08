@@ -1,8 +1,8 @@
-module My.Algorithm.DPImpl where
+module My.DPImpl where
 
-import Control.Monad
-import Data.Array.ST
-import Data.Array.Unboxed
+import           Control.Monad
+import           Data.Array.ST
+import           Data.Array.Unboxed
 
 
 -- 貰うDPの例（パスカルの三角形）

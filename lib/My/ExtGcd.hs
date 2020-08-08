@@ -1,4 +1,4 @@
-module My.Algorithm.ExtGcd where
+module My.ExtGcd where
 
 -- (x, y, d) = extgcd a b
 -- d := gcd a b

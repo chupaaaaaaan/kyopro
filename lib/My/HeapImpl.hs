@@ -1,6 +1,6 @@
-module My.Data.HeapImpl( Heap
-                       , fromList
-                       ) where
+module My.HeapImpl( Heap
+                  , fromList
+                  ) where
 
 data Heap a = E | T Int a (Heap a) (Heap a) deriving Show
 
@@ -9,7 +9,7 @@ fromList :: Ord a => [a] -> Heap a
 fromList = foldr insert E
 
 rank :: Heap a -> Int
-rank E = 0
+rank E           = 0
 rank (T r _ _ _) = r
 
 makeT :: a -> Heap a -> Heap a -> Heap a
@@ -38,10 +38,10 @@ merge h1@(T _ x a1 b1) h2@(T _ y a2 b2)
     else makeT y a2 $ merge h1 b2
 
 find :: Ord a => Heap a -> Maybe a
-find E = Nothing
+find E           = Nothing
 find (T _ x _ _) = Just x
 
 delete :: Ord a => Heap a -> Maybe (Heap a)
-delete E = Nothing
+delete E           = Nothing
 delete (T _ _ a b) = Just (merge a b)
 

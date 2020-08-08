@@ -1,6 +1,6 @@
 {-# LANGUAGE RankNTypes          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module My.Data.Graph where
+module My.Graph where
 
 import           Control.Monad
 import           Control.Monad.ST
