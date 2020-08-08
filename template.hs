@@ -45,16 +45,9 @@ unconsInteger = StateT $ BS.readInteger . BS.dropWhile isSpace
 readLnAsListWith :: StateT BS.ByteString Maybe a -> IO [a]
 readLnAsListWith !st = unfoldr (runStateT st) <$> BS.getLine
 
--- for boxed array
-readLnAsArrayWith :: StateT BS.ByteString Maybe a -> Int -> IO (Array Int a)
+-- for array (boxed or unboxed)
+readLnAsArrayWith :: (IArray a e) => StateT BS.ByteString Maybe e -> Int -> IO (a Int e)
 readLnAsArrayWith !st !n = listArray (1,n) <$> readLnAsListWith st
-
--- for unboxed array
-readLnAsUArrayInt :: Int -> IO (UArray Int Int)
-readLnAsUArrayInt !n = listArray (1,n) <$> readLnAsListWith unconsInt
-
-readLnAsUArrayChar :: Int -> IO (UArray Int Char)
-readLnAsUArrayChar !n = listArray (1,n) <$> readLnAsListWith unconsChar
 
 -- for boxed vector
 readLnAsVecWith :: StateT BS.ByteString Maybe a -> Int -> IO (V.Vector a)
