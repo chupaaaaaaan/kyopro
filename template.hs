@@ -1,6 +1,8 @@
-{-# LANGUAGE BangPatterns     #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE MultiWayIf       #-}
+{-# LANGUAGE BangPatterns        #-}
+{-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE MultiWayIf          #-}
+{-# LANGUAGE RankNTypes          #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 import           Control.Monad
 import           Control.Monad.ST
 import           Control.Monad.State
@@ -9,18 +11,20 @@ import           Data.Array.IArray
 import           Data.Array.ST
 import           Data.Array.Unboxed
 import           Data.Bits
-import qualified Data.ByteString.Char8     as BS
+import qualified Data.ByteString.Char8       as BS
 import           Data.Char
-import           Data.Int                  (Int64)
+import           Data.Int                    (Int64)
 import           Data.List
 import           Data.Maybe
 import           Data.Proxy
-import           Data.Sequence             (Seq, (<|), (><), (|>))
-import qualified Data.Sequence             as Seq
-import qualified Data.Set                  as S
+import           Data.Sequence               (Seq, (<|), (><), (|>))
+import qualified Data.Sequence               as Seq
+import qualified Data.Set                    as S
 import           Data.STRef
-import qualified Data.Vector               as V
-import qualified Data.Vector.Unboxed       as VU
+import qualified Data.Vector                 as V
+import qualified Data.Vector.Mutable         as VM
+import qualified Data.Vector.Unboxed         as VU
+import qualified Data.Vector.Unboxed.Mutable as VUM
 import           Numeric
 
 main :: IO ()
@@ -45,7 +49,7 @@ readLnAsListWith :: StateT BS.ByteString Maybe a -> IO [a]
 readLnAsListWith !st = unfoldr (runStateT st) <$> BS.getLine
 
 -- for array (boxed or unboxed)
-readLnAsArrayWith :: (IArray a e) => StateT BS.ByteString Maybe e -> Int -> IO (a Int e)
+readLnAsArrayWith :: IArray a e => StateT BS.ByteString Maybe e -> Int -> IO (a Int e)
 readLnAsArrayWith !st !n = listArray (1,n) <$> readLnAsListWith st
 
 -- for boxed vector
@@ -66,7 +70,7 @@ readLnAsUVecWith2Tuple !st !n = VU.replicateM n $ (\vec -> (vec VU.! 0, vec VU.!
 -- m: number of values per a line
 
 -- for boxed array
-readLnAs2DArrayWith :: StateT BS.ByteString Maybe a -> Int -> Int -> IO (Array (Int,Int) a)
+readLnAs2DArrayWith :: IArray a e => StateT BS.ByteString Maybe e -> Int -> Int -> IO (a (Int,Int) e)
 readLnAs2DArrayWith !st !n !m = listArray ((1,1),(n,m)) . unfoldr (runStateT st) . BS.concat <$> replicateM n BS.getLine
 
 -- for boxed vector
