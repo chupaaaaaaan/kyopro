@@ -39,12 +39,12 @@ dfs vs g = VU.create $ do
           forM_ (g V.! v) $ \(nv, _) -> do
             s <- VUM.read seen nv
             if s
-              then do lv <- VUM.read path v
-                      lnv <- VUM.read path nv
-                      VUM.write path v (max lv (lnv + 1))
+              then return ()
               else do go seen path nv
-                      lnv <- VUM.read path nv
-                      VUM.write path v (lnv + 1)
+            -- この時点で、lp[nv]に入ってる値は最大値。
+            lv <- VUM.read path v
+            lnv <- VUM.read path nv
+            VUM.write path v $ max lv (lnv + 1)
 
 -- 重みなしグラフ
 graph' :: VU.Vector (Vertex, Vertex) -> Int -> Graph ()
