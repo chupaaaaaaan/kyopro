@@ -13,16 +13,16 @@ import qualified Data.Vector.Unboxed         as VU
 import qualified Data.Vector.Unboxed.Mutable as VUM
 
 type Grid a = UArray (Int,Int) a
-type FlagGrid s = STUArray s (Int,Int) Bool
+type MGrid s = STUArray s (Int,Int)
 
 -- グリッドグラフのDFS
 -- 解くべき問題により、シグネチャは変更する
-gridDfs :: forall a. (VU.Unbox a) => (Int,Int) -> (Int,Int) -> (Grid a -> (Int,Int) -> Bool) -> Grid a -> ()
+gridDfs :: (Int,Int) -> (Int,Int) -> (Grid a -> (Int,Int) -> Bool) -> Grid a -> ()
 gridDfs (h',w') (sh,sw) f g = runST $ do
   seen <- newArray ((1,1),(h',w')) False
   go seen (sh,sw)
 
-  where go :: FlagGrid s -> (Int,Int) -> ST s ()
+  where go :: MGrid s Bool -> (Int,Int) -> ST s ()
         go seen (h,w) = do
           writeArray seen (h,w) True
           let nexts = [(h+1,w),(h-1,w),(h,w+1),(h,w-1)]
@@ -34,8 +34,7 @@ gridDfs (h',w') (sh,sw) f g = runST $ do
 
 type Graph a = V.Vector [(Int, a)]
 -- type Graph a = V.Vector (a, [Vertex])
-type FlagVec s = VUM.MVector s Bool
-type DistVec s = VUM.MVector s Int
+type MVec = VUM.MVector
 type Vertex = Int
 
 -- 木のDFS
@@ -57,7 +56,7 @@ dfs vs g = runST $ do
   seen <- VUM.replicate (V.length g) False
   mapM_ (go seen) vs
 
-  where go :: FlagVec s -> Vertex -> ST s ()
+  where go :: MVec s Bool -> Vertex -> ST s ()
         go seen v = do
           VUM.write seen v True
           forM_ (g V.! v) $ \(nv, _) -> do

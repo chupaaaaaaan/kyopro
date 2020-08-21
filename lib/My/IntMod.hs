@@ -30,6 +30,9 @@ instance Num IntMod where
   abs = undefined
   signum = undefined
 
+im0 :: IntMod
+im0 = 0
+
 powMod :: IntMod -> Int64 -> IntMod
 powMod !x 1 = x
 powMod !x !k
