@@ -5,6 +5,9 @@ data Queue a = Q { front :: [a]
                  , thunk :: [a]
                  } deriving (Eq)
 
+isEmpty :: Eq a => Queue a -> Bool
+isEmpty = (==empty)
+
 empty :: Queue a
 empty = Q [] [] []
 
