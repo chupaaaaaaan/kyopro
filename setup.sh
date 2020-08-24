@@ -13,6 +13,6 @@ for problem_path in "$@"; do
     if [ ! -s "${problem_path}/Main.hs" ]; then
         mkdir -p ${problem_path}
         cat template.hs > ${problem_path}/Main.hs
-        echo "make file \"${problem_path}/Main.hs\" ."
+        echo "create file ${problem_path}/Main.hs from template.hs."
     fi
 done
