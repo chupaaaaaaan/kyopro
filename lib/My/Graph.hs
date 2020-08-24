@@ -5,40 +5,17 @@ module My.Graph where
 
 import           Control.Monad
 import           Control.Monad.ST
-import           Data.Array.ST
-import           Data.Array.Unboxed
 import qualified Data.Vector                 as V
 import qualified Data.Vector.Mutable         as VM
 import qualified Data.Vector.Unboxed         as VU
 import qualified Data.Vector.Unboxed.Mutable as VUM
-
-type Grid a = UArray (Int,Int) a
-type MGrid s = STUArray s (Int,Int)
-
--- グリッドグラフのDFS
--- 解くべき問題により、シグネチャは変更する
-gridDfs :: (Int,Int) -> (Int,Int) -> (Grid a -> (Int,Int) -> Bool) -> Grid a -> ()
-gridDfs (h',w') (sh,sw) f g = runST $ do
-  seen <- newArray ((1,1),(h',w')) False
-  go seen (sh,sw)
-
-  where go :: MGrid s Bool -> (Int,Int) -> ST s ()
-        go seen (h,w) = do
-          writeArray seen (h,w) True
-          let nexts = [(h+1,w),(h-1,w),(h,w+1),(h,w-1)]
-          forM_ nexts $ \(nh,nw) -> do
-            s <- readArray seen (nh,nw)
-            if s || nh < 1 || nh > h' || nw < 1 || nw > w' || g `f` (nh,nw)
-              then do return ()
-              else do go seen (nh,nw)
 
 type Graph a = V.Vector [(Int, a)]
 -- type Graph a = V.Vector (a, [Vertex])
 type MVec = VUM.MVector
 type Vertex = Int
 
--- 木のDFS
--- 解くべき問題により、シグネチャは変更する
+-- Tree DFS
 treeDfs :: forall a. Vertex -> Graph a -> ()
 treeDfs root g = runST $ do
   go (-1) root
@@ -49,8 +26,7 @@ treeDfs root g = runST $ do
           then do return ()
           else do go v nv
 
--- 普通のグラフのDFS
--- 解くべき問題により、シグネチャは変更する
+-- DFS
 dfs :: (VU.Unbox a) => [Vertex] -> Graph a -> ()
 dfs vs g = runST $ do
   seen <- VUM.replicate (V.length g) False
@@ -58,12 +34,10 @@ dfs vs g = runST $ do
 
   where go :: MVec s Bool -> Vertex -> ST s ()
         go seen v = do
-          VUM.write seen v True
-          forM_ (g V.! v) $ \(nv, _) -> do
-            s <- VUM.read seen nv
-            if s
-              then do return ()
-              else do go seen nv
+          s <- VUM.read seen v
+          if s then return () else do
+            VUM.write seen v True
+            forM_ (g V.! v) $ \(nv, _) -> go seen nv
 
 -- 重みなしグラフ
 graph' :: VU.Vector (Vertex, Vertex) -> Int -> Graph ()
