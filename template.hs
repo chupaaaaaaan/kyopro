@@ -17,7 +17,9 @@ import           Data.Int                    (Int64)
 import           Data.List
 import           Data.Maybe
 import           Data.Proxy
-import           Data.Sequence               (Seq, (<|), (><), (|>))
+import           Data.Sequence               (Seq ((:<|), (:|>)), ViewL ((:<)),
+                                              ViewR ((:>)), viewl, viewr, (<|),
+                                              (><), (|>))
 import qualified Data.Sequence               as Seq
 import qualified Data.Set                    as S
 import           Data.STRef
@@ -69,14 +71,9 @@ readLnAsUVecWith2Tuple !st !n = VU.replicateM n $ (\vec -> (vec VU.! 0, vec VU.!
 -- n: number of lines
 -- m: number of values per a line
 
--- for boxed array
-readLnAs2DArrayWith :: IArray a e => StateT BS.ByteString Maybe e -> Int -> Int -> IO (a (Int,Int) e)
-readLnAs2DArrayWith !st !n !m = listArray ((1,1),(n,m)) . unfoldr (runStateT st) . BS.concat <$> replicateM n BS.getLine
-
 -- for boxed vector
-readLnAs2DVecWith :: StateT BS.ByteString Maybe a -> Int -> Int -> IO (V.Vector (V.Vector a))
-readLnAs2DVecWith !st !n !m = V.replicateM n $ V.unfoldrN m (runStateT st) <$> BS.getLine
+readLnAs2DVecWith :: StateT BS.ByteString Maybe a -> Int -> Int -> IO (V.Vector a)
+readLnAs2DVecWith !st !n !m = V.unfoldrN (n * m) (runStateT st) . BS.concat <$> replicateM n BS.getLine
 
--- for unboxed vector
-readLnAs2DUVecWith :: VU.Unbox a => StateT BS.ByteString Maybe a -> Int -> Int -> IO (V.Vector (VU.Vector a))
-readLnAs2DUVecWith !st !n !m = V.replicateM n $ VU.unfoldrN m (runStateT st) <$> BS.getLine
+readLnAs2DUVecWith :: VU.Unbox a => StateT BS.ByteString Maybe a -> Int -> Int -> IO (VU.Vector a)
+readLnAs2DUVecWith !st !n !m = VU.unfoldrN (n * m) (runStateT st) . BS.concat <$> replicateM n BS.getLine
