@@ -1,23 +1,28 @@
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE BangPatterns               #-}
+{-# LANGUAGE DerivingStrategies         #-}
+{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiWayIf                 #-}
+{-# LANGUAGE RankNTypes                 #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE UndecidableInstances       #-}
 
 module My.IntMod where
 
-import           Data.Int (Int64)
+import qualified Data.Vector.Unboxing as VU
 
-modulus :: Int64
+modulus :: Int
 -- modulus = 10^9 + 7
 modulus = 1000000007
 
-newtype IntMod = IntMod Int64 deriving Eq
+newtype IntMod = IntMod Int deriving Eq deriving newtype VU.Unboxable
 
--- fromIntegral_Int64_IntMod :: Int64 -> IntMod
--- fromIntegral_Int64_IntMod n = IntMod (n `mod` modulus)
--- {-# RULES
--- "fromIntegral/Int->IntMod"
---     fromIntegral = fromIntegral_Int64_IntMod . (fromIntegral :: Int -> Int64)
--- "fromIntegral/Int64->IntMod"
---     fromIntegral = fromIntegral_Int64_IntMod
--- #-}
+fromIntegralIntIntMod :: Int -> IntMod
+fromIntegralIntIntMod n = IntMod (n `mod` modulus)
+{-# RULES
+"fromIntegral/Int->IntMod"
+    fromIntegral = fromIntegralIntIntMod
+#-}
 
 instance Show IntMod where
   show (IntMod x) = show x
@@ -33,7 +38,7 @@ instance Num IntMod where
 im0 :: IntMod
 im0 = 0
 
-powMod :: IntMod -> Int64 -> IntMod
+powMod :: IntMod -> Int -> IntMod
 powMod !x 1 = x
 powMod !x !k
   | even k = powMod (x * x) (k `div` 2)
@@ -43,11 +48,11 @@ invMod :: IntMod -> IntMod
 invMod 0  = error "inverse of 0"
 invMod !x = powMod x (modulus - 2)
 
-nPkMod :: Int64 -> Int64 -> IntMod
+nPkMod :: Int -> Int -> IntMod
 nPkMod !n' !k' = go 1 n' k'
-  where go :: IntMod -> Int64 -> Int64 -> IntMod
+  where go :: IntMod -> Int -> Int -> IntMod
         go !a !_ 0  = a
         go !a !n !k = go (a * fromIntegral n) (n - 1) (k - 1)
 
-nCkMod :: Int64 -> Int64 -> IntMod
+nCkMod :: Int -> Int -> IntMod
 nCkMod !n !k = nPkMod n k * invMod (nPkMod k k)
