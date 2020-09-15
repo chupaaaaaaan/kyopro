@@ -1,15 +1,15 @@
-{-# LANGUAGE BangPatterns        #-}
-{-# LANGUAGE FlexibleContexts    #-}
-{-# LANGUAGE MultiWayIf          #-}
-{-# LANGUAGE RankNTypes          #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE BangPatterns               #-}
+{-# LANGUAGE DerivingStrategies         #-}
+{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE MultiWayIf                 #-}
+{-# LANGUAGE RankNTypes                 #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE UndecidableInstances       #-}
 import           Control.Monad
 import           Control.Monad.ST
 import           Control.Monad.State
 import           Control.Monad.Trans.State
-import           Data.Array.IArray
-import           Data.Array.ST
-import           Data.Array.Unboxed
 import           Data.Bits
 import qualified Data.ByteString.Char8        as BS
 import           Data.Char
@@ -48,10 +48,6 @@ unconsInteger = StateT $ BS.readInteger . BS.dropWhile isSpace
 -- for list
 readLnAsListWith :: StateT BS.ByteString Maybe a -> IO [a]
 readLnAsListWith !st = unfoldr (runStateT st) <$> BS.getLine
-
--- for array (boxed or unboxed)
-readLnAsArrayWith :: IArray a e => StateT BS.ByteString Maybe e -> Int -> IO (a Int e)
-readLnAsArrayWith !st !n = listArray (1,n) <$> readLnAsListWith st
 
 -- for boxed vector
 readLnAsVecWith :: StateT BS.ByteString Maybe a -> Int -> IO (V.Vector a)
