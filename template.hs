@@ -30,7 +30,9 @@ import           Numeric
 
 main :: IO ()
 main = do
-  undefined
+
+
+  return ()
 
 
 
