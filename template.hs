@@ -5,6 +5,7 @@
 {-# LANGUAGE MultiWayIf                 #-}
 {-# LANGUAGE RankNTypes                 #-}
 {-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE TypeApplications           #-}
 {-# LANGUAGE UndecidableInstances       #-}
 import           Control.Monad
 import           Control.Monad.ST
@@ -30,8 +31,8 @@ import           Numeric
 
 main :: IO ()
 main = do
-
-  [n,_] <- readLnAsListWith unconsInt
+  n <- readLn @Int
+  [m,_] <- readLnAsListWith unconsInt
   as <- readLnAsListWith unconsInt
   ss <- readLnAsListWith unconsChar
   avec <- readLnAsUVecWith unconsInt n
