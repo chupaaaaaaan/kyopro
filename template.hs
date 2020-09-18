@@ -31,6 +31,11 @@ import           Numeric
 main :: IO ()
 main = do
 
+  [n,_] <- readLnAsListWith unconsInt
+  as <- readLnAsListWith unconsInt
+  ss <- readLnAsListWith unconsChar
+  avec <- readLnAsUVecWith unconsInt n
+  xyvec <- readLnAsUVecWith2Tuple unconsInt n
 
   return ()
 
