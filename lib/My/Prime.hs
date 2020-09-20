@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeApplications #-}
 module My.Prime ( primes
                 , sieve
                 , factorize
@@ -52,4 +51,14 @@ divisors n = go 1
              | f * f == n = [f]
              | otherwise = if n`mod`f == 0
                            then (n`div`f) : f : go (f+1)
+                           else go (f+1)
+
+-- 与えられた整数が素数かを判定する（O(\sqrt n)）
+isPrime :: Int -> Bool
+isPrime n
+  | abs n < 2 = False
+  | otherwise = go 2
+  where go f | f * f > n = True
+             | otherwise = if n`mod`f == 0
+                           then False
                            else go (f+1)
