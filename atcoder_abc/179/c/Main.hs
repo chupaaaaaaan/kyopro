@@ -5,7 +5,7 @@
 {-# LANGUAGE TypeApplications     #-}
 {-# LANGUAGE UndecidableInstances #-}
 import           Control.Monad
-import qualified Control.Monad.State.Strict   as SS
+import           Control.Monad.State.Strict
 import qualified Data.Vector.Unboxing         as VU
 import qualified Data.Vector.Unboxing.Mutable as VUM
 
@@ -16,12 +16,12 @@ main = do
   print $ solve n
 
 solve :: Int -> Int
-solve n = flip SS.evalState 0 $ do
+solve n = flip evalState 0 $ do
   let sv = sieve n
   forM_ [1..n-1] $ \i -> do
     let fs = product $ map (\(_,f) -> f+1) $ factorize sv (n-i)
-    SS.modify' (+ fs)
-  SS.get
+    modify' (+ fs)
+  get
 
 -- solve n = sum $ flip map [1..n-1] $
 --   \i -> VU.product $ VU.map (\(_,f) -> f+1) $ primeFactors (n-i)
