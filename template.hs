@@ -9,8 +9,7 @@
 {-# LANGUAGE UndecidableInstances       #-}
 import           Control.Monad
 import           Control.Monad.ST
-import           Control.Monad.State
-import           Control.Monad.Trans.State
+import           Control.Monad.State.Strict
 import           Data.Bits
 import qualified Data.ByteString.Char8        as BS
 import           Data.Char
@@ -31,6 +30,7 @@ import           Numeric
 
 main :: IO ()
 main = do
+  s <- readLnAsListWith unconsChar
   n <- readLn @Int
   [m,_] <- readLnAsListWith unconsInt
   as <- readLnAsListWith unconsInt
