@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeApplications #-}
 module My.Prime ( primes
                 , sieve
                 , factorize
@@ -44,3 +45,11 @@ factorize sv n = go 1 (sv VU.! n) (n `div` sv VU.! n)
                            then go (a+1) p (m`div`m')
                            else (p, a) : go 1 m' (m`div`m')
 
+-- 与えられた整数の約数を全列挙する（O(\sqrt n)）
+divisors :: Int -> [Int]
+divisors n = go 1
+  where go f | f * f > n = []
+             | f * f == n = [f]
+             | otherwise = if n`mod`f == 0
+                           then (n`div`f) : f : go (f+1)
+                           else go (f+1)
