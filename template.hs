@@ -53,30 +53,38 @@ unconsInteger :: StateT BS.ByteString Maybe Integer
 unconsInteger = StateT $ BS.readInteger . BS.dropWhile isSpace
 
 -- 1D Data
--- for list
+-- list
 readLnAsListWith :: StateT BS.ByteString Maybe a -> IO [a]
 readLnAsListWith !st = unfoldr (runStateT st) <$> BS.getLine
 
--- for boxed vector
+-- boxed vector
 readLnAsVecWith :: StateT BS.ByteString Maybe a -> Int -> IO (V.Vector a)
 readLnAsVecWith !st !n = V.unfoldrN n (runStateT st) <$> BS.getLine
 
--- for unboxed vector
+-- unboxed vector
 readLnAsUVecWith :: VU.Unboxable a => StateT BS.ByteString Maybe a -> Int -> IO (VU.Vector a)
 readLnAsUVecWith !st !n = VU.unfoldrN n (runStateT st) <$> BS.getLine
 
--- example: 1D tuple vector
+-- unboxed vector (input for n-lines)
+readLnAsUVecCWith :: VU.Unboxable a => StateT BS.ByteString Maybe a -> Int -> IO (VU.Vector a)
+readLnAsUVecCWith !st !n = VU.replicateM n $ (\vec -> vec VU.! 0) <$> readLnAsUVecWith st 1
+
+-- unboxed 2-tuple vector
 readLnAsUVecWith2Tuple :: VU.Unboxable a => StateT BS.ByteString Maybe a -> Int -> IO (VU.Vector (a,a))
 readLnAsUVecWith2Tuple !st !n = VU.replicateM n $ (\vec -> (vec VU.! 0, vec VU.! 1)) <$> readLnAsUVecWith st 2
 
+-- unboxed 3-tuple vector
+readLnAsUVecWith3Tuple :: VU.Unboxable a => StateT BS.ByteString Maybe a -> Int -> IO (VU.Vector (a,a,a))
+readLnAsUVecWith3Tuple !st !n = VU.replicateM n $ (\vec -> (vec VU.! 0, vec VU.! 1, vec VU.! 2)) <$> readLnAsUVecWith st 3
 
 -- 2D Data
 -- n: number of lines
 -- m: number of values per a line
 
--- for boxed vector
+-- boxed vector
 readLnAs2DVecWith :: StateT BS.ByteString Maybe a -> Int -> Int -> IO (V.Vector a)
 readLnAs2DVecWith !st !n !m = V.unfoldrN (n * m) (runStateT st) . BS.concat <$> replicateM n BS.getLine
 
+-- unboxed vector
 readLnAs2DUVecWith :: VU.Unboxable a => StateT BS.ByteString Maybe a -> Int -> Int -> IO (VU.Vector a)
 readLnAs2DUVecWith !st !n !m = VU.unfoldrN (n * m) (runStateT st) . BS.concat <$> replicateM n BS.getLine
