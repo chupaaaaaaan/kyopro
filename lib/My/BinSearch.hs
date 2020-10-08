@@ -2,6 +2,9 @@ module My.BinSearch where
 
 import qualified Data.Vector as V
 
+-- [ok,ng) もしくは (ng,ok]
+-- ok: 解が存在するindexの下限（上限）
+-- ng: 解が存在しないindexの上限（下限）
 meguruBSearch :: (Int -> Bool) -> Int -> Int -> Int
 meguruBSearch isOk = go
   where go ok ng | abs (ok - ng) > 1 = let mid = (ok + ng) `div` 2
