@@ -1,4 +1,4 @@
-cabal-version:      3.6.2
+cabal-version:      3.6
 name:               kyopro
 version:            0.1.0.0
 
@@ -23,8 +23,7 @@ extra-source-files:
     README.md
     ChangeLog.md
 
-
-library
+common kyopro-env
     build-depends:
         base ^>=4.13.0.0
       , QuickCheck == 2.13.2
@@ -62,6 +61,11 @@ library
       , vector-algorithms == 0.8.0.3
       , vector-th-unbox == 0.2.1.7
 
+    default-language:  Haskell2010
+
+library
+    import: kyopro-env
+
     exposed-modules:
         My.BinSearch
       , My.DPImpl
@@ -75,6 +79,3 @@ library
       , My.Queue
 
     hs-source-dirs:    lib
-
-    default-language:  Haskell2010
-

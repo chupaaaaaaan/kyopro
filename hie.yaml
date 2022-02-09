@@ -1,0 +1,13 @@
+cradle:
+  multi:
+    - path: "./lib"
+      config:
+        cradle:
+          cabal:
+            component: "lib:kyopro"
+    - path: "./atcoder_abc"
+      config:
+        cradle:
+          direct:
+            arguments: [ "-package-env", "package.local" ]
+          
