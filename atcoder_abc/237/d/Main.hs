@@ -52,6 +52,7 @@ solve = go (Seq.singleton 0) (1, 0)
         'R' ->
             let (ls, rs) = Seq.splitAt (p + 1) seq
              in go (ls <> Seq.singleton i <> rs) (i + 1, p + 1) as
+        _ -> error "does not come here"
 
 -- converter
 unconsChar :: StateT BS.ByteString Maybe Char
