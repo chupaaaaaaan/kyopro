@@ -67,7 +67,7 @@ readLnAsUVecWith !st !n = VU.unfoldrN n (runStateT st) <$> BS.getLine
 
 -- unboxed vector (input for n-lines)
 readLnAsUVecCWith :: VU.Unboxable a => StateT BS.ByteString Maybe a -> Int -> IO (VU.Vector a)
-readLnAsUVecCWith !st !n = VU.replicateM n $ (\vec -> vec VU.! 0) <$> readLnAsUVecWith st 1
+readLnAsUVecCWith !st !n = VU.replicateM n $ (VU.! 0) <$> readLnAsUVecWith st 1
 
 -- unboxed 2-tuple vector
 readLnAsUVecWith2Tuple :: VU.Unboxable a => StateT BS.ByteString Maybe a -> Int -> IO (VU.Vector (a,a))
