@@ -7,14 +7,15 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
-sourceFile="$1"
-sourceFileBase=${sourceFile%.hs}
+URL=$1
+CODEPATH=${URL##*://}
+MAINHS=${CODEPATH}/Main.hs
 
-if [ ! -f ${sourceFile} ]; then
-    echo "${sourceDir}/Main.hs does not exist"
+if [ ! -f ${MAINHS} ]; then
+    echo "${MAINHS} does not exist."
     exit 1
 fi
 
-ghc -package-env ./package.local -o a.out -O2 ${sourceFile}
+ghc -package-env ./package.local -o a.out -O2 ${MAINHS}
 
-rm -f ${sourceFileBase}.{o,hi}
+rm -f ${CODEPATH}/Main.{o,hi}

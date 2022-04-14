@@ -2,12 +2,19 @@
 
 cd $(dirname $0)
 
-for path in "$@"
-do
-    if [ ! -f "${path}/Main.hs" ]
-    then
-        mkdir -p ${path}
-        cat template.hs > ${path}/Main.hs
-        echo "create file ${path}/Main.hs from template.hs."
-    fi
-done
+if [ $# -ne 1 ]; then
+    echo "Invalid number of argument: $#"
+    exit 1
+fi
+
+URL=$1
+CODEPATH=${URL##*://}
+
+mkdir -p ${CODEPATH}
+
+if [ ! -f "${CODEPATH}/Main.hs" ]; then
+    cat template.hs > ${CODEPATH}/Main.hs
+fi
+
+rm -fr test/
+oj d ${URL} 
