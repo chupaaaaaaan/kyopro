@@ -28,6 +28,7 @@ solve n k as =
                     | 0 < l && l < 2^maxJump -> let jump = floor $ logBase 2 $ fromIntegral l
                                                 in go (dp V.! jump VU.! p) (l-2^jump)
                     | l == 0                 -> p
+                    | otherwise              -> error "don't come here."
     in 1 + go 0 k
 
 
