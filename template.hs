@@ -10,7 +10,7 @@
 
 import Control.Monad
 import Control.Monad.ST
-import Control.Monad.State.Strict (StateT (..))
+import Control.Monad.State.Strict
 import Data.Bits
 import Data.ByteString.Char8 (ByteString)
 import qualified Data.ByteString.Char8 as BS
