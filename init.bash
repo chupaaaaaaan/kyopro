@@ -4,6 +4,13 @@ cd $(dirname $0)
 
 PACKAGE_ENV='package.local'
 
+# workaround
+# https://github.com/haskell/cabal/issues/7297#issuecomment-928595424
+cat <<EOF > cabal.project
+package *
+  profiling: True
+EOF
+
 rm -f ${PACKAGE_ENV}
 
 ghcup set ghc 8.8.4
@@ -14,6 +21,7 @@ cabal install --package-env ${PACKAGE_ENV}.orig --lib \
       QuickCheck-2.13.2 \
       array-0.5.4.0 \
       attoparsec-0.13.2.3 \
+      base-4.13.0.0 \
       bytestring-0.10.10.0 \
       containers-0.6.2.1 \
       deepseq-1.4.4.0 \
@@ -48,4 +56,4 @@ cabal install --package-env ${PACKAGE_ENV}.orig --lib \
 
 cat ${PACKAGE_ENV}.orig | sed "/bytestring-0.10.10.1/d" > ${PACKAGE_ENV}
 
-rm -f ${PACKAGE_ENV}.orig
+rm -f ${PACKAGE_ENV}.orig cabal.project

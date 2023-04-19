@@ -16,6 +16,6 @@ if [ ! -f ${MAINHS} ]; then
     exit 1
 fi
 
-ghc -package-env ./package.local -o a.out -O2 ${MAINHS}
+ghc -package-env ./package.local -o a.out -O2 -prof -fprof-auto ${MAINHS}
 
 rm -f ${CODEPATH}/Main.{o,hi}
