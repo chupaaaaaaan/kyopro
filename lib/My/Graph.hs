@@ -75,6 +75,65 @@ bfs vs graph = V.create $ do
             forM_ candidates $ \(nv, _) -> VM.write dist nv (d + 1)
             go dist $ seq' Seq.>< Seq.fromList (map fst candidates)
 
+-- | execute bfs on graph.
+bft ::
+    -- | list of start vertex
+    [Int] ->
+    -- | adjacency list
+    Vector [(Int, a)] ->
+    Vector Int
+bft vs graph = V.create $ do
+    -- distance from the vertex of start
+    -- '-1' means that the target vertex is not visited
+    dist <- VM.replicate (V.length graph) (-1)
+
+    forM_ vs $ flip (VM.write dist) 0
+    forM_ vs $ \v -> go dist 0 [v] []
+
+    return dist
+
+  where
+    go :: MVector s Int -> Int -> [Int] -> [Int] -> ST s ()
+    go dist _ []        []   = return ()
+    go dist d []        next = go dist (d+1) next []
+    go dist d (cv:rest) next = do
+        n <- (\f -> foldM f next (graph V.! cv)) $ \ nvs (nv, _) -> do
+            d' <- VM.read dist nv
+            if d' /= (-1) then return nvs else do
+                VM.write dist nv (d+1)
+                return (nv:nvs)
+        go dist d rest n
+
+-- | execute bfs on graph.
+bfu ::
+    -- | list of start vertex
+    [Int] ->
+    -- | adjacency list
+    Vector [(Int, a)] ->
+    Vector Int
+bfu vs graph = V.create $ do
+    -- distance from the vertex of start
+    -- '-1' means that the target vertex is not visited
+    dist <- VM.replicate (V.length graph) (-1)
+
+    forM_ vs $ flip (VM.write dist) 0
+    forM_ vs $ \v -> go dist 0 [v] []
+
+    return dist
+
+  where
+    go :: MVector s Int -> Int -> [Int] -> [Int] -> ST s ()
+    go dist _ []        []   = return ()
+    go dist d []        next = go dist (d+1) next []
+    go dist d (cv:rest) next = do
+        n <- (\f -> foldM f next (graph V.! cv)) $ \ nvs (nv, _) -> do
+            d' <- VM.read dist nv
+            if d' /= (-1) then return nvs else do
+                VM.write dist nv (d+1)
+                return (nv:nvs)
+        go dist d rest n
+
+
 {- | generate graph as adjacency list
  有向グラフの場合は、to側の隣接リスト追加部分をコメントアウトすれば良い
  頂点に重みがある場合は、abc 138 dなど参照
