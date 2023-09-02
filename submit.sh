@@ -17,4 +17,8 @@ if [ ! -f ${MAINHS} ]; then
     exit 1
 fi
 
-oj s ${URL} ${MAINHS}
+cp -f ${MAINHS} .
+
+oj s ${URL} Main.hs
+
+rm -f Main.hs
