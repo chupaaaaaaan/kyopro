@@ -10,10 +10,10 @@ fi
 URL=$1
 CODEPATH=${URL##*://}
 
-mkdir -p ${CODEPATH}
+mkdir -p src/${CODEPATH}
 
-if [ ! -f "${CODEPATH}/Main.hs" ]; then
-    cat template.hs > ${CODEPATH}/Main.hs
+if [ ! -f "src/${CODEPATH}/Main.hs" ]; then
+    cat src/template.hs > src/${CODEPATH}/Main.hs
 fi
 
 rm -fr test/

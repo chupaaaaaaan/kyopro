@@ -5,20 +5,7 @@ cradle:
         cradle:
           cabal:
             component: "lib:kyopro"
-
-    - path: "./template.hs"
-      config:
-        cradle:
-          direct:
-            arguments: [ "-package-env", "package.local" ]
-
-    - path: "./sandbox"
-      config:
-        cradle:
-          direct:
-            arguments: [ "-package-env", "package.local" ]
-
-    - path: "./atcoder.jp"
+    - path: "./src"
       config:
         cradle:
           direct:
