@@ -1,0 +1,135 @@
+{-# LANGUAGE BangPatterns               #-}
+{-# LANGUAGE DerivingStrategies         #-}
+{-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE RankNTypes                 #-}
+{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE UndecidableInstances       #-}
+
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE UndecidableInstances #-}
+
+import Control.Monad
+import Control.Monad.ST
+import Control.Monad.State.Strict
+import Data.Bits
+import Data.ByteString.Char8 (ByteString)
+import qualified Data.ByteString.Char8 as BS
+import Data.Char
+import qualified Data.List as L
+import Data.Maybe
+import Data.STRef
+import qualified Data.Sequence as Seq
+import qualified Data.Set as S
+import Data.Vector (Vector)
+import qualified Data.Vector as V
+import Data.Vector.Algorithms.Intro
+import Data.Vector.Mutable (MVector)
+import qualified Data.Vector.Mutable as VM
+import GHC.STRef
+import Numeric
+
+
+import qualified Data.Vector.Unboxing as VU
+
+modulus :: Int
+modulus = 998244353
+
+
+newtype IntMod = IntMod Int deriving Eq deriving newtype VU.Unboxable
+
+fromIntegralIntIntMod :: Int -> IntMod
+fromIntegralIntIntMod n = IntMod (n `mod` modulus)
+{-# RULES
+"fromIntegral/Int->IntMod"
+    fromIntegral = fromIntegralIntIntMod
+#-}
+
+instance Show IntMod where
+  show (IntMod x) = show x
+
+instance Num IntMod where
+  IntMod x + IntMod y = IntMod ((x + y) `mod` modulus)
+  IntMod x - IntMod y = IntMod ((x - y) `mod` modulus)
+  IntMod x * IntMod y = IntMod ((x * y) `mod` modulus)
+  fromInteger n = IntMod (fromInteger (n `mod` fromIntegral modulus))
+  abs = undefined
+  signum = undefined
+
+powMod :: IntMod -> Int -> IntMod
+powMod !x 1 = x
+powMod !x !k
+  | even k = powMod (x * x) (k `div` 2)
+  | otherwise = x * powMod (x * x) (k `div` 2)
+
+
+main :: IO ()
+main = do
+    [n, m] <- list1 ucInt
+
+    let x = fromIntegralIntIntMod m
+
+
+    print (solve n x)
+
+
+    return ()
+
+
+solve :: Int -> IntMod -> IntMod
+solve n m = let dp = go 1 (0,1)
+            in fst dp
+    where go :: Int -> (IntMod, IntMod) -> (IntMod, IntMod)
+          go k (a, b) | k == n = (a, b)
+                      | otherwise = go (k+1) (a * (m-2) + b * (m-1), a)
+
+
+
+
+
+-- Input
+-- converter
+ucChar :: StateT ByteString Maybe Char
+ucChar = StateT BS.uncons
+
+ucInt :: StateT ByteString Maybe Int
+ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
+
+-- read a linear data as List
+list1 :: StateT ByteString Maybe a -> IO [a]
+list1 !st = L.unfoldr (runStateT st) <$> BS.getLine
+
+list2 :: Int -> StateT ByteString Maybe a -> IO [[a]]
+list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
+
+-- read a column Vector of order n
+vec1 :: Int -> StateT ByteString Maybe a -> IO (Vector a)
+vec1 !n !st = toVec1 n <$> list2 n st
+
+toVec1 :: Int -> [[a]] -> Vector a
+toVec1 !n = V.fromListN n . fmap (\[a] -> a)
+
+-- read a column Vector of order n whose element is 2-tuple
+toVect :: Int -> [[a]] -> Vector (a, a)
+toVect !n = V.fromList . fmap (\[a, b] -> (a, b))
+
+-- read a (h * w) grid data as Vector (linear-indexed)
+-- n: number of lines (height)
+-- m: number of values per a line (width)
+-- example: if you want to access the element of (h, w) (0<=i<h, 0<=j<w), the index is i*w+j.
+vec2 :: Int -> Int -> StateT ByteString Maybe a -> IO (Vector (Vector a))
+vec2 !h !w !st = toVec2 h w <$> list2 h st
+
+toVec2 :: Int -> Int -> [[a]] -> Vector (Vector a)
+toVec2 !h !w = V.fromListN h . fmap (V.fromListN w)
+
+infixl 9 !@
+(!@) :: Vector (Vector a) -> (Int , Int) -> a
+vv !@ (i, j) = vv V.! i V.! j
