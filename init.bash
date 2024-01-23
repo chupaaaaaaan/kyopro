@@ -3,10 +3,7 @@
 set -eu
 cd $(dirname $0)
 
-PACKAGE_ENV='package.local'
-GHC_VERSION='9.4.5'
-
-ghcup set ghc ${GHC_VERSION}
+. ghcenv.sh
 
 cabal update
 cabal build --only-dependencies --write-ghc-environment-files=always --enable-profiling
