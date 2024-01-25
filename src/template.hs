@@ -45,6 +45,12 @@ ucChar = StateT BS.uncons
 ucInt :: StateT ByteString Maybe Int
 ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
 
+ucString :: StateT ByteString Maybe ByteString
+ucString = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
+                          in if BS.null bs'
+                             then Nothing
+                             else Just $ BS.break isSpace bs')
+
 -- | read a linear data as List
 list1 ::
     -- | converter
