@@ -4,3 +4,5 @@
 dist-newstyle/
 package.local
 sandbox/
+app/
+test/
