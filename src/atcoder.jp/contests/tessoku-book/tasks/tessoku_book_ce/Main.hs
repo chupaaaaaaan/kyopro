@@ -32,11 +32,15 @@ import Numeric
 
 main :: IO ()
 main = do
-    [n,q] <- list1 ucInt
-    as <- V.scanl' (+) 0 . V.fromList <$> list1 ucInt
+    _ <- readLn @Int
+    as <- V.scanl' (\x y -> if y == 1 then x+1 else x-1) 0 . V.fromList <$> list1 ucInt
+    q <- readLn @Int
     qs <- toVect <$> list2 q ucInt
 
-    forM_ qs $ \(l, r) -> print $ as V.! r - as V.! (l-1)
+    forM_ qs $ \(l, r) -> putStrLn $ let s = as V.! r - as V.! (l-1)
+                                     in if | s > 0 -> "win"
+                                           | s < 0 -> "lose"
+                                           | otherwise -> "draw"
 
 -- Input
 -- converter

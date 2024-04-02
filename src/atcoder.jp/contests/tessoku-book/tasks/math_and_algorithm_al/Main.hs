@@ -29,14 +29,23 @@ import Data.Vector.Mutable (MVector)
 import qualified Data.Vector.Mutable as VM
 
 import Numeric
+import Data.Function
 
 main :: IO ()
 main = do
-    [n,q] <- list1 ucInt
-    as <- V.scanl' (+) 0 . V.fromList <$> list1 ucInt
-    qs <- toVect <$> list2 q ucInt
+    t <- readLn @Int
+    n <- readLn @Int
+    as <- map (\[x,y] -> (x,y)) <$> list2 n ucInt
 
-    forM_ qs $ \(l, r) -> print $ as V.! r - as V.! (l-1)
+    let as' = mkCum t n as
+    mapM_ print as'
+
+
+mkCum :: Int -> Int -> [(Int, Int)] -> Vector Int
+mkCum t n as = let ls = map (\(l,_) -> (l,1)) as
+                   rs = map (\(_,r) -> (r,1)) as
+               in V.replicate (t+1) 0 & flip (V.accum (-)) rs & flip (V.accum (+)) ls & V.scanl1' (+) & V.init
+
 
 -- Input
 -- converter

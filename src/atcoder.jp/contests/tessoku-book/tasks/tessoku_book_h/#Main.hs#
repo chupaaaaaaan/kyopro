@@ -51,7 +51,7 @@ toIntGrid b = listArray b . L.concat
 
 -- Cumulative Sum
 -- | 2次元累積和を計算する。
-mk2dCS :: (a -> a -> a) -> a -> [[a]] -> [[a]]
+mk2dCS :: (a -> b -> a) -> a -> [[]] -> [[a]]
 mk2dCS f a = L.transpose . fmap (L.scanl' f a) . L.transpose . fmap (L.scanl' f a)
 
 -- | 2次元累積和をクエリする。

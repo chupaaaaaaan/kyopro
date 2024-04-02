@@ -11,6 +11,8 @@
 import Control.Monad
 import Control.Monad.ST
 import Control.Monad.State.Strict
+import Data.Array.IArray
+import Data.Array.ST
 import Data.Bits
 import Data.ByteString.Char8 (ByteString)
 import qualified Data.ByteString.Char8 as BS
@@ -25,56 +27,65 @@ import qualified Data.Vector as V
 import Data.Vector.Algorithms.Intro
 import Data.Vector.Mutable (MVector)
 import qualified Data.Vector.Mutable as VM
-import GHC.STRef
+
 import Numeric
 
 main :: IO ()
 main = do
-    [n, k] <- rowl unconsInt
+    [n,k] <- list1 ucInt
 
     print $ solve n k
 
-    return ()
 
 solve :: Int -> Int -> Int
-solve n k = length [1 | x <- [1..n], y <- [1..n], k - x - y >= 1 && k - x - y <= n]
-
-
+solve n k = length [1 | x <- [1..n], y <- [1..n], 1 <= k - x - y && k - x - y <= n]    
 
 -- Input
 -- converter
-unconsChar :: StateT ByteString Maybe Char
-unconsChar = StateT BS.uncons
+ucChar :: StateT ByteString Maybe Char
+ucChar = StateT BS.uncons
 
-unconsInt :: StateT ByteString Maybe Int
-unconsInt = StateT (BS.readInt . BS.dropWhile isSpace)
+ucInt :: StateT ByteString Maybe Int
+ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
 
-unconsInteger :: StateT ByteString Maybe Integer
-unconsInteger = StateT (BS.readInteger . BS.dropWhile isSpace)
+ucString :: StateT ByteString Maybe ByteString
+ucString = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
+                          in if BS.null bs'
+                             then Nothing
+                             else Just $ BS.break isSpace bs')
 
--- read a linear data as List
-rowl :: StateT ByteString Maybe a -> IO [a]
-rowl !st = L.unfoldr (runStateT st) <$> BS.getLine
+-- | read a linear data as List
+list1 ::
+    -- | converter
+    StateT ByteString Maybe a ->
+    IO [a]
+list1 !st = L.unfoldr (runStateT st) <$> BS.getLine
 
--- read a row Vector of order n
-rowv :: Int -> StateT ByteString Maybe a -> IO (Vector a)
-rowv !n !st = V.unfoldrN n (runStateT st) <$> BS.getLine
+-- | read multi line data as List
+list2 ::
+    -- | number of lines (height)
+    Int ->
+    -- | converter
+    StateT ByteString Maybe a ->
+    IO [[a]]
+list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 
--- read a column Vector of order n
-colv :: Int -> StateT ByteString Maybe a -> IO (Vector a)
-colv !n !st = V.replicateM n $ (\[a] -> a) <$> rowl st
+-- | convert singleton List to Vector
+toVec1 :: [[a]] -> Vector a
+toVec1 = V.fromList . fmap (\[a] -> a)
 
--- read a column Vector of order n whose element is 2-tuple
-colv2 :: Int -> StateT ByteString Maybe a -> IO (Vector (a, a))
-colv2 !n !st = V.replicateM n $ (\[a, b] -> (a, b)) <$> rowl st
+-- | read a column Vector of order n whose element is 2-tuple
+toVect :: [[a]] -> Vector (a, a)
+toVect = V.fromList . fmap (\[a, b] -> (a, b))
 
--- read a column Vector of order n whose element is 3-tuple
-colv3 :: Int -> StateT ByteString Maybe a -> IO (Vector (a, a, a))
-colv3 !n !st = V.replicateM n $ (\[a, b, c] -> (a, b, c)) <$> rowl st
-
--- read a (h * w) grid data as Vector (linear-indexed)
--- n: number of lines (height)
--- m: number of values per a line (width)
--- example: if you want to access the element of (h, w) (0<=i<h, 0<=j<w), the index is i*w+j.
-gridv :: Int -> Int -> StateT ByteString Maybe a -> IO (Vector a)
-gridv !h !w !st = V.concatMap (V.unfoldrN w (runStateT st)) <$> V.replicateM h BS.getLine
+-- | read a (h * w) grid data as Array
+-- We assume that 2d-index starts from (1,1)
+grid ::
+    -- | number of lines (height)
+    Int ->
+    -- | number of values per a line (width)
+    Int ->
+    -- | converter
+    StateT ByteString Maybe a ->
+    IO (Array (Int, Int) a)
+grid h w st = listArray ((1, 1), (h, w)) . concat <$> list2 h st
