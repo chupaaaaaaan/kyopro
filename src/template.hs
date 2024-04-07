@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
+
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DerivingStrategies #-}
@@ -12,6 +15,7 @@
 import Control.Monad
 import Control.Monad.ST
 import Control.Monad.State.Strict
+import Data.Array.IO
 import Data.Array.ST
 import Data.Array.Unboxed
 import Data.Bits
@@ -19,9 +23,11 @@ import Data.ByteString.Char8 (ByteString)
 import Data.ByteString.Char8 qualified as BS
 import Data.Char
 import Data.Foldable
+import Data.IORef
 import Data.List qualified as L
 import Data.Maybe
 import Data.STRef
+import Data.Sequence (Seq(Empty, (:<|), (:|>)), (<|), (|>), (><), ViewL(EmptyL, (:<)), viewl, ViewR(EmptyR, (:>)), viewr)
 import Data.Sequence qualified as Seq
 import Data.Set qualified as S
 import Data.Vector (Vector)
@@ -70,10 +76,41 @@ vector1 n !st = V.unfoldrN n (runStateT st) <$> BS.getLine
 toIntGrid :: (Ix a, Ix b) => ((a, b), (a, b)) -> [[Int]] -> UArray (a, b) Int
 toIntGrid b = listArray b . L.concat
 
+toCharGrid :: (Ix a, Ix b) => ((a, b), (a, b)) -> [[Char]] -> UArray (a, b) Char
+toCharGrid b = listArray b . L.concat
+
+to1 :: [a] -> a
+to1 [a] = a
+to1 _ = error "invalid length."
+
+to2 :: [a] -> (a,a)
+to2 [a,b] = (a,b)
+to2 _ = error "invalid length."
+
+to3 :: [a] -> (a,a,a)
+to3 [a,b,c] = (a,b,c)
+to3 _ = error "invalid length."
+
+to4 :: [a] -> (a,a,a,a)
+to4 [a,b,c,d] = (a,b,c,d)
+to4 _ = error "invalid length."
+
 -- Array
 {-# INLINE modifyArray #-}
 modifyArray :: (MArray a e m, Ix i) => a i e -> i -> (e -> e) -> m ()
 modifyArray marr i f = readArray marr i >>= writeArray marr i . f
+
+-- Vector
+{-# INLINE vSort #-}
+vSort :: Ord a => Vector a -> Vector a
+vSort = vSortBy compare
+
+{-# INLINE vSortBy #-}
+vSortBy :: Ord a => Comparison a -> Vector a -> Vector a
+vSortBy f v = V.create $ do
+    mv <- V.thaw v
+    sortBy f mv
+    return mv
 
 -- Cumulative Sum
 -- | Array用のscanl
@@ -97,7 +134,7 @@ ascanl1 :: (MArray ma e m, IArray ia e) => (e -> e -> e) -> ia Int e -> m (ma In
 ascanl1 f arr = do
     let b@(l,h) = bounds arr
 
-    result <- newArray_ (l,h)
+    result <- newArray_ b
 
     writeArray result l (arr ! l)
     for_ (range (l+1,h)) $ \i -> do
@@ -124,12 +161,12 @@ ascanr f a arr = do
     return result
 
 
--- | Array用のscanr
+-- | Array用のscanr1
 ascanr1 :: (MArray ma e m, IArray ia e) => (e -> e -> e) -> ia Int e -> m (ma Int e)
 ascanr1 f arr = do
     let b@(l,h) = bounds arr
 
-    result <- newArray_ (l,h)
+    result <- newArray_ b
 
     writeArray result h (arr ! h)
 
@@ -194,3 +231,171 @@ rectangleSum f (a,b) (c,d) = f (c,d) + f (a-1,b-1) - f (a-1,d) - f (c,b-1)
 -- | 2次元累積和をクエリする
 query2dCS :: (IArray a e, Num e) => a (Int, Int) e -> (Int, Int) -> (Int, Int) -> e
 query2dCS csArray = rectangleSum (csArray !)
+
+-- 二分探索
+-- | 整数区間に対する二分探索（参考URL https://qiita.com/drken/items/97e37dd6143e33a64c8c ）
+-- 区間は [ok,ng) もしくは (ng,ok] で考える
+bsearch :: forall a. (Integral a, Num a) =>
+    -- | indexに対する述語
+    (a -> Bool) ->
+    -- | ok: 解が存在するindex
+    a ->
+    -- | ng: 解が存在しないindex
+    a ->
+    a
+bsearch = bsearchBase div 1
+
+-- | 実数区間に対する二分探索
+bsearchF :: forall a. RealFrac a =>
+    -- | 区間の最小単位
+    a ->
+    -- | ある実数に対する述語
+    (a -> Bool) ->
+    -- | ok: 解が存在する実数
+    a ->
+    -- | ng: 解が存在しない実数
+    a ->
+    a
+bsearchF = bsearchBase (/)
+
+-- | 二分探索の処理の抽象
+bsearchBase :: forall a. (Num a, Ord a) =>
+    -- | 区間を半分にする関数
+    (a -> a -> a) ->
+    -- | 区間の最小単位
+    a ->
+    -- | 位置に対する述語
+    (a -> Bool) ->
+    -- | ok: 解が存在する位置
+    a ->
+    -- | ng: 解が存在しない位置
+    a ->
+    a
+bsearchBase f ep isOk = go
+  where
+    go :: a -> a -> a
+    go ok ng
+        | abs (ok - ng) > ep =
+            let mid = (ok + ng) `f` 2
+             in if isOk mid
+                    then go mid ng
+                    else go ok mid
+        | otherwise = ok
+
+-- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
+condGT,condLT,condGE,condLE :: Ord a => Vector a -> a -> Int -> Bool
+condGT vec key idx = key < vec V.! idx
+condLT vec key idx = key > vec V.! idx
+condGE vec key idx = key <= vec V.! idx
+condLE vec key idx = key >= vec V.! idx
+
+-- | 範囲外の点は除外して、ある点に隣接する点を列挙する。
+arounds :: Ix i => (i, i) -> (i -> [i]) -> i -> [i]
+arounds b neis = filter (b`inRange`) . neis
+
+-- | 2次元グリッドにおける上下左右4点、斜めも加えて8点を列挙する
+nei4, nei8 :: (Ix i, Num i) => (i, i) -> [(i, i)]
+nei4 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1)]
+nei8 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1), (i+1,j+1), (i+1,j-1), (i-1,j+1), (i-1,j-1)]
+
+-- グラフ生成
+-- | 隣接リスト形式の重み付きグラフを生成する
+-- 頂点に重みがある場合は、abc 138 dなど参照（https://atcoder.jp/contests/abc138/submissions/15808936 ）
+genWeightedGraph, genWeightedDigraph ::
+    -- | 頂点の個数
+    Int ->
+    -- | 辺のリスト (開始, 終了, 重み)
+    [(Int, Int, a)] ->
+    Array Int [(Int, a)]
+-- | 無向グラフ
+genWeightedGraph n edges = runSTArray $ do
+    g <- newArray (1,n) []
+    forM_ edges $ \(f,t,w) -> do
+        modifyArray g f ((t,w):)
+        modifyArray g t ((f,w):)
+    return g
+-- | 有向グラフ
+genWeightedDigraph n edges = runSTArray $ do
+    g <- newArray (1,n) []
+    forM_ edges $ \(f,t,w) -> modifyArray g f ((t,w):)
+    return g
+
+-- | 隣接リスト形式の重みなしグラフを生成する
+genGraph, genDigraph ::
+    -- | 頂点の個数
+    Int ->
+    -- | 辺のリスト (開始, 終了)
+    [(Int, Int)] ->
+    Array Int [Int]
+-- | 無向グラフ
+genGraph n edges = runSTArray $ do
+    g <- newArray (1,n) []
+    forM_ edges $ \(f,t) -> do
+        modifyArray g f (t:)
+        modifyArray g t (f:)
+    return g
+-- | 有向グラフ
+genDigraph n edges = runSTArray $ do
+    g <- newArray (1,n) []
+    forM_ edges $ \(f,t) -> modifyArray g f (t:)
+    return g
+
+-- | 幅優先探索
+-- | グラフ上での幅優先探索
+bfs :: forall a m. MArray a Int m =>
+    -- | 隣接リスト形式の重みなしグラフ
+    Array Int [Int] ->
+    -- | 開始頂点のリスト
+    [Int] ->
+    m (a Int Int)
+bfs graph = bfsBase (graph !) (bounds graph)
+
+-- | 2次元グリッド上での幅優先探索
+gridBfs :: forall a m. MArray a Int m =>
+    -- | 探索対象のセルの判定
+    ((Int, Int) -> Bool) ->
+    -- | 2次元グリッドのbound
+    ((Int, Int), (Int, Int)) ->
+    -- | 開始セルのリスト
+    [(Int, Int)] ->
+    m (a (Int, Int) Int)
+gridBfs isCand b = bfsBase (filter isCand . arounds b nei4) b
+
+-- | 幅優先探索の抽象
+bfsBase :: forall a m i. (MArray a Int m, Ix i) =>
+    -- | 現在点から探索候補点を取得
+    (i -> [i]) ->
+    -- | 探索範囲のbound
+    (i, i) ->
+    -- | 開始点のリスト
+    [i] ->
+    m (a i Int)
+bfsBase nextCandidate b starts = do
+
+    -- 開始点からの距離
+    -- '-1'は、その点を訪れていないことを表す
+    dist <- newArray b (-1)
+
+    -- 開始点には距離0を設定する
+    forM_ starts $ \start -> writeArray dist start 0
+
+    -- 開始点をキューに入れて探索開始
+    go dist (Seq.fromList starts)
+
+    return dist
+
+    where
+        go :: a i Int -> Seq i -> m ()
+        go dist queue = case viewl queue of
+            -- キューが空であれば探索終了
+            EmptyL -> return ()
+            -- BFS用のキューから次の探索点を取り出す
+            idx :< qRest -> do
+                -- 開始点から探索点までの距離を取得
+                d <- readArray dist idx
+                -- 探索候補点のうち、まだ訪れていない点を列挙
+                candidates <- filterM (fmap (== (-1)) . readArray dist) . nextCandidate $ idx
+                -- 探索候補点に、距離d+1を設定する
+                forM_ candidates $ \cand -> writeArray dist cand (d+1)
+                -- 探索候補点をキューの末尾に追加し、次の探索へ
+                go dist $ qRest >< Seq.fromList candidates
