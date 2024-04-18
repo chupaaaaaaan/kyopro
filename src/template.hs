@@ -23,6 +23,8 @@ import Data.ByteString.Char8 (ByteString)
 import Data.ByteString.Char8 qualified as BS
 import Data.Char
 import Data.Foldable
+import Data.Heap (Heap, Entry(Entry))
+import Data.Heap qualified as H
 import Data.IORef
 import Data.List qualified as L
 import Data.Maybe
@@ -95,6 +97,16 @@ to4 :: [a] -> (a,a,a,a)
 to4 [a,b,c,d] = (a,b,c,d)
 to4 _ = error "invalid length."
 
+-- Debug
+traceWith :: (a -> String) -> a -> a
+traceWith f a = trace (f a) a
+
+traceShowWith :: Show b => (a -> b) -> a -> a
+traceShowWith f = traceWith (show . f)
+
+traceWithPrefix :: Show a => String -> a -> a
+traceWithPrefix prefix = traceWith (\x -> prefix <> show x)
+
 -- Array
 {-# INLINE modifyArray #-}
 modifyArray :: (MArray a e m, Ix i) => a i e -> i -> (e -> e) -> m ()
@@ -111,6 +123,14 @@ vSortBy f v = V.create $ do
     mv <- V.thaw v
     sortBy f mv
     return mv
+
+-- | ある数nに含まれる指定した素因数bの冪を求める
+powerOf :: Int -> Int -> Int
+powerOf b n = bsearch (\i -> n`mod`(b^i) == 0) 0 (ceiling $ logBase (fromIntegral b) $ fromIntegral (n+1))
+
+-- | ある数に含まれる2の冪を求める
+powerOf2 :: Int -> Int
+powerOf2 = powerOf 2
 
 -- Cumulative Sum
 -- | Array用のscanl
@@ -301,53 +321,53 @@ nei8 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1), (i+1,j+1), (i+1,j-1), (i-1,j+
 -- グラフ生成
 -- | 隣接リスト形式の重み付きグラフを生成する
 -- 頂点に重みがある場合は、abc 138 dなど参照（https://atcoder.jp/contests/abc138/submissions/15808936 ）
-genWeightedGraph, genWeightedDigraph ::
-    -- | 頂点の個数
-    Int ->
+genWeightedGraph, genWeightedDigraph :: Ix i =>
+    -- | 頂点の範囲
+    (i, i) ->
     -- | 辺のリスト (開始, 終了, 重み)
-    [(Int, Int, a)] ->
-    Array Int [(Int, a)]
+    [(i, i, a)] ->
+    Array i [(i, a)]
 -- | 無向グラフ
-genWeightedGraph n edges = runSTArray $ do
-    g <- newArray (1,n) []
+genWeightedGraph b edges = runSTArray $ do
+    g <- newArray b []
     forM_ edges $ \(f,t,w) -> do
         modifyArray g f ((t,w):)
         modifyArray g t ((f,w):)
     return g
 -- | 有向グラフ
-genWeightedDigraph n edges = runSTArray $ do
-    g <- newArray (1,n) []
+genWeightedDigraph b edges = runSTArray $ do
+    g <- newArray b []
     forM_ edges $ \(f,t,w) -> modifyArray g f ((t,w):)
     return g
 
 -- | 隣接リスト形式の重みなしグラフを生成する
-genGraph, genDigraph ::
-    -- | 頂点の個数
-    Int ->
+genGraph, genDigraph :: Ix i =>
+    -- | 頂点の範囲
+    (i, i) ->
     -- | 辺のリスト (開始, 終了)
-    [(Int, Int)] ->
-    Array Int [Int]
+    [(i, i)] ->
+    Array i [i]
 -- | 無向グラフ
-genGraph n edges = runSTArray $ do
-    g <- newArray (1,n) []
+genGraph b edges = runSTArray $ do
+    g <- newArray b []
     forM_ edges $ \(f,t) -> do
         modifyArray g f (t:)
         modifyArray g t (f:)
     return g
 -- | 有向グラフ
-genDigraph n edges = runSTArray $ do
-    g <- newArray (1,n) []
+genDigraph b edges = runSTArray $ do
+    g <- newArray b []
     forM_ edges $ \(f,t) -> modifyArray g f (t:)
     return g
 
 -- | 幅優先探索
 -- | グラフ上での幅優先探索
-bfs :: forall a m. MArray a Int m =>
+bfs :: forall a m i. (MArray a Int m, Ix i) =>
     -- | 隣接リスト形式の重みなしグラフ
-    Array Int [Int] ->
-    -- | 開始頂点のリスト
-    [Int] ->
-    m (a Int Int)
+    Array i [i] ->
+    -- | 開始頂点
+    i ->
+    m (a i Int)
 bfs graph = bfsBase (graph !) (bounds graph)
 
 -- | 2次元グリッド上での幅優先探索
@@ -356,8 +376,8 @@ gridBfs :: forall a m. MArray a Int m =>
     ((Int, Int) -> Bool) ->
     -- | 2次元グリッドのbound
     ((Int, Int), (Int, Int)) ->
-    -- | 開始セルのリスト
-    [(Int, Int)] ->
+    -- | 開始セル
+    (Int, Int) ->
     m (a (Int, Int) Int)
 gridBfs isCand b = bfsBase (filter isCand . arounds b nei4) b
 
@@ -367,20 +387,20 @@ bfsBase :: forall a m i. (MArray a Int m, Ix i) =>
     (i -> [i]) ->
     -- | 探索範囲のbound
     (i, i) ->
-    -- | 開始点のリスト
-    [i] ->
+    -- | 開始点
+    i ->
     m (a i Int)
-bfsBase nextCandidate b starts = do
+bfsBase nextCandidate b start = do
 
     -- 開始点からの距離
     -- '-1'は、その点を訪れていないことを表す
     dist <- newArray b (-1)
 
     -- 開始点には距離0を設定する
-    forM_ starts $ \start -> writeArray dist start 0
+    writeArray dist start 0
 
     -- 開始点をキューに入れて探索開始
-    go dist (Seq.fromList starts)
+    go dist (Seq.singleton start)
 
     return dist
 
@@ -390,12 +410,39 @@ bfsBase nextCandidate b starts = do
             -- キューが空であれば探索終了
             EmptyL -> return ()
             -- BFS用のキューから次の探索点を取り出す
-            idx :< qRest -> do
+            v :< rest -> do
                 -- 開始点から探索点までの距離を取得
-                d <- readArray dist idx
+                d <- readArray dist v
                 -- 探索候補点のうち、まだ訪れていない点を列挙
-                candidates <- filterM (fmap (== (-1)) . readArray dist) . nextCandidate $ idx
+                candidates <- filterM (fmap (== (-1)) . readArray dist) . nextCandidate $ v
                 -- 探索候補点に、距離d+1を設定する
                 forM_ candidates $ \cand -> writeArray dist cand (d+1)
                 -- 探索候補点をキューの末尾に追加し、次の探索へ
-                go dist $ qRest >< Seq.fromList candidates
+                go dist $ rest >< Seq.fromList candidates
+
+-- 深さ優先探索
+-- | グラフ上での深さ優先探索
+dfs :: forall a m i. (MArray a Bool m, Ix i) =>
+    -- | 隣接リスト形式の重みなしグラフ
+    Array i [i] ->
+    -- | 開始頂点のリスト
+    [i] ->
+    m (a i Bool)
+dfs graph vs = do
+
+    -- その点を訪れたかを表す配列
+    seen <- newArray (bounds graph) False
+
+    -- 探索開始
+    forM_ vs $ go seen
+
+    return seen
+
+  where
+      go :: a i Bool -> i -> m ()
+      go seen v = do
+          s <- readArray seen v
+          if s then return () else do
+              writeArray seen v True
+              forM_ (graph ! v) $ \nv -> do
+                  go seen nv
