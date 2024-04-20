@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{-# OPTIONS_GHC -fno-warn-type-defaults #-}
 
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE BangPatterns #-}
@@ -105,6 +106,13 @@ traceShowWith f = traceWith (show . f)
 
 traceWithPrefix :: Show a => String -> a -> a
 traceWithPrefix prefix = traceWith (\x -> prefix <> show x)
+
+-- Pair
+pair :: (a -> b, a -> c) -> a -> (b, c)
+pair (f, g) x = (f x, g x)
+
+cross :: (a -> b, c -> d) -> (a, c) -> (b, d)
+cross (f, g) = pair (f . fst, g . snd)
 
 -- Ref
 class Monad m => Ref r m where
@@ -340,6 +348,9 @@ nei4 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1)]
 nei8 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1), (i+1,j+1), (i+1,j-1), (i-1,j+1), (i-1,j-1)]
 
 -- グラフ生成
+type Graph i = Array i [i]
+type WGraph i a = Array i [(i, a)]
+
 -- | 隣接リスト形式の重み付きグラフを生成する
 -- 頂点に重みがある場合は、abc 138 dなど参照（https://atcoder.jp/contests/abc138/submissions/15808936 ）
 genWeightedGraph, genWeightedDigraph :: Ix i =>
@@ -347,7 +358,7 @@ genWeightedGraph, genWeightedDigraph :: Ix i =>
     (i, i) ->
     -- | 辺のリスト (開始, 終了, 重み)
     [(i, i, a)] ->
-    Array i [(i, a)]
+    WGraph i a
 -- | 無向グラフ
 genWeightedGraph b edges = runSTArray $ do
     g <- newArray b []
@@ -367,7 +378,7 @@ genGraph, genDigraph :: Ix i =>
     (i, i) ->
     -- | 辺のリスト (開始, 終了)
     [(i, i)] ->
-    Array i [i]
+    Graph i
 -- | 無向グラフ
 genGraph b edges = runSTArray $ do
     g <- newArray b []
@@ -385,7 +396,7 @@ genDigraph b edges = runSTArray $ do
 -- | グラフ上での幅優先探索
 bfs :: forall a m i. (MArray a Int m, Ix i) =>
     -- | 隣接リスト形式の重みなしグラフ
-    Array i [i] ->
+    Graph i ->
     -- | 開始頂点
     i ->
     m (a i Int)
@@ -445,7 +456,7 @@ bfsBase nextCandidate b start = do
 -- | グラフ上での深さ優先探索
 dfs :: forall a m i. (MArray a Bool m, Ix i) =>
     -- | 隣接リスト形式の重みなしグラフ
-    Array i [i] ->
+    Graph i ->
     -- | 開始頂点のリスト
     [i] ->
     m (a i Bool)
@@ -471,7 +482,7 @@ dfs graph vs = do
 -- | ダイクストラ法による最短経路探索
 dijkstra :: forall a m . (MArray a Int m, MArray a Bool m) =>
     -- | 隣接リスト形式の重みつきグラフ
-    Array Int [(Int, Int)] ->
+    WGraph Int Int ->
     -- | 開始頂点
     Int ->
     m (a Int Bool, a Int Int)
@@ -510,4 +521,4 @@ dijkstra graph v = do
                       -- 次の計算へ
                       go fixed curr newPsq
       insertList :: Ord p => IntPSQ p v -> [(Int, p, v)] -> IntPSQ p v
-      insertList = foldr $ \(i,p,v) q -> PSQ.insert i p v q
+      insertList = foldr $ \(i,p,l) q -> PSQ.insert i p l q
