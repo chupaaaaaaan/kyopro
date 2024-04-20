@@ -45,7 +45,12 @@ main = do
     [n,m] <- list1 ucInt
     graph <- genWeightedGraph (1,n) . map to3 <$> list2 m ucInt
 
-    return ()
+    (fixed, curr) <- dijk graph 1 :: IO (IOUArray Int Bool, IOUArray Int Int)
+
+    forM_ [1..n] $ \i -> do
+        f <- readArray fixed i
+        c <- readArray curr i
+        print $ if f then c else -1
 
 -- Input
 -- converter
@@ -188,7 +193,7 @@ ascanl2d f a arr = do
 
     result <- newArray bx a
 
-    for_ (range b) $ \(i,j) -> 
+    for_ (range b) $ \(i,j) ->
         writeArray result (i,j) $ arr ! (i,j)
 
     for_ [(i,j) | i <- [li..hi], j <- [lj..hj]] $ \(i,j) -> do
@@ -210,7 +215,7 @@ ascanl2d1 f arr = do
 
     result <- newArray_ b
 
-    for_ (range b) $ \(i,j) -> 
+    for_ (range b) $ \(i,j) ->
         writeArray result (i,j) $ arr ! (i,j)
 
     for_ [(i,j) | i <- [li+1..hi], j <- [lj..hj]] $ \(i,j) -> do
@@ -431,36 +436,45 @@ dfs graph vs = do
 
 
 -- | ダイクストラ法による探索
-dijk :: forall a m . (MArray a Int m) =>
+dijk :: forall a m . (MArray a Int m, MArray a Bool m) =>
     -- | 隣接リスト形式の重みつきグラフ
     Array Int [(Int, Int)] ->
     -- | 開始頂点
     Int ->
-    m (a Int Int)
+    m (a Int Bool, a Int Int)
 dijk graph v = do
 
     -- 確定済みか否かを保持する配列
     fixed <- newArray (bounds graph) False
-    -- 確定済みの距離を保持する配列
+    -- 現時点の距離の最小値を保持する配列
     curr <- newArray (bounds graph) maxBound
+
+    -- 開始地点の距離を設定
+    writeArray curr v 0
 
     -- 探索開始
     go fixed curr $ PSQ.singleton v 0 ()
-    return fixed
+    return (fixed, curr)
 
   where
       go :: a Int Bool -> a Int Int -> IntPSQ Int () -> m ()
       go fixed curr psq  = do
           case PSQ.findMin psq of
-              Nothing -> undefined
-              Just (v, c, _) -> do
-                  f <- readArray fixed v
+              -- 優先度付きキュー(PSQ)に何も残っていなければ探索終了
+              Nothing -> return ()
+              Just (i,c,_) -> do
+                  f <- readArray fixed i
+                  -- 確定済みであれば、PSQから最小値を取り除き次の計算へ
                   if f then go fixed curr (PSQ.deleteMin psq) else do
-                      writeArray fixed v True
-                      let nws = graph ! v
-                      newPsq <- forM nws $ \(n, w) -> do
-                          cu <- readArray curr n
-                          let new = min cu (c+w)
-                          writeArray curr n new
-                          return (n, new, ())
+                      -- 点を確定済みにマークする
+                      writeArray fixed i True
+                      -- 隣の点について、距離を更新し、優先度付きキューに追加
+                      newPsq <- fmap (insertList psq) $ forM (graph ! i) $ \(nv, nw) -> do
+                          cw <- readArray curr nv
+                          let new = min cw (c+nw)
+                          writeArray curr nv new
+                          return (nv,new,())
+                      -- 次の計算へ
                       go fixed curr newPsq
+      insertList :: Ord p => IntPSQ p v -> [(Int, p, v)] -> IntPSQ p v
+      insertList = foldr $ \(i,p,v) q -> PSQ.insert i p v q
