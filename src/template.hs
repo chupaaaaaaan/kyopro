@@ -5,7 +5,6 @@
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
@@ -23,9 +22,9 @@ import Data.ByteString.Char8 (ByteString)
 import Data.ByteString.Char8 qualified as BS
 import Data.Char
 import Data.Foldable
-import Data.Heap (Heap, Entry(Entry))
-import Data.Heap qualified as H
 import Data.IORef
+import Data.IntPSQ (IntPSQ)
+import Data.IntPSQ qualified as PSQ
 import Data.List qualified as L
 import Data.Maybe
 import Data.STRef
@@ -106,6 +105,28 @@ traceShowWith f = traceWith (show . f)
 
 traceWithPrefix :: Show a => String -> a -> a
 traceWithPrefix prefix = traceWith (\x -> prefix <> show x)
+
+-- Ref
+class Monad m => Ref r m where
+    newRef :: a -> m (r a)
+    readRef :: r a -> m a
+    writeRef :: r a -> a -> m ()
+    modifyRef :: r a -> (a -> a) -> m ()
+    modifyRef' :: r a -> (a -> a) -> m ()
+    
+instance Ref IORef IO where
+    newRef = newIORef
+    readRef = readIORef
+    writeRef = writeIORef
+    modifyRef = modifyIORef
+    modifyRef' = modifyIORef'
+
+instance Ref (STRef s) (ST s) where
+    newRef = newSTRef
+    readRef = readSTRef
+    writeRef = writeSTRef
+    modifyRef = modifySTRef
+    modifyRef' = modifySTRef'
 
 -- Array
 {-# INLINE modifyArray #-}
@@ -206,7 +227,7 @@ ascanl2d f a arr = do
 
     result <- newArray bx a
 
-    for_ (range b) $ \(i,j) -> 
+    for_ (range b) $ \(i,j) ->
         writeArray result (i,j) $ arr ! (i,j)
 
     for_ [(i,j) | i <- [li..hi], j <- [lj..hj]] $ \(i,j) -> do
@@ -228,7 +249,7 @@ ascanl2d1 f arr = do
 
     result <- newArray_ b
 
-    for_ (range b) $ \(i,j) -> 
+    for_ (range b) $ \(i,j) ->
         writeArray result (i,j) $ arr ! (i,j)
 
     for_ [(i,j) | i <- [li+1..hi], j <- [lj..hj]] $ \(i,j) -> do
@@ -446,3 +467,47 @@ dfs graph vs = do
               writeArray seen v True
               forM_ (graph ! v) $ \nv -> do
                   go seen nv
+
+-- | ダイクストラ法による最短経路探索
+dijkstra :: forall a m . (MArray a Int m, MArray a Bool m) =>
+    -- | 隣接リスト形式の重みつきグラフ
+    Array Int [(Int, Int)] ->
+    -- | 開始頂点
+    Int ->
+    m (a Int Bool, a Int Int)
+dijkstra graph v = do
+
+    -- 確定済みか否かを保持する配列
+    fixed <- newArray (bounds graph) False
+    -- 現時点の距離の最小値を保持する配列
+    curr <- newArray (bounds graph) maxBound
+
+    -- 開始地点の距離を設定
+    writeArray curr v 0
+
+    -- 開始点と距離を優先度付きキュー(PSQ)に入れて探索開始
+    go fixed curr $ PSQ.singleton v 0 ()
+    return (fixed, curr)
+
+  where
+      go :: a Int Bool -> a Int Int -> IntPSQ Int () -> m ()
+      go fixed curr psq  = do
+          case PSQ.findMin psq of
+              -- PSQに何も残っていなければ探索終了
+              Nothing -> return ()
+              Just (i,c,_) -> do
+                  f <- readArray fixed i
+                  -- 確定済みであれば、PSQから最小値を取り除き次の計算へ
+                  if f then go fixed curr (PSQ.deleteMin psq) else do
+                      -- 点を確定済みにマークする
+                      writeArray fixed i True
+                      -- 隣の点について、距離を更新し、優先度付きキューに追加
+                      newPsq <- fmap (insertList psq) $ forM (graph ! i) $ \(nv,nw) -> do
+                          cw <- readArray curr nv
+                          let new = min cw (c+nw)
+                          writeArray curr nv new
+                          return (nv,new,())
+                      -- 次の計算へ
+                      go fixed curr newPsq
+      insertList :: Ord p => IntPSQ p v -> [(Int, p, v)] -> IntPSQ p v
+      insertList = foldr $ \(i,p,v) q -> PSQ.insert i p v q
