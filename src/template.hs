@@ -11,6 +11,7 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE FunctionalDependencies #-}
 
 import Control.Monad
 import Control.Monad.ST
@@ -115,13 +116,13 @@ cross :: (a -> b, c -> d) -> (a, c) -> (b, d)
 cross (f, g) = pair (f . fst, g . snd)
 
 -- Ref
-class Monad m => Ref r m where
+class Monad m => Ref r m | m -> r where
     newRef :: a -> m (r a)
     readRef :: r a -> m a
     writeRef :: r a -> a -> m ()
     modifyRef :: r a -> (a -> a) -> m ()
     modifyRef' :: r a -> (a -> a) -> m ()
-    
+
 instance Ref IORef IO where
     newRef = newIORef
     readRef = readIORef
@@ -393,49 +394,19 @@ genDigraph b edges = runSTArray $ do
     return g
 
 -- | 幅優先探索
--- | グラフ上での幅優先探索
+-- ex. onGraph: bfs (graph !) (bounds graph) dist 1
+-- ex. onGrid:  bfs (filter isCand . arounds b nei4) b dist (1,1)
 bfs :: forall a m i. (MArray a Int m, Ix i) =>
-    -- | 隣接リスト形式の重みなしグラフ
-    Graph i ->
-    -- | 開始頂点
-    i ->
-    m (a i Int)
-bfs graph = bfsBase (graph !) (bounds graph)
-
--- | 2次元グリッド上での幅優先探索
-gridBfs :: forall a m. MArray a Int m =>
-    -- | 探索対象のセルの判定
-    ((Int, Int) -> Bool) ->
-    -- | 2次元グリッドのbound
-    ((Int, Int), (Int, Int)) ->
-    -- | 開始セル
-    (Int, Int) ->
-    m (a (Int, Int) Int)
-gridBfs isCand b = bfsBase (filter isCand . arounds b nei4) b
-
--- | 幅優先探索の抽象
-bfsBase :: forall a m i. (MArray a Int m, Ix i) =>
     -- | 現在点から探索候補点を取得
     (i -> [i]) ->
     -- | 探索範囲のbound
     (i, i) ->
+    -- | 開始点からの距離のarray
+    a i Int ->
     -- | 開始点
     i ->
-    m (a i Int)
-bfsBase nextCandidate b start = do
-
-    -- 開始点からの距離
-    -- '-1'は、その点を訪れていないことを表す
-    dist <- newArray b (-1)
-
-    -- 開始点には距離0を設定する
-    writeArray dist start 0
-
-    -- 開始点をキューに入れて探索開始
-    go dist (Seq.singleton start)
-
-    return dist
-
+    m ()
+bfs nextCandidate b dist start = go dist (Seq.singleton start)
     where
         go :: a i Int -> Seq i -> m ()
         go dist queue = case viewl queue of
@@ -452,32 +423,63 @@ bfsBase nextCandidate b start = do
                 -- 探索候補点をキューの末尾に追加し、次の探索へ
                 go dist $ rest >< Seq.fromList candidates
 
--- 深さ優先探索
--- | グラフ上での深さ優先探索
+-- | 深さ優先探索
+-- ex. onGraph: dfs (graph !) (bounds graph) dist 1
+-- ex. onGrid:  dfs (filter isCand . arounds b nei4) b dist (1,1)
 dfs :: forall a m i. (MArray a Bool m, Ix i) =>
+    -- | 現在点から探索候補点を取得
+    (i -> [i]) ->
+    -- | 探索範囲のbound
+    (i, i) ->
+    -- | 訪問済みかを管理するarray
+    a i Bool ->
+    -- | 開始点
+    i ->
+    m ()
+dfs nextCandidate b seen start = go seen [start]
+    where
+        go :: a i Bool -> [i] -> m ()
+        go seen stack = case stack of
+            -- スタックが空であれば探索終了
+            [] -> return ()
+            -- DFS用のスタックから次の探索点を取り出す
+            (v:rest) -> do
+                -- 開始点から探索点までの距離を取得
+                f <- readArray seen v
+                -- 探索候補点のうち、まだ訪れていない点を列挙
+                candidates <- filterM (fmap not . readArray seen) . nextCandidate $ v
+                -- 探索候補点にTrueを設定する
+                forM_ candidates $ \cand -> writeArray seen cand True
+                -- 探索候補点をスタックに追加し、次の探索へ
+                go seen $ candidates <> rest
+
+-- | 深さ優先探索
+dfs2 :: forall a m. (MArray a Int m) =>
     -- | 隣接リスト形式の重みなしグラフ
-    Graph i ->
+    Graph Int ->
     -- | 開始頂点のリスト
-    [i] ->
-    m (a i Bool)
-dfs graph vs = do
+    [Int] ->
+    m (a Int Int)
+dfs2 graph vs = do
 
     -- その点を訪れたかを表す配列
-    seen <- newArray (bounds graph) False
+    -- 訪れた点は、開始点が設定される。訪れていない点は-1。
+    seen <- newArray (bounds graph) (-1)
 
     -- 探索開始
-    forM_ vs $ go seen
+    forM_ vs $ \v -> go v seen v
 
     return seen
 
   where
-      go :: a i Bool -> i -> m ()
-      go seen v = do
+      go :: Int -> a Int Int -> Int -> m ()
+      go root seen v = do
           s <- readArray seen v
-          if s then return () else do
-              writeArray seen v True
+          if s /= -1 then return () else do
+              writeArray seen v root
+
               forM_ (graph ! v) $ \nv -> do
-                  go seen nv
+                  go root seen nv
 
 -- | ダイクストラ法による最短経路探索
 dijkstra :: forall a m . (MArray a Int m, MArray a Bool m) =>
