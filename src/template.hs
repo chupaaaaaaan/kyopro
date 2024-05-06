@@ -339,15 +339,6 @@ condLT vec key idx = key > vec V.! idx
 condGE vec key idx = key <= vec V.! idx
 condLE vec key idx = key >= vec V.! idx
 
--- | 範囲外の点は除外して、ある点に隣接する点を列挙する。
-arounds :: Ix i => (i, i) -> (i -> [i]) -> i -> [i]
-arounds b neis = filter (b`inRange`) . neis
-
--- | 2次元グリッドにおける上下左右4点、斜めも加えて8点を列挙する
-nei4, nei8 :: (Ix i, Num i) => (i, i) -> [(i, i)]
-nei4 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1)]
-nei8 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1), (i+1,j+1), (i+1,j-1), (i-1,j+1), (i-1,j-1)]
-
 -- グラフ生成
 type Graph i = Array i [i]
 type WGraph i a = Array i [(i, a)]
@@ -393,9 +384,18 @@ genDigraph b edges = runSTArray $ do
     forM_ edges $ \(f,t) -> modifyArray g f (t:)
     return g
 
+-- | 範囲外の点は除外して、ある点に隣接する点を列挙する。
+arounds :: Ix i => (i, i) -> (i -> [i]) -> i -> [i]
+arounds b neis = filter (b`inRange`) . neis
+
+-- | 2次元グリッドにおける上下左右4点、斜めも加えて8点を列挙する
+nei4, nei8 :: (Ix i, Num i) => (i, i) -> [(i, i)]
+nei4 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1)]
+nei8 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1), (i+1,j+1), (i+1,j-1), (i-1,j+1), (i-1,j-1)]
+
 -- | 幅優先探索
 -- ex. onGraph: bfs (graph !) (bounds graph) dist 1
--- ex. onGrid:  bfs (filter isCand . arounds b nei4) b dist (1,1)
+-- ex. onGrid:  bfs (filter (\v -> grid ! v /= '#') . arounds b nei4) b dist (1,1)
 bfs :: forall a m i. (MArray a Int m, Ix i) =>
     -- | 現在点から探索候補点を取得
     (i -> [i]) ->
@@ -406,7 +406,7 @@ bfs :: forall a m i. (MArray a Int m, Ix i) =>
     -- | 開始点
     i ->
     m ()
-bfs nextCandidate b dist start = go dist (Seq.singleton start)
+bfs nexts b dist start = go dist (Seq.singleton start)
     where
         go :: a i Int -> Seq i -> m ()
         go dist queue = case viewl queue of
@@ -417,69 +417,40 @@ bfs nextCandidate b dist start = go dist (Seq.singleton start)
                 -- 開始点から探索点までの距離を取得
                 d <- readArray dist v
                 -- 探索候補点のうち、まだ訪れていない点を列挙
-                candidates <- filterM (fmap (== (-1)) . readArray dist) . nextCandidate $ v
+                candidates <- filterM (fmap (== (-1)) . readArray dist) . nexts $ v
                 -- 探索候補点に、距離d+1を設定する
                 forM_ candidates $ \cand -> writeArray dist cand (d+1)
                 -- 探索候補点をキューの末尾に追加し、次の探索へ
                 go dist $ rest >< Seq.fromList candidates
 
 -- | 深さ優先探索
--- ex. onGraph: dfs (graph !) (bounds graph) dist 1
--- ex. onGrid:  dfs (filter isCand . arounds b nei4) b dist (1,1)
-dfs :: forall a m i. (MArray a Bool m, Ix i) =>
+-- ex. onGraph: dfs (graph !) (bounds graph) seen 1
+-- ex. onGrid:  dfs (filter (\v -> grid ! v /= '#') . arounds b nei4) b seen (1,1)
+dfs :: forall a e m i. (MArray a (Maybe i) m, Ix i) =>
     -- | 現在点から探索候補点を取得
     (i -> [i]) ->
     -- | 探索範囲のbound
     (i, i) ->
     -- | 訪問済みかを管理するarray
-    a i Bool ->
+    a i (Maybe i) ->
     -- | 開始点
     i ->
     m ()
-dfs nextCandidate b seen start = go seen [start]
+dfs nexts b seen start = go seen start
     where
-        go :: a i Bool -> [i] -> m ()
-        go seen stack = case stack of
-            -- スタックが空であれば探索終了
-            [] -> return ()
-            -- DFS用のスタックから次の探索点を取り出す
-            (v:rest) -> do
-                -- 開始点から探索点までの距離を取得
-                f <- readArray seen v
-                -- 探索候補点のうち、まだ訪れていない点を列挙
-                candidates <- filterM (fmap not . readArray seen) . nextCandidate $ v
-                -- 探索候補点にTrueを設定する
-                forM_ candidates $ \cand -> writeArray seen cand True
-                -- 探索候補点をスタックに追加し、次の探索へ
-                go seen $ candidates <> rest
-
--- | 深さ優先探索
-dfs2 :: forall a m. (MArray a Int m) =>
-    -- | 隣接リスト形式の重みなしグラフ
-    Graph Int ->
-    -- | 開始頂点のリスト
-    [Int] ->
-    m (a Int Int)
-dfs2 graph vs = do
-
-    -- その点を訪れたかを表す配列
-    -- 訪れた点は、開始点が設定される。訪れていない点は-1。
-    seen <- newArray (bounds graph) (-1)
-
-    -- 探索開始
-    forM_ vs $ \v -> go v seen v
-
-    return seen
-
-  where
-      go :: Int -> a Int Int -> Int -> m ()
-      go root seen v = do
-          s <- readArray seen v
-          if s /= -1 then return () else do
-              writeArray seen v root
-
-              forM_ (graph ! v) $ \nv -> do
-                  go root seen nv
+        go :: a i (Maybe i) -> i -> m ()
+        go seen v = do
+            s <- readArray seen v
+            case s of
+                Just _ -> return ()
+                Nothing -> do
+                    -- 行きがけ順の処理
+                    writeArray seen v (Just start)
+                    forM_ (nexts v) $ \nv -> do
+                        -- 隣接ノード毎の行きがけ順の処理
+                        go seen nv
+                        -- 隣接ノード毎の帰りがけ順の処理
+                    -- 帰りがけ順の処理
 
 -- | ダイクストラ法による最短経路探索
 dijkstra :: forall a m . (MArray a Int m, MArray a Bool m) =>
@@ -524,3 +495,35 @@ dijkstra graph v = do
                       go fixed curr newPsq
       insertList :: Ord p => IntPSQ p v -> [(Int, p, v)] -> IntPSQ p v
       insertList = foldr $ \(i,p,l) q -> PSQ.insert i p l q
+
+-- | Union-Find木 親を求める
+ufRoot :: forall a m i. (MArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> m i
+ufRoot parent v = do
+    p <- readArray parent v
+    case p of
+        Nothing -> return v
+        Just p' -> do
+            q <- ufRoot parent p'
+            writeArray parent v (Just q)
+            return q
+
+-- | Union-Find木 グループを統合する
+ufUnite :: forall a m i. (MArray a (Maybe i) m, MArray a Int m, Ix i) => a i Int -> a i (Maybe i) -> i -> i -> m ()
+ufUnite size parent u v = do
+    rootU <- ufRoot parent u
+    rootV <- ufRoot parent v
+    if rootU == rootV then return () else do
+        sizeU <- readArray size rootU
+        sizeV <- readArray size rootV
+        if sizeU < sizeV
+            then do writeArray parent rootU (Just rootV)
+                    writeArray size rootV (sizeU + sizeV)
+            else do writeArray parent rootV (Just rootU)
+                    writeArray size rootU (sizeU + sizeV)
+
+-- | Union-Find木 同じグループにいるかクエリする
+ufSame :: forall a m i. (MArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> i -> m Bool
+ufSame parent u v = do
+    rootU <- ufRoot parent u
+    rootV <- ufRoot parent v
+    return $ rootU == rootV
