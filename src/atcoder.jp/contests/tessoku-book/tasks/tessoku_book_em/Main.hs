@@ -12,6 +12,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE LambdaCase #-}
 
 import Control.Monad
 import Control.Monad.ST
@@ -44,18 +45,35 @@ import Numeric
 main :: IO ()
 main = do
     [n,m] <- list1 ucInt
-    as <- V.fromList .  fmap to2 <$> list2 m ucInt
+    as <- V.fromList . fmap to2 <$> list2 m ucInt
     q <- readLn @Int
     qss <- list2 q ucInt
 
-    let query1x = L.sort $ map (\[_,x] -> x) $ filter (\qs -> head qs == 1) qss
-        
-        
-        
+    let query1x = vSort . V.fromList $ map (\[_,x] -> x) $ filter (\qs -> head qs == 1) qss
+        excludedAs = [as V.! (x-1) | x <- [1..m], x`isNotElem`query1x]
 
-    return ()
+    size <- newArray @IOArray (1,n) 1
+    parent <- newArray @IOArray (1,n) Nothing
+    
+    forM_ excludedAs $ \(a,b) -> do
+        ufUnite size parent a b
 
+    ref <- newRef []
+    forM_ (reverse qss) $ \case
+        [1,x] -> do
+            let (u,v) = as V.! (x-1)
+            ufUnite size parent u v
+        [2,u,v] -> do
+            s <- ufSame parent u v
+            modifyRef ref ((if s then "Yes" else "No"):)
 
+    result <- readRef ref
+    putStr $ unlines result
+
+isNotElem :: Int -> Vector Int -> Bool
+isNotElem x query1x = let len = V.length query1x
+                          candidateIndex = bsearch (condLE query1x x) (-1) len
+                      in candidateIndex == (-1) || candidateIndex == len || query1x V.! candidateIndex /= x
 
 -- Input
 -- converter
