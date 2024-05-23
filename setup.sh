@@ -11,6 +11,7 @@ URL=$1
 CODEPATH=${URL##*://}
 
 mkdir -p src/${CODEPATH}
+echo ${URL} > url
 
 if [ ! -f "src/${CODEPATH}/Main.hs" ]; then
     cat src/template.hs > src/${CODEPATH}/Main.hs

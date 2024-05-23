@@ -3,12 +3,12 @@
 set -eu
 cd $(dirname $0)
 
-if [ $# -ne 1 ]; then
-    echo "Invalid number of argument: $#"
+if [ ! -f url ]; then
+    echo "Cannot find the file: url"
     exit 1
 fi
 
-URL=$1
+URL=$(cat url)
 CODEPATH=${URL##*://}
 MAINHS=src/${CODEPATH}/Main.hs
 
