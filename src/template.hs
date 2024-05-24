@@ -58,11 +58,11 @@ ucChar = StateT BS.uncons
 ucInt :: Conv Int
 ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
 
-ucString :: Conv ByteString
-ucString = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
-                          in if BS.null bs'
-                             then Nothing
-                             else Just $ BS.break isSpace bs')
+ucBS :: Conv ByteString
+ucBS = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
+                      in if BS.null bs'
+                         then Nothing
+                         else Just $ BS.break isSpace bs')
 
 -- | read a linear data as List
 list1 :: Conv a -> IO [a]
