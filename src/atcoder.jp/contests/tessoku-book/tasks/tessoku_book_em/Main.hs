@@ -6,13 +6,12 @@
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE ImportQualifiedPost #-}
-{-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE LambdaCase #-}
 
 import Control.Monad
 import Control.Monad.ST
@@ -45,51 +44,43 @@ import Numeric
 main :: IO ()
 main = do
     [n,m] <- list1 ucInt
-    as <- V.fromList . fmap to2 <$> list2 m ucInt
-    q <- readLn @Int
-    qss <- list2 q ucInt
+    abs_ <- fmap to2 <$> list2 m ucInt
+    qn <- readLn @Int
+    qs <- list2 qn ucInt
+    let sp = pair (uncurry min, uncurry max)
+        absv = V.fromList abs_
+        qs2 = S.fromList . fmap (sp . (\x -> absv V.! (x-1)) . to1 . tail) . filter ((1 ==) . head) $ qs
+    (parent, size) <- ufInit (1,n) :: IO (IOArray Int (Maybe Int), IOArray Int Int)
 
-    let query1x = vSort . V.fromList $ map (\[_,x] -> x) $ filter (\qs -> head qs == 1) qss
-        excludedAs = [as V.! (x-1) | x <- [1..m], x`isNotElem`query1x]
+    forM_ abs_ $ \ab@(a,b) -> do
+        unless (S.member (sp ab) qs2) $ ufUnite size parent a b
 
-    size <- newArray @IOArray (1,n) 1
-    parent <- newArray @IOArray (1,n) Nothing
-    
-    forM_ excludedAs $ \(a,b) -> do
-        ufUnite size parent a b
+    result <- forM (reverse qs) $ \q -> do
+        case q of
+            [1,x] -> do let (s,t) = absv V.! (x-1)
+                        ufUnite size parent s t
+                        return ""
+            [2,s,t] -> do r <- ufSame parent s t
+                          return $ if r then "Yes" else "No"
 
-    ref <- newRef []
-    forM_ (reverse qss) $ \case
-        [1,x] -> do
-            let (u,v) = as V.! (x-1)
-            ufUnite size parent u v
-        [2,u,v] -> do
-            s <- ufSame parent u v
-            modifyRef ref ((if s then "Yes" else "No"):)
+    forM_ (reverse (filter (not . null) result)) putStrLn
 
-    result <- readRef ref
-    putStr $ unlines result
-
-isNotElem :: Int -> Vector Int -> Bool
-isNotElem x query1x = let len = V.length query1x
-                          candidateIndex = bsearch (condLE query1x x) (-1) len
-                      in candidateIndex == (-1) || candidateIndex == len || query1x V.! candidateIndex /= x
 
 -- Input
 -- converter
 type Conv = StateT ByteString Maybe
 
 ucChar :: Conv Char
-ucChar = StateT BS.uncons
+ucChar = StateT (BS.uncons . BS.dropWhile isSpace)
 
 ucInt :: Conv Int
 ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
 
-ucString :: Conv ByteString
-ucString = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
-                          in if BS.null bs'
-                             then Nothing
-                             else Just $ BS.break isSpace bs')
+ucBS :: Conv ByteString
+ucBS = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
+                      in if BS.null bs'
+                         then Nothing
+                         else Just $ BS.break isSpace bs')
 
 -- | read a linear data as List
 list1 :: Conv a -> IO [a]
@@ -180,6 +171,25 @@ vSortBy f v = V.create $ do
     mv <- V.thaw v
     sortBy f mv
     return mv
+
+{-# INLINE vSortUniq #-}
+vSortUniq :: Ord a => Vector a -> Vector a
+vSortUniq = vSortUniqBy compare
+
+{-# INLINE vSortUniqBy #-}
+vSortUniqBy :: Ord a => Comparison a -> Vector a -> Vector a
+vSortUniqBy f v = V.create $ do
+    mv <- V.thaw v
+    sortUniqBy f mv
+    return mv
+
+{-# INLINE vDiff #-}
+vDiff :: Ord a => Vector a -> Vector a -> Vector a
+vDiff v u = let su = vSortUniq u
+                ulen = V.length su
+                p x = let i = bsearch (condLE su x) (-1) ulen
+                      in i == (-1) || i == ulen || su V.! i /= x
+            in V.filter p v
 
 -- | ある数nに含まれる指定した素因数bの冪を求める
 powerOf :: Int -> Int -> Int
@@ -522,6 +532,13 @@ dijkstra graph v = do
                       go fixed curr newPsq
       insertList :: Ord p => IntPSQ p v -> [(Int, p, v)] -> IntPSQ p v
       insertList = foldr $ \(i,p,l) q -> PSQ.insert i p l q
+
+-- | Union-Find木 配列の初期化
+ufInit :: forall a m i. (MArray a (Maybe i) m, MArray a Int m, Ix i) => (i, i) -> m (a i (Maybe i), a i Int)
+ufInit r = do
+    parent <- newArray r Nothing
+    size <- newArray r 1
+    return (parent, size)
 
 -- | Union-Find木 親を求める
 ufRoot :: forall a m i. (MArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> m i
