@@ -43,17 +43,10 @@ import Numeric
 
 main :: IO ()
 main = do
-    [ab, _, ac, _, bc] <- getLine
+    [ab, ac, bc] <- list1 ucBS
 
-    putStrLn $ case (ab,ac,bc) of
-        ('<','<','<') -> "B"
-        ('<','<','>') -> "C"
-        ('<','>','<') -> error "not come here"
-        ('<','>','>') -> "A"
-        ('>','<','<') -> "A"
-        ('>','<','>') -> error "not come here"
-        ('>','>','<') -> "C"
-        ('>','>','>') -> "B"
+    putStrLn $ if ab /= ac then "A"
+               else if ab == bc then "B" else "C"
 
 -- Input
 -- converter

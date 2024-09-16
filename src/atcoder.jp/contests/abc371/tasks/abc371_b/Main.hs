@@ -51,12 +51,12 @@ main = do
 
 
 solve :: [(ByteString, ByteString)] -> [String]
-solve = go S.empty
-    where go _ [] = []
-          go st ((a,b):abk) = if S.member a st || b == "F"
-                              then "No" : go st abk
-                              else "Yes" : go (S.insert a st) abk
-
+solve abb = (`evalState` S.empty) $ forM abb $ \(a,b) -> do
+    st <- get
+    if S.member a st || b == "F"
+        then return "No"
+        else do modify' (S.insert a)
+                return "Yes"
 
 -- Input
 -- converter
