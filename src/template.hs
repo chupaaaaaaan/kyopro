@@ -53,7 +53,7 @@ main = do
 type Conv = StateT ByteString Maybe
 
 ucChar :: Conv Char
-ucChar = StateT BS.uncons
+ucChar = StateT (BS.uncons . BS.dropWhile isSpace)
 
 ucInt :: Conv Int
 ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
