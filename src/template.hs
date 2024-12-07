@@ -19,6 +19,7 @@ import Control.Monad.State.Strict
 import Data.Array.IO
 import Data.Array.ST
 import Data.Array.Unboxed
+import Data.Bifunctor
 import Data.Bits
 import Data.ByteString.Char8 (ByteString)
 import Data.ByteString.Char8 qualified as BS
@@ -405,12 +406,18 @@ genDigraph b edges = runSTArray $ do
 
 -- | 範囲外の点は除外して、ある点に隣接する点を列挙する。
 arounds :: Ix i => (i, i) -> (i -> [i]) -> i -> [i]
-arounds b neis = filter (b`inRange`) . neis
+arounds bound neis = filter (bound`inRange`) . neis
 
--- | 2次元グリッドにおける上下左右4点、斜めも加えて8点を列挙する
-nei4, nei8 :: (Ix i, Num i) => (i, i) -> [(i, i)]
-nei4 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1)]
-nei8 (i, j) = [(i+1,j), (i-1,j), (i,j+1), (i,j-1), (i+1,j+1), (i+1,j-1), (i-1,j+1), (i-1,j-1)]
+-- | 2次元グリッドにおける上下左右4つ、斜めも加えて8つの相対位置を列挙する
+n4, n8 :: (Ix i, Num i) => [(i, i)]
+n4 = [(1,0), (-1,0), (0,1), (0,-1)]
+n8 = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (1,-1), (-1,1), (-1,-1)]
+-- | マンハッタン距離がd以下である相対位置を列挙する
+nM :: (Ix i, Num i, Enum i) => i -> [(i, i)]
+nM d = [(p, q) | p <- [-d..d], q <- [-d..d], abs p + abs q <= d]
+-- | (i, j)から指定した相対位置にある点を列挙する
+nei :: (Ix i, Num i) => [(i, i)] -> (i, i) -> [(i, i)]
+nei ds (i, j) = map (bimap (i +) (j +)) ds
 
 -- | 幅優先探索
 -- ex. onGraph: bfs (graph !) (bounds graph) dist 1
