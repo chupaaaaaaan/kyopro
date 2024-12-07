@@ -515,6 +515,13 @@ dijkstra graph v = do
       insertList :: Ord p => IntPSQ p v -> [(Int, p, v)] -> IntPSQ p v
       insertList = foldr $ \(i,p,l) q -> PSQ.insert i p l q
 
+-- | Union-Find木 配列の初期化
+ufInit :: forall a m i. (MArray a (Maybe i) m, MArray a Int m, Ix i) => (i, i) -> m (a i (Maybe i), a i Int)
+ufInit r = do
+    parent <- newArray r Nothing
+    size <- newArray r 1
+    return (parent, size)
+
 -- | Union-Find木 親を求める
 ufRoot :: forall a m i. (MArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> m i
 ufRoot parent v = do
