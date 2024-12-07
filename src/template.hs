@@ -154,6 +154,25 @@ vSortBy f v = V.create $ do
     sortBy f mv
     return mv
 
+{-# INLINE vSortUniq #-}
+vSortUniq :: Ord a => Vector a -> Vector a
+vSortUniq = vSortUniqBy compare
+
+{-# INLINE vSortUniqBy #-}
+vSortUniqBy :: Ord a => Comparison a -> Vector a -> Vector a
+vSortUniqBy f v = V.create $ do
+    mv <- V.thaw v
+    sortUniqBy f mv
+    return mv
+
+{-# INLINE vDiff #-}
+vDiff :: Ord a => Vector a -> Vector a -> Vector a
+vDiff v u = let su = vSortUniq u
+                ulen = V.length su
+                p x = let i = bsearch (condLE su x) (-1) ulen
+                      in i == (-1) || i == ulen || su V.! i /= x
+            in V.filter p v
+
 -- | ある数nに含まれる指定した素因数bの冪を求める
 powerOf :: Int -> Int -> Int
 powerOf b n = bsearch (\i -> n`mod`(b^i) == 0) 0 (ceiling $ logBase (fromIntegral b) $ fromIntegral (n+1))
