@@ -420,19 +420,25 @@ nei :: (Ix i, Num i) => [(i, i)] -> (i, i) -> [(i, i)]
 nei ds (i, j) = map (bimap (i +) (j +)) ds
 
 -- | 幅優先探索
--- ex. onGraph: bfs (graph !) (bounds graph) dist 1
--- ex. onGrid:  bfs (filter (\v -> grid ! v /= '#') . arounds b nei4) b dist (1,1)
+-- ex. onGraph: (dist :: IOArray Int Int)        <- bfs (graph !) (bounds graph) 1
+-- ex. onGrid:  (dist :: IOArray (Int, Int) Int) <- bfs (filter (\v -> grid ! v /= '#') . arounds b (nei n4)) b [(1,1)]
 bfs :: forall a m i. (MArray a Int m, Ix i) =>
     -- | 現在点から探索候補点を取得
     (i -> [i]) ->
     -- | 探索範囲のbound
     (i, i) ->
-    -- | 開始点からの距離のarray
-    a i Int ->
     -- | 開始点
-    i ->
-    m ()
-bfs nexts b dist start = go dist (Seq.singleton start)
+    [i] ->
+    m (a i Int)
+bfs nexts b start = do
+    -- 開始点からの距離を格納するarrayを作成（-1は訪れていないことを表す）
+    dist <- newArray b (-1)
+    -- 開始点に距離0を設定
+    forM_ start $ \s -> writeArray dist s 0
+    -- 探索実施
+    go dist (Seq.fromList start)
+    -- 開始点からの距離を返却
+    return dist
     where
         go :: a i Int -> Seq i -> m ()
         go dist queue = case viewl queue of
@@ -450,19 +456,23 @@ bfs nexts b dist start = go dist (Seq.singleton start)
                 go dist $ rest >< Seq.fromList candidates
 
 -- | 深さ優先探索
--- ex. onGraph: dfs (graph !) (bounds graph) seen 1
--- ex. onGrid:  dfs (filter (\v -> grid ! v /= '#') . arounds b nei4) b seen (1,1)
-dfs :: forall a e m i. (MArray a (Maybe i) m, Ix i) =>
+-- ex. onGraph: (seen :: IOArray Int (Maybe Int))        <- dfs (graph !) (bounds graph) 1
+-- ex. onGrid:  (seen :: IOArray (Int, Int) (Maybe Int)) <- dfs (filter (\v -> grid ! v /= '#') . arounds b (nei n4)) b (1,1)
+dfs :: forall a m i. (MArray a (Maybe i) m, Ix i) =>
     -- | 現在点から探索候補点を取得
     (i -> [i]) ->
     -- | 探索範囲のbound
     (i, i) ->
-    -- | 訪問済みかを管理するarray
-    a i (Maybe i) ->
     -- | 開始点
     i ->
-    m ()
-dfs nexts b seen start = go seen start
+    m (a i (Maybe i))
+dfs nexts b start = do
+    -- 訪問済みかを管理するarrayを作成
+    seen <- newArray b Nothing
+    -- 探索開始
+    go seen start
+    -- 訪問状態を返却
+    return seen
     where
         go :: a i (Maybe i) -> i -> m ()
         go seen v = do
