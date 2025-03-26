@@ -10,12 +10,12 @@ fi
 URL=$1
 CODEPATH=${URL##*://}
 
-mkdir -p src/${CODEPATH}
+mkdir -p code/${CODEPATH}
 echo ${URL} > url
 
-if [ ! -f "src/${CODEPATH}/Main.hs" ]; then
-    cat src/template.hs > src/${CODEPATH}/Main.hs
+if [ ! -f "code/${CODEPATH}/Main.hs" ]; then
+    cat src/template.hs > code/${CODEPATH}/Main.hs
 fi
 
-rm -fr test/
-oj d ${URL} 
+rm -fr cases/sample/*
+oj d -d cases/sample ${URL} 

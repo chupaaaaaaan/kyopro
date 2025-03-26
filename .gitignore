@@ -3,8 +3,7 @@
 **/a.out
 dist-newstyle/
 package.local
-app/
-src/
-!src/template.hs
-test/
+submission/
+code/
+cases/
 url

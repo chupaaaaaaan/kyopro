@@ -1,11 +1,11 @@
 cradle:
   multi:
-    - path: "./lib"
+    - path: "./src"
       config:
         cradle:
           cabal:
             component: "lib:kyopro"
-    - path: "./src"
+    - path: "./code"
       config:
         cradle:
           direct:

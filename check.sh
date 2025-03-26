@@ -10,19 +10,19 @@ fi
 
 URL=$(cat url)
 CODEPATH=${URL##*://}
-MAINHS=src/${CODEPATH}/Main.hs
+MAINHS=code/${CODEPATH}/Main.hs
 
 if [ ! -f ${MAINHS} ]; then
     echo "${MAINHS} does not exist."
     exit 1
 fi
 
-rm -rf app/* && mkdir -p app
+rm -rf submission/* && mkdir -p submission
 
-cp ${MAINHS} app/
+cp ${MAINHS} submission/
 
 # build
-ghc -package-env package.local -o app/a.out -O2 -prof -fprof-auto app/Main.hs
+ghc -package-env package.local -o submission/a.out -O2 -prof -fprof-auto submission/Main.hs
 
 # test
-oj t -c app/a.out
+oj t -d cases/sample -c submission/a.out

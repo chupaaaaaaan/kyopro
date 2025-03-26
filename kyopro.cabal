@@ -112,4 +112,4 @@ library
     My.Prime
     My.Queue
 
-  hs-source-dirs:  lib
+  hs-source-dirs:  src
