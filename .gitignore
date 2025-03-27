@@ -4,6 +4,7 @@
 dist-newstyle/
 package.local
 submission/
-code/
+code/*
+!code/.gitkeep
 cases/
 url
