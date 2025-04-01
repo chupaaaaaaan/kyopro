@@ -1,6 +1,13 @@
-module My.HeapImpl( Heap
-                  , fromList
-                  ) where
+module My.Data.Heap
+    ( Heap(..)
+    , fromList
+    , empty
+    , isEmpty
+    , insert
+    , merge
+    , find
+    , delete
+    , singleton ) where
 
 data Heap a = E | T Int a (Heap a) (Heap a) deriving Show
 
@@ -45,3 +52,6 @@ delete :: Ord a => Heap a -> Maybe (Heap a)
 delete E           = Nothing
 delete (T _ _ a b) = Just (merge a b)
 
+-- Utility Methods
+singleton :: Ord a => a -> Heap a
+singleton x = fromList [x]

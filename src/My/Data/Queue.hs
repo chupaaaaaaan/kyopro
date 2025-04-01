@@ -1,4 +1,4 @@
-module My.Queue where
+module My.Data.Queue where
 
 data Queue a = Q { front :: [a]
                  , rear  :: [a]

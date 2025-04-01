@@ -2,9 +2,7 @@
 *~
 **/a.out
 dist-newstyle/
-package.local
 submission/
-code/*
-!code/.gitkeep
+code/
 cases/
 url

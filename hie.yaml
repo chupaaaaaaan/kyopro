@@ -5,8 +5,8 @@ cradle:
         cradle:
           cabal:
             component: "lib:kyopro"
-    - path: "./code"
+    - path: "./submission"
       config:
         cradle:
-          direct:
-            arguments: [ "-package-env", "package.local" ]
+          cabal:
+            component: "exe:submission"

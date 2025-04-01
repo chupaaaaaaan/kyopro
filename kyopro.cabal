@@ -97,19 +97,40 @@ common kyopro-env
 
 library
   import:
-    warnings
+      warnings
     , kyopro-env
 
   exposed-modules:
-    My.BinSearch
-    My.DPImpl
-    My.ExtGcd
-    My.Graph
-    My.Grid
-    My.HeapImpl
-    My.IntMod
-    My.Parser
-    My.Prime
-    My.Queue
+    My.Algorithm.BFS
+    My.Algorithm.BinarySearch
+    My.Algorithm.DFS
+    My.Algorithm.Dijkstra
+    My.Data.Array
+    My.Data.Graph
+    My.Data.Grid
+    My.Data.Heap
+    My.Data.Queue
+    My.Data.Ref
+    My.Data.Vector
+    My.IO
+    My.Math.IntMod
+    My.Math.Prime
+    My.Misc
 
   hs-source-dirs:  src
+
+executable submission
+  import:
+      warnings
+    , kyopro-env
+
+  main-is: Main.hs
+
+  build-depends:
+      kyopro
+
+  hs-source-dirs: submission
+
+  default-language: GHC2021
+
+  ghc-options: -O2 -prof -fprof-auto

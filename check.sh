@@ -1,28 +1,20 @@
 #!/bin/bash
 
-set -eu
+set -euo pipefail
 cd $(dirname $0)
 
-if [ ! -f url ]; then
-    echo "Cannot find the file: url"
-    exit 1
-fi
-
-URL=$(cat url)
-CODEPATH=${URL##*://}
-MAINHS=code/${CODEPATH}/Main.hs
+MAINHS=submission/Main.hs
 
 if [ ! -f ${MAINHS} ]; then
     echo "${MAINHS} does not exist."
     exit 1
 fi
 
-rm -rf submission/* && mkdir -p submission
-
-cp ${MAINHS} submission/
-
 # build
-ghc -package-env package.local -o submission/a.out -O2 -prof -fprof-auto submission/Main.hs
+cabal build lib:kyopro --enable-profiling
+cabal build exe:submission --enable-profiling
+
+cp $(find dist-newstyle/build -type f -name submission | head -n1) submission/a.out
 
 # test
 oj t -d cases/sample -c submission/a.out

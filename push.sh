@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -euo pipefail
 cd $(dirname $0)
 
 if [ ! -f url ]; then
@@ -9,8 +9,7 @@ if [ ! -f url ]; then
 fi
 
 URL=$(cat url)
-CODEPATH=${URL##*://}
-MAINHS=code/${CODEPATH}/Main.hs
+MAINHS=submission/Main.hs
 
 if [ ! -f ${MAINHS} ]; then
     echo "${MAINHS} does not exist."

@@ -1,12 +1,6 @@
-{-# LANGUAGE BangPatterns               #-}
-{-# LANGUAGE DerivingStrategies         #-}
-{-# LANGUAGE FlexibleContexts           #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE RankNTypes                 #-}
-{-# LANGUAGE ScopedTypeVariables        #-}
-{-# LANGUAGE UndecidableInstances       #-}
-
-module My.IntMod where
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE UndecidableInstances #-}
+module My.Math.IntMod where
 
 import qualified Data.Vector.Unboxing as VU
 
@@ -14,7 +8,8 @@ modulus :: Int
 -- modulus = 10^9 + 7
 modulus = 1000000007
 
-newtype IntMod = IntMod Int deriving Eq deriving newtype VU.Unboxable
+newtype IntMod = IntMod Int
+    deriving Eq deriving newtype VU.Unboxable
 
 fromIntegralIntIntMod :: Int -> IntMod
 fromIntegralIntIntMod n = IntMod (n `mod` modulus)
