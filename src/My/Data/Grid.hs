@@ -21,9 +21,3 @@ nei8 (i, j) = [bimap (i+) (j+) (p,q) | p <- [-1,0,1], q <- [-1,0,1], (p,q) /= (0
 -- | (i, j) からマンハッタン距離がd以下である位置を列挙する
 neiM :: (Ix i, Num i, Enum i) => i -> (i, i) -> [(i, i)]
 neiM d (i, j) = [bimap (i+) (j+) (p,q) | p <- [-d..d], q <- [-d..d], abs p + abs q <= d]
-
-grid :: Array (Int, Int) Char
-grid = listArray ((1,1),(2,3)) "abcdef"
-
-te :: (Int, Int) -> [(Int, Int)]
-te = filter ((/='#') . (grid!)) . arounds ((1,1),(2,3)) nei4

@@ -2,7 +2,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 module My.Math.IntMod where
 
-import qualified Data.Vector.Unboxing as VU
+import Data.Vector.Unboxing qualified as VU
 
 modulus :: Int
 -- modulus = 10^9 + 7

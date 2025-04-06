@@ -3,8 +3,10 @@ module My.Algorithm.Dijkstra where
 import Data.Array.IArray
 import Data.Array.MArray
 import Data.IntPSQ qualified as PSQ
+import Data.Sequence qualified as Sq
 import Data.Traversable
 import My.Data.Graph
+import Control.Monad
 
 
 -- | ダイクストラ法による最短経路探索
@@ -50,3 +52,39 @@ dijkstra graph v = do
                         go fixed curr newPsq
         insertList :: Ord p => PSQ.IntPSQ p v -> [(Int, p, v)] -> PSQ.IntPSQ p v
         insertList = foldr $ \(i,p,l) q -> PSQ.insert i p l q
+
+
+-- | 01-BFS
+bfs01 :: forall a m i. (MArray a Int m, Ix i, Show i) =>
+    (i -> [i]) -> -- ^ 現在点からのコストが0の探索候補点を取得
+    (i -> [i]) -> -- ^ 現在点からのコストが1の探索候補点を取得
+    (i, i) ->     -- ^ 探索範囲のbound
+    [i] ->        -- ^ 開始点
+    m (a i Int)
+bfs01 next0 next1 b start = do
+    -- 開始点からのコストを格納するarrayを作成（maxBoundは訪れていないことを表す）
+    cost <- newArray b maxBound
+    -- 開始点にコスト0を設定
+    forM_ start $ \s -> writeArray cost s 0
+    -- 探索実施
+    go cost (Sq.fromList start)
+    -- 開始点からのコストを返却
+    return cost
+    where
+        go :: a i Int -> Sq.Seq i -> m ()
+        go dist queue = case Sq.viewl queue of
+            -- 両端キューが空であれば終了
+            Sq.EmptyL -> return ()
+            -- 両端キューの左から次の探索点を取り出す
+            v Sq.:< rest -> do
+                -- 開始点から探索点までのコストを取得
+                d <- readArray dist v
+                -- コストが0の探索候補点を取得
+                cand0 <- filterM (fmap (>d) . readArray dist) . next0 $ v
+                -- コスト1の探索候補点を取得
+                cand1 <- filterM (fmap (>d+1) . readArray dist) . next1 $ v
+                -- コストを更新
+                forM_ cand0 $ \cand -> writeArray dist cand d
+                forM_ cand1 $ \cand -> writeArray dist cand (d+1)
+                -- コスト0の探索候補点を両端キューの左、コスト1の探索候補点を両端キューの右に追加し、次の探索へ
+                go dist $ Sq.fromList cand0 Sq.>< rest Sq.>< Sq.fromList cand1
