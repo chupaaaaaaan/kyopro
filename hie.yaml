@@ -10,3 +10,8 @@ cradle:
         cradle:
           cabal:
             component: "exe:submission"
+    - path: "./bundler"
+      config:
+        cradle:
+          cabal:
+            component: "exe:bundler"

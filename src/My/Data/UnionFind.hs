@@ -1,4 +1,3 @@
-{-# LANGUAGE DatatypeContexts #-}
 module My.Data.UnionFind
     ( ufInit
     , ufUnite

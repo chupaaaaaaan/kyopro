@@ -5,7 +5,7 @@ import Data.Array.MArray
 import Data.Sequence qualified as Sq
 
 -- | 幅優先探索
--- ex. onGraph: (dist :: IOArray Int Int)        <- bfs (graph !) (bounds graph) 1
+-- ex. onGraph: (dist :: IOArray Int Int)        <- bfs (graph !) (bounds graph) [1]
 -- ex. onGrid:  (dist :: IOArray (Int, Int) Int) <- bfs (filter ((/='#') . (g!)) . arounds b nei4) b [(1,1)]
 bfs :: forall a m i. (MArray a Int m, Ix i) =>
     (i -> [i]) -> -- ^ 現在点から探索候補点を取得

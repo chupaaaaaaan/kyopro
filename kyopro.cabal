@@ -108,8 +108,6 @@ library
     My.Data.Array
     My.Data.Graph
     My.Data.Grid
-    My.Data.Heap
-    My.Data.Queue
     My.Data.Ref
     My.Data.Vector
     My.IO
@@ -134,3 +132,26 @@ executable submission
   default-language: GHC2021
 
   ghc-options: -O2 -prof -fprof-auto
+
+executable bundler
+  import:
+      warnings
+
+  main-is: Main.hs
+
+  build-depends:
+      base == 4.17.1.0
+    , Cabal
+    , Cabal-syntax
+    , containers
+    , directory
+    , extra
+    , filepath
+    , ghc-lib-parser    == 9.4.5.20230430
+    , ghc-lib-parser-ex == 9.4.0.0
+    , template-haskell
+    , uniplate
+
+  hs-source-dirs: bundler
+
+  default-language: GHC2021

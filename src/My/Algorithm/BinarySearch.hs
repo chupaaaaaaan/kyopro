@@ -7,7 +7,7 @@ module My.Algorithm.BinarySearch
     , condLT
     ) where
 
-import Data.Vector.Unboxed qualified as VU
+import Data.Vector.Unboxing qualified as VU
 
 -- | 整数区間に対する二分探索
 -- 区間は半開区間 [ok,ng) もしくは (ng,ok] とする
@@ -67,7 +67,7 @@ bsearchBase f ep isOk = go
 -- >>> bsearch (condLE sorted 5) 0 l
 -- 3
 --
-condGT,condLT,condGE,condLE :: (Ord a, VU.Unbox a) => VU.Vector a -> a -> Int -> Bool
+condGT,condLT,condGE,condLE :: (Ord a, VU.Unboxable a) => VU.Vector a -> a -> Int -> Bool
 condGT vec key idx = key < vec VU.! idx
 condLT vec key idx = key > vec VU.! idx
 condGE vec key idx = key <= vec VU.! idx

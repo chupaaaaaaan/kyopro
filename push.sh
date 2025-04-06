@@ -10,10 +10,14 @@ fi
 
 URL=$(cat url)
 MAINHS=submission/Main.hs
+BUNDLEDHS=submission/Bundled.hs
 
-if [ ! -f ${MAINHS} ]; then
+if [ ! -f "${MAINHS}" ]; then
     echo "${MAINHS} does not exist."
     exit 1
 fi
 
-oj s ${URL} ${MAINHS}
+if [ ! -e "${BUNDLEDHS}" ]; then
+    cabal run bundler "${MAINHS}" "${BUNDLEDHS}"
+fi
+oj s "${URL}" "${BUNDLEDHS}"

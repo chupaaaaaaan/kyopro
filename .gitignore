@@ -5,4 +5,5 @@ dist-newstyle/
 submission/
 code/
 cases/
+.package.local
 url

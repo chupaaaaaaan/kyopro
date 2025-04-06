@@ -2,7 +2,7 @@ module My.IO where
 
 import Control.Monad.State.Strict
 import Data.ByteString.Char8 qualified as BS
-import Data.Vector.Unboxed qualified as VU
+import Data.Vector.Unboxing qualified as VU
 import Data.Char
 import Data.List qualified as L
 import Control.Monad
@@ -49,7 +49,7 @@ list2 :: Int -> Conv a -> IO [[a]]
 list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 
 -- | read a line and convert to Vector
-vector1 :: (VU.Unbox a) => Int -> Conv a -> IO (VU.Vector a)
+vector1 :: (VU.Unboxable a) => Int -> Conv a -> IO (VU.Vector a)
 vector1 n !st = VU.unfoldrN n (runStateT st) <$> BS.getLine
 
 to1 :: [a] -> a
