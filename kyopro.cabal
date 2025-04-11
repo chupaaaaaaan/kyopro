@@ -149,6 +149,7 @@ executable bundler
     , filepath
     , ghc-lib-parser    == 9.4.5.20230430
     , ghc-lib-parser-ex == 9.4.0.0
+    , safe-exceptions
     , template-haskell
     , uniplate
 

@@ -5,8 +5,9 @@
 
 module Main where
 
+import Control.Exception.Safe
 import Control.Monad.IO.Class
-import Data.List (intercalate, isInfixOf, nub)
+import Data.List qualified as L
 import Data.Set qualified as S
 import Distribution.ModuleName hiding (ModuleName)
 import Distribution.PackageDescription hiding (PackageFlag)
@@ -17,14 +18,17 @@ import GHC.Hs
 import GHC.Parser.Lexer
 import GHC.Types.SrcLoc
 import GHC.Unit.Module.Name
+import GHC.Utils.Error
 import GHC.Utils.Outputable (renderWithContext, Outputable (ppr))
 import Language.Haskell.GhclibParserEx.GHC.Parser(parseFile)
 import Language.Haskell.GhclibParserEx.GHC.Settings.Config
 import "template-haskell" Language.Haskell.TH(runIO)
 import System.Directory
 import System.Environment
+import System.Exit
 import System.FilePath
 import System.IO
+import System.Process.Extra
 
 main :: IO ()
 main = do
@@ -32,65 +36,95 @@ main = do
     args <- getArgs
 
     case args of
-        [] -> error "Must be 1 or 2 args"
-
         [mainPath] -> do
             pragmas mainPath >>= mapM_ putStrLn
             bundledMods mainPath >>= putStrLn . renderMods
 
-        (mainPath:destPath:_) -> do
+        [mainPath,destPath] -> do
             withFile destPath WriteMode $ \h -> do
                 pragmas mainPath >>= mapM_ (hPutStrLn h)
                 bundledMods mainPath >>= hPutStrLn h . renderMods
 
-    return ()
+        _ -> do
+            progName <- getProgName
+            die $ "Usage: " <> progName <> " <mainPath> [destPath]"
 
-astFromFile :: FilePath -> IO HsModule
-astFromFile path = parse path <$> readFile' path
+newtype BundlerException = BundlerException String
+    deriving Show
+instance Exception BundlerException
 
-pragmaFromFile :: FilePath -> IO [String]
-pragmaFromFile path = do
-    content <- lines <$> readFile' path
-    return $ filter (\x -> "LANGUAGE" `isInfixOf` x) content
+withCPPProcessed :: (MonadThrow m, MonadIO m) => FilePath -> (FilePath -> m a) -> m a
+withCPPProcessed path f = do
+    tmpDir <- liftIO getTemporaryDirectory
 
-pragmas :: FilePath -> IO [String]
+    let processedFile = tmpDir
+                        </> "kyopro_CPPProcessed"
+                        </> case L.stripPrefix installPath path of
+                                Just rest -> makeRelative "/" rest
+                                Nothing -> throw $ BundlerException "`path` must start with `installPath`"
+
+    liftIO $ createDirectoryIfMissing True (takeDirectory processedFile)
+
+    exists <- liftIO $ doesFileExist processedFile
+    if exists
+        then withProcessingBasedOnModTime path processedFile f
+        else withProcessing path processedFile f
+
+    where
+        withProcessingBasedOnModTime :: (MonadThrow m, MonadIO m) => FilePath -> FilePath -> (FilePath -> m a) -> m a
+        withProcessingBasedOnModTime modFile cppFile g = do
+            modTime <- liftIO $ getModificationTime modFile
+            cppTime <- liftIO $ getModificationTime cppFile
+            if modTime > cppTime
+                then withProcessing modFile cppFile g
+                else g cppFile
+
+        withProcessing :: (MonadThrow m, MonadIO m) => FilePath -> FilePath -> (FilePath -> m a) -> m a
+        withProcessing modFile cppFile g = do
+            exitCode <- liftIO $ rawSystem "cabal" ["exec", "ghc", "--", "-E", modFile, "-o", cppFile ]
+            case exitCode of
+                ExitSuccess -> g cppFile
+                ExitFailure _ -> throw $ BundlerException "Parsing error occured!"
+
+pragmas :: (MonadThrow m, MonadIO m) => FilePath -> m [String]
 pragmas mainPath = do
 
-    mainExt <- pragmaFromFile mainPath
-    libExts <- fmap concat $ mapM (pragmaFromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
+    mainExt <- fromFile $ installPath </> mainPath
+    libExts <- fmap concat $ mapM (fromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
 
-    return (nub $ mainExt <> libExts)
+    return (L.nub $ mainExt <> libExts)
 
-bundledMods :: FilePath -> IO HsModule
+    where fromFile :: (MonadThrow m, MonadIO m) => FilePath -> m [String]
+          fromFile path = do
+              content <- lines <$> liftIO (readFile' path)
+              return $ filter (\x -> "LANGUAGE" `L.isInfixOf` x && not ("CPP" `L.isInfixOf` x)) content
+
+bundledMods :: (MonadThrow m, MonadIO m) => FilePath -> m HsModule
 bundledMods mainPath = do
+    mainMod <- fromFile (installPath </> mainPath)
+    libMods <- mapM (fromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
 
-    (mainMod, libMods) <- targetMods mainPath
-    
     foldr rmIDecl (mainMod { hsmodDecls = hsmodDecls mainMod <> foldMap hsmodDecls libMods
                            , hsmodImports = nubIDecls (hsmodImports mainMod <> foldMap hsmodImports libMods)
                            }) <$> kyoproExposedMods
 
+    where fromFile :: (MonadThrow m, MonadIO m) => FilePath -> m HsModule
+          fromFile path = parse path =<< withCPPProcessed path (liftIO . readFile')
+
 renderMods :: HsModule -> String
-renderMods hsMod = let ctx = initDefaultSDocContext dynFlags
-                   in renderWithContext ctx $ ppr hsMod
+renderMods = renderWithContext (initDefaultSDocContext dynFlags) . ppr
 
+renderErrors :: PState -> String
+renderErrors = renderWithContext (initDefaultSDocContext dynFlags) . pprMessages . getPsErrorMessages
 
-targetMods :: FilePath -> IO (HsModule, [HsModule])
-targetMods mainPath = do
-    
-    mainMod <- astFromFile mainPath
-    libMods <- mapM (astFromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
-
-    return (mainMod, libMods)
-
-kyoproExposedMods :: IO [String]
+kyoproExposedMods :: (MonadThrow m, MonadIO m) => m [String]
 kyoproExposedMods = do
     let cabalFile = installPath </> "kyopro.cabal"
 
     gpd <- liftIO $ readGenericPackageDescription normal cabalFile
     case condLibrary gpd of
         Nothing -> return []
-        Just (CondNode libs _ _) -> return $ map (intercalate "." . components) $ exposedModules libs
+        Just (CondNode libs _ _) -> return $ map (L.intercalate "." . components) $ exposedModules libs
 
 modNameToPath :: FilePath -> String -> FilePath
 modNameToPath basePath modName = basePath </> map (\x -> if x == '.' then '/' else x) modName <.> "hs"
@@ -113,22 +147,14 @@ nubIDecls = snd . foldr (\idecl (set, acc) ->
                         alias = moduleNameString . unLoc <$> ideclAs impDecl
                     in (modName, qualifiedFlag, alias)
 
-parse :: FilePath -> String -> HsModule
-parse filename code = 
+parse :: MonadThrow m => FilePath -> String -> m HsModule
+parse filename code =
     case parseFile filename dynFlags code of
-        POk _ (L _ hsMod) -> hsMod
-        PFailed _ -> error "Parsing failed"
+        POk _ (L _ hsMod) -> return hsMod
+        PFailed ps -> throw $ BundlerException $ renderErrors ps
 
 installPath :: FilePath
 installPath = $(do dir <- runIO getCurrentDirectory; [e|dir|])
 
 dynFlags :: DynFlags
 dynFlags = defaultDynFlags fakeSettings fakeLlvmConfig
--- dynFlags = foldl xopt_set (defaultDynFlags fakeSettings fakeLlvmConfig) exts
-
--- exts :: [Extension]
--- exts =
---   [ X.FunctionalDependencies
---   , X.DerivingStrategies
---   , X.UndecidableInstances
---   ]
