@@ -8,11 +8,12 @@ module My.Algorithm.BinarySearch
     ) where
 
 import Data.Vector.Unboxing qualified as VU
+import My.Debug
 
 -- | 整数区間に対する二分探索
 -- 区間は半開区間 [ok,ng) もしくは (ng,ok] とする
 -- (参考) https://qiita.com/drken/items/97e37dd6143e33a64c8c
-bsearch :: forall a. (Integral a, Num a) =>
+bsearch :: forall a. (Integral a, Num a, Show a) =>
     (a -> Bool) -> -- ^ indexに対する述語
     a ->           -- ^ ok: 解が存在するindex
     a ->           -- ^ ng: 解が存在しないindex
@@ -22,7 +23,7 @@ bsearch = bsearchBase div 1
 -- | 実数区間に対する二分探索
 -- >>> bsearchF (10**(-6)) (\x -> (x * (x + 2)) - 20 < (10**(-6))) 0 10
 -- 3.5825753211975098
-bsearchF :: forall a. RealFrac a =>
+bsearchF :: forall a. (RealFrac a, Show a) =>
     a ->           -- ^ 区間の最小単位
     (a -> Bool) -> -- ^ ある実数に対する述語
     a ->           -- ^ ok: 解が存在する実数
@@ -31,7 +32,7 @@ bsearchF :: forall a. RealFrac a =>
 bsearchF = bsearchBase (/)
 
 -- | 二分探索の処理の抽象
-bsearchBase :: forall a. (Num a, Ord a) =>
+bsearchBase :: forall a. (Num a, Ord a, Show a) =>
     (a -> a -> a) -> -- ^ 区間を半分にする関数
     a ->             -- ^ 区間の最小単位
     (a -> Bool) ->   -- ^ 位置に対する述語
@@ -43,10 +44,12 @@ bsearchBase f ep isOk = go
     go :: a -> a -> a
     go ok ng
         | abs (ok - ng) > ep = let mid = (ok + ng) `f` 2
+                                   !_ = dbg $ "bsearch: ok=" <> show ok <> "\tng=" <> show ng
                                in if isOk mid
                                   then go mid ng
                                   else go ok mid
-        | otherwise = ok
+        | otherwise = let !_ = dbg $ "bsearch result: " <> show ok
+                      in ok
 
 -- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
     -- >>> let sorted :: Vector Int = U.fromList [3,4,5,5,6,7]
