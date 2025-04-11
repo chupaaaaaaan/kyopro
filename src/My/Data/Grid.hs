@@ -3,9 +3,6 @@ module My.Data.Grid where
 import Data.Array.IArray
 import Data.Bifunctor
 
-toGrid :: (IArray a e, Ix x, Ix y) => ((x, y), (x, y)) -> [[e]] -> a (x, y) e
-toGrid b = listArray b . concat
-
 -- | 範囲外の点は除外して、ある点に隣接する点を列挙する。
 arounds :: Ix i => (i, i) -> (i -> [i]) -> i -> [i]
 arounds bound neis = filter (bound`inRange`) . neis

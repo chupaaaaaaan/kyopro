@@ -6,6 +6,8 @@ import Data.Vector.Unboxing qualified as VU
 import Data.Char
 import Data.List qualified as L
 import Control.Monad
+import Data.Array.IArray
+import Data.Array.Unboxed
 
 int1 :: IO Int
 int1 = readLn @Int
@@ -24,6 +26,9 @@ int2list n = fmap to2 <$> list2 n ucInt
 
 int3list :: Int -> IO [(Int, Int, Int)]
 int3list n = fmap to3 <$> list2 n ucInt
+
+charGrid :: Int -> Int -> IO (UArray (Int, Int) Char)
+charGrid h w = toGrid ((1,1),(h,w)) <$> list2 h ucChar
 
 -- | Converter
 type Conv = StateT BS.ByteString Maybe
@@ -51,6 +56,9 @@ list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 -- | read a line and convert to Vector
 vector1 :: (VU.Unboxable a) => Int -> Conv a -> IO (VU.Vector a)
 vector1 n !st = VU.unfoldrN n (runStateT st) <$> BS.getLine
+
+toGrid :: (IArray a e, Ix x, Ix y) => ((x, y), (x, y)) -> [[e]] -> a (x, y) e
+toGrid b = listArray b . concat
 
 to1 :: [a] -> a
 to1 [a] = a
