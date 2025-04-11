@@ -109,7 +109,9 @@ library
     My.Data.Graph
     My.Data.Grid
     My.Data.Ref
+    My.Data.UnionFind
     My.Data.Vector
+    My.Debug
     My.IO
     My.Math.IntMod
     My.Math.Prime

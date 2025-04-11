@@ -2,6 +2,7 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 
+import My.Debug
 import My.IO
 
 main :: IO ()
