@@ -36,29 +36,35 @@ main = do
     args <- getArgs
 
     case args of
-        [mainPath] -> do
+        [mode,mainPath] -> do
             pragmas mainPath >>= mapM_ putStrLn
-            bundledMods mainPath >>= putStrLn . renderMods
+            bundledMods (read mode) mainPath >>= putStrLn . renderMods
 
-        [mainPath,destPath] -> do
+        [mode,mainPath,destPath] -> do
             withFile destPath WriteMode $ \h -> do
                 pragmas mainPath >>= mapM_ (hPutStrLn h)
-                bundledMods mainPath >>= hPutStrLn h . renderMods
+                bundledMods (read mode) mainPath >>= hPutStrLn h . renderMods
 
         _ -> do
             progName <- getProgName
-            die $ "Usage: " <> progName <> " <mainPath> [destPath]"
+            die $ "Usage: " <> progName <> " <mode> <mainPath> [destPath]"
 
 newtype BundlerException = BundlerException String
     deriving Show
 instance Exception BundlerException
 
-withCPPProcessed :: (MonadThrow m, MonadIO m) => FilePath -> (FilePath -> m a) -> m a
-withCPPProcessed path f = do
+data SubmissionMode = Local | Judge deriving (Eq,Read)
+instance Show SubmissionMode where
+    show Local = "LOCAL"
+    show Judge = "JUDGE"
+
+withPreProcessed :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> (FilePath -> m a) -> m a
+withPreProcessed mode path f = do
     tmpDir <- liftIO getTemporaryDirectory
 
     let processedFile = tmpDir
-                        </> "kyopro_CPPProcessed"
+                        </> "kyopro_lib_PreProcessed"
+                        </> show mode
                         </> case L.stripPrefix installPath path of
                                 Just rest -> makeRelative "/" rest
                                 Nothing -> throw $ BundlerException "`path` must start with `installPath`"
@@ -81,7 +87,14 @@ withCPPProcessed path f = do
 
         withProcessing :: (MonadThrow m, MonadIO m) => FilePath -> FilePath -> (FilePath -> m a) -> m a
         withProcessing modFile cppFile g = do
-            exitCode <- liftIO $ rawSystem "cabal" ["exec", "ghc", "--", "-E", modFile, "-o", cppFile ]
+            exitCode <- liftIO $ rawSystem "cabal" $ [ "exec"
+                                                     , "ghc"
+                                                     , "--"
+                                                     , "-E"
+                                                     , modFile
+                                                     , "-o"
+                                                     , cppFile
+                                                     ] <> ["-D" <> show mode | mode == Judge]
             case exitCode of
                 ExitSuccess -> g cppFile
                 ExitFailure _ -> throw $ BundlerException "Parsing error occured!"
@@ -99,8 +112,8 @@ pragmas mainPath = do
               content <- lines <$> liftIO (readFile' path)
               return $ filter (\x -> "LANGUAGE" `L.isInfixOf` x && not ("CPP" `L.isInfixOf` x)) content
 
-bundledMods :: (MonadThrow m, MonadIO m) => FilePath -> m HsModule
-bundledMods mainPath = do
+bundledMods :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> m HsModule
+bundledMods mode mainPath = do
     mainMod <- fromFile (installPath </> mainPath)
     libMods <- mapM (fromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
 
@@ -109,7 +122,7 @@ bundledMods mainPath = do
                            }) <$> kyoproExposedMods
 
     where fromFile :: (MonadThrow m, MonadIO m) => FilePath -> m HsModule
-          fromFile path = parse path =<< withCPPProcessed path (liftIO . readFile')
+          fromFile path = parse path =<< withPreProcessed mode path (liftIO . readFile')
 
 renderMods :: HsModule -> String
 renderMods = renderWithContext (initDefaultSDocContext dynFlags) . ppr

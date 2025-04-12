@@ -17,7 +17,6 @@ if [ ! -f "${MAINHS}" ]; then
     exit 1
 fi
 
-if [ ! -e "${BUNDLEDHS}" ]; then
-    cabal run bundler "${MAINHS}" "${BUNDLEDHS}"
-fi
+cabal run bundler "Judge" "${MAINHS}" "${BUNDLEDHS}"
+
 oj s "${URL}" "${BUNDLEDHS}"

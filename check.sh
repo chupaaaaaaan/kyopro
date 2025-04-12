@@ -12,7 +12,7 @@ if [ ! -f "${MAINHS}" ]; then
 fi
 
 # build
-cabal run bundler "${MAINHS}" "${BUNDLEDHS}"
+cabal run bundler "Local" "${MAINHS}" "${BUNDLEDHS}"
 ghc -package-env .package.local -o submission/a.out -O2 -prof -fprof-auto "${BUNDLEDHS}"
 
 # test

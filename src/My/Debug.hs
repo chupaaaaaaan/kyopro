@@ -10,7 +10,7 @@ dbg :: String -> ()
 dbgS :: Show a => a -> ()
 dbgGrid :: (IArray a e, Show e) => a (Int, Int) e -> ()
 
-#ifndef ATCODER
+#ifndef JUDGE
 
 dbg = (`trace`())
 
