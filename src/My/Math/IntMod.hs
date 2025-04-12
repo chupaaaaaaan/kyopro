@@ -1,22 +1,15 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE NumericUnderscores #-}
 module My.Math.IntMod where
 
 import Data.Vector.Unboxing qualified as VU
 
 modulus :: Int
--- modulus = 10^9 + 7
-modulus = 1000000007
+modulus = 1_000_000_007
 
 newtype IntMod = IntMod Int
     deriving Eq deriving newtype VU.Unboxable
-
-fromIntegralIntIntMod :: Int -> IntMod
-fromIntegralIntIntMod n = IntMod (n `mod` modulus)
-{-# RULES
-"fromIntegral/Int->IntMod"
-    fromIntegral = fromIntegralIntIntMod
-#-}
 
 instance Show IntMod where
   show (IntMod x) = show x
