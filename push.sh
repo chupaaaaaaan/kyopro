@@ -9,14 +9,10 @@ if [ ! -f url ]; then
 fi
 
 URL=$(cat url)
-MAINHS=submission/Main.hs
 BUNDLEDHS=submission/Bundled.hs
 
-if [ ! -f "${MAINHS}" ]; then
-    echo "${MAINHS} does not exist."
-    exit 1
-fi
+# build
+./build.sh -j
 
-cabal run bundler "Judge" "${MAINHS}" "${BUNDLEDHS}"
-
+# submit
 oj s "${URL}" "${BUNDLEDHS}"
