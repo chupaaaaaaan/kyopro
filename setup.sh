@@ -32,27 +32,16 @@ else
     if [ -s "${CODEPATH_FROM_FILE}/Main.hs" ]; then
         T=$(stat -c %Y "${CODEPATH_FROM_FILE}"/Main.hs)
         mv "${CODEPATH_FROM_FILE}"/Main.hs "${CODEPATH_FROM_FILE}"/Main-"${T}".hs
-        # Bundled.hsファイルが存在すれば、それも退避
-        if [ -s "${CODEPATH_FROM_FILE}/Bundled.hs" ]; then
-            mv "${CODEPATH_FROM_FILE}"/Bundled.hs "${CODEPATH_FROM_FILE}"/Bundled-"${T}".hs
-        fi
     fi
 
     # 2-2. 現在の提出コードとバンドル済みソースをファイルのURLに対応するパスに移動
     mkdir -p "${CODEPATH_FROM_FILE}"
-    if [ ! -e "${SUBMISSION_PATH}"/Bundled.hs ]; then
-        # Bundled.hsファイルが存在しなければ作成
-        cabal run bundler "${SUBMISSION_PATH}"/Main.hs "${SUBMISSION_PATH}"/Bundled.hs
-    fi
     mv "${SUBMISSION_PATH}"/Main.hs "${CODEPATH_FROM_FILE}"/Main.hs
-    mv "${SUBMISSION_PATH}"/Bundled.hs "${CODEPATH_FROM_FILE}"/Bundled.hs
 
     # 2-3. 引数のurlに対応するパスにMain.hsファイルが存在すれば提出コードに移動、存在しなければテンプレートから提出コードを新規作成
     rm -fr "${SUBMISSION_PATH}" && mkdir -p "${SUBMISSION_PATH}"
     if [ -s "${CODEPATH_FROM_ARG}/Main.hs" ]; then
         mv "${CODEPATH_FROM_ARG}"/Main.hs "${SUBMISSION_PATH}"/Main.hs
-        # Bundled.hsは不要なので削除する
-        rm -f "${CODEPATH_FROM_ARG}"/Bundled.hs
     else
         cat "${TEMPLATE_FILE}" > "${SUBMISSION_PATH}"/Main.hs
     fi
