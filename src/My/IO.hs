@@ -57,9 +57,6 @@ list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 vector1 :: (VU.Unboxable a) => Int -> Conv a -> IO (VU.Vector a)
 vector1 n !st = VU.unfoldrN n (runStateT st) <$> BS.getLine
 
-toGrid :: (IArray a e, Ix x, Ix y) => ((x, y), (x, y)) -> [[e]] -> a (x, y) e
-toGrid b = listArray b . concat
-
 to1 :: [a] -> a
 to1 [a] = a
 to1 _ = error "invalid length."
