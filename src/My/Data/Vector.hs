@@ -1,13 +1,18 @@
 module My.Data.Vector where
 
-import Data.Vector.Unboxing qualified as VU
+import Data.Ord
 import Data.Vector.Algorithms.Intro
+import Data.Vector.Unboxing qualified as VU
 import My.Algorithm.BinarySearch
 
 
 {-# INLINE vSort #-}
 vSort :: (Ord a, VU.Unboxable a) => VU.Vector a -> VU.Vector a
 vSort = VU.modify sort
+
+{-# INLINE vSortOn #-}
+vSortOn :: (Ord b, VU.Unboxable a) => (a -> b) -> VU.Vector a -> VU.Vector a
+vSortOn f = VU.modify $ sortBy (comparing f)
 
 {-# INLINE vSortBy #-}
 vSortBy :: (Ord a, VU.Unboxable a) => Comparison a -> VU.Vector a -> VU.Vector a
@@ -27,7 +32,7 @@ vSortUniqBy f v = VU.create $ do
 vDiff :: (Ord a, VU.Unboxable a) => VU.Vector a -> VU.Vector a -> VU.Vector a
 vDiff v u = let su = vSortUniq u
                 ulen = VU.length su
-                p x = let i = bsearch (condLE su x) (-1) ulen
+                p x = let i = bsearch (su`_iLE`x) (-1) ulen
                       in i == (-1) || i == ulen || su VU.! i /= x
             in VU.filter p v
 
