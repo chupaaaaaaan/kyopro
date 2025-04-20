@@ -2,7 +2,7 @@ module My.Algorithm.BFS where
 
 import Control.Monad
 import Data.Array.MArray
-import Data.Sequence qualified as Sq
+import Data.Sequence qualified as Seq
 
 -- | 幅優先探索
 -- ex. onGraph: (dist :: IOArray Int Int)        <- bfs (graph !) (bounds graph) [1]
@@ -18,16 +18,16 @@ bfs nexts b start = do
     -- 開始点に距離0を設定
     forM_ start $ \s -> writeArray dist s 0
     -- 探索実施
-    go dist (Sq.fromList start)
+    go dist (Seq.fromList start)
     -- 開始点からの距離を返却
     return dist
     where
-        go :: a i Int -> Sq.Seq i -> m ()
-        go dist queue = case Sq.viewl queue of
+        go :: a i Int -> Seq.Seq i -> m ()
+        go dist queue = case Seq.viewl queue of
             -- キューが空であれば探索終了
-            Sq.EmptyL -> return ()
+            Seq.EmptyL -> return ()
             -- BFS用のキューから次の探索点を取り出す
-            v Sq.:< rest -> do
+            v Seq.:< rest -> do
                 -- 開始点から探索点までの距離を取得
                 d <- readArray dist v
                 -- 探索候補点のうち、まだ訪れていない点を列挙
@@ -35,4 +35,4 @@ bfs nexts b start = do
                 -- 探索候補点に、距離d+1を設定する
                 forM_ candidates $ \cand -> writeArray dist cand (d+1)
                 -- 探索候補点をキューの末尾に追加し、次の探索へ
-                go dist $ rest Sq.>< Sq.fromList candidates
+                go dist $ rest Seq.>< Seq.fromList candidates

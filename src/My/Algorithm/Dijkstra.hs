@@ -3,7 +3,7 @@ module My.Algorithm.Dijkstra where
 import Data.Array.IArray
 import Data.Array.MArray
 import Data.IntPSQ qualified as PSQ
-import Data.Sequence qualified as Sq
+import Data.Sequence qualified as Seq
 import Data.Traversable
 import My.Data.Graph
 import Control.Monad
@@ -67,16 +67,16 @@ bfs01 next0 next1 b start = do
     -- 開始点にコスト0を設定
     forM_ start $ \s -> writeArray cost s 0
     -- 探索実施
-    go cost (Sq.fromList start)
+    go cost (Seq.fromList start)
     -- 開始点からのコストを返却
     return cost
     where
-        go :: a i Int -> Sq.Seq i -> m ()
-        go dist queue = case Sq.viewl queue of
+        go :: a i Int -> Seq.Seq i -> m ()
+        go dist queue = case Seq.viewl queue of
             -- 両端キューが空であれば終了
-            Sq.EmptyL -> return ()
+            Seq.EmptyL -> return ()
             -- 両端キューの左から次の探索点を取り出す
-            v Sq.:< rest -> do
+            v Seq.:< rest -> do
                 -- 開始点から探索点までのコストを取得
                 d <- readArray dist v
                 -- コストが0の探索候補点を取得
@@ -87,4 +87,4 @@ bfs01 next0 next1 b start = do
                 forM_ cand0 $ \cand -> writeArray dist cand d
                 forM_ cand1 $ \cand -> writeArray dist cand (d+1)
                 -- コスト0の探索候補点を両端キューの左、コスト1の探索候補点を両端キューの右に追加し、次の探索へ
-                go dist $ Sq.fromList cand0 Sq.>< rest Sq.>< Sq.fromList cand1
+                go dist $ Seq.fromList cand0 Seq.>< rest Seq.>< Seq.fromList cand1
