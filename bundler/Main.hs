@@ -6,8 +6,10 @@
 module Main where
 
 import Control.Exception.Safe
+import Control.Monad
 import Control.Monad.IO.Class
 import Data.List qualified as L
+import Data.Maybe
 import Data.Set qualified as S
 import Distribution.ModuleName hiding (ModuleName)
 import Distribution.PackageDescription hiding (PackageFlag)
@@ -105,12 +107,12 @@ pragmas mainPath = do
     mainExt <- fromFile $ installPath </> mainPath
     libExts <- fmap concat $ mapM (fromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
 
-    return (L.nub $ mainExt <> libExts)
+    return (L.sort . L.nub $ "{-# LANGUAGE GHC2021 #-}" : mainExt <> libExts)
 
     where fromFile :: (MonadThrow m, MonadIO m) => FilePath -> m [String]
           fromFile path = do
               content <- lines <$> liftIO (readFile' path)
-              return $ filter (\x -> "LANGUAGE" `L.isInfixOf` x && not ("CPP" `L.isInfixOf` x)) content
+              return $ filter (\x -> ("LANGUAGE" `L.isInfixOf` x || "OPTIONS_GHC" `L.isInfixOf` x) && not ("CPP" `L.isInfixOf` x)) content
 
 bundledMods :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> m HsModule
 bundledMods mode mainPath = do
