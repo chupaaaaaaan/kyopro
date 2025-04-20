@@ -1,9 +1,7 @@
 module My.Test.QuickCheck where
 
-import Test.QuickCheck qualified as QC
-import Data.List qualified as L
-
-
+import qualified Data.List as L
+import qualified Test.QuickCheck as QC
 
 -- Generators
 

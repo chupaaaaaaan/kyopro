@@ -2,7 +2,7 @@ module My.Algorithm.BFS where
 
 import Control.Monad
 import Data.Array.MArray
-import Data.Sequence qualified as Seq
+import qualified Data.Sequence as Seq
 
 -- | 幅優先探索
 -- ex. onGraph: (dist :: IOArray Int Int)        <- bfs (graph !) (bounds graph) [1]

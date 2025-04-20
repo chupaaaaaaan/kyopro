@@ -1,13 +1,11 @@
 module My.Algorithm.Dijkstra where
 
+import Control.Monad
 import Data.Array.IArray
 import Data.Array.MArray
-import Data.IntPSQ qualified as PSQ
-import Data.Sequence qualified as Seq
-import Data.Traversable
+import qualified Data.IntPSQ as PSQ
+import qualified Data.Sequence as Seq
 import My.Data.Graph
-import Control.Monad
-
 
 -- | ダイクストラ法による最短経路探索
 dijkstra :: forall a m . (MArray a Int m, MArray a Bool m) =>

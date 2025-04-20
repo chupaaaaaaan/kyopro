@@ -7,20 +7,20 @@ import Control.Monad
 import Data.Array.IO
 import Data.Array.Unboxed
 import Data.Foldable
-import Data.IntMap qualified as IM
-import Data.IntSet qualified as IS
-import Data.List qualified as L
+import qualified Data.IntMap as IM
+import qualified Data.IntSet as IS
+import qualified Data.List as L
 import Data.Ord
-import Data.Sequence qualified as Seq
+import qualified Data.Sequence as Seq
 import Data.Traversable
-import Data.Vector.Algorithms.Intro qualified as VAI
-import Data.Vector.Unboxing qualified as VU
-import Data.Vector.Unboxing.Mutable qualified as VUM
+import qualified Data.Vector.Algorithms.Intro as VAI
+import qualified Data.Vector.Unboxing as VU
+import qualified Data.Vector.Unboxing.Mutable as VUM
 import Debug.Trace
 import My.Debug
 import My.IO
 import My.Test.QuickCheck
-import Test.QuickCheck qualified as QC
+import qualified Test.QuickCheck as QC
 
 main :: IO ()
 main = do

@@ -7,8 +7,8 @@ module My.Math.Prime
     ) where
 
 import Control.Monad
-import Data.Vector.Unboxing qualified as VU
-import Data.Vector.Unboxing.Mutable qualified as VUM
+import qualified Data.Vector.Unboxing as VU
+import qualified Data.Vector.Unboxing.Mutable as VUM
 
 -- | n以下の素数のリスト
 primes :: Int -> [Int]

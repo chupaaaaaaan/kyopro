@@ -1,9 +1,10 @@
 {-# LANGUAGE CPP #-}
 
 module My.Debug where
+
 import Debug.Trace
 import Data.Array.IArray
-import Data.List qualified as L
+import qualified Data.List as L
 
 
 dbg :: String -> ()

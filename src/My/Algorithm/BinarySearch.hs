@@ -7,7 +7,7 @@ module My.Algorithm.BinarySearch
     , _iLE
     ) where
 
-import Data.Vector.Unboxing qualified as VU
+import qualified Data.Vector.Unboxing as VU
 import My.Debug
 
 -- | 整数区間に対する二分探索

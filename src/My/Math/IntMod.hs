@@ -3,7 +3,7 @@
 {-# LANGUAGE NumericUnderscores #-}
 module My.Math.IntMod where
 
-import Data.Vector.Unboxing qualified as VU
+import qualified Data.Vector.Unboxing as VU
 
 modulus :: Int
 modulus = 1_000_000_007
