@@ -1,34 +1,43 @@
 module My.IO where
 
-import Control.Monad.State.Strict
-import Data.ByteString.Char8 qualified as BS
-import Data.Vector.Unboxing qualified as VU
-import Data.Char
-import Data.List qualified as L
 import Control.Monad
-import Data.Array.IArray
+import Control.Monad.State.Strict
 import Data.Array.Unboxed
-
-int1 :: IO Int
-int1 = readLn @Int
+import qualified Data.ByteString.Char8 as BS
+import Data.Char
+import qualified Data.List as L
+import qualified Data.Vector.Unboxing as VU
+import My.Data.Graph
+import My.Data.Grid
 
 int2 :: IO (Int, Int)
-int2 = to2 <$> list1 ucInt
+int2 = val ((,) <$> ucInt <*> ucInt)
 
 int3 :: IO (Int, Int, Int)
-int3 = to3 <$> list1 ucInt
-
-intlist :: IO [Int]
-intlist = list1 ucInt
+int3 = val ((,,) <$> ucInt <*> ucInt <*> ucInt)
 
 int2list :: Int -> IO [(Int, Int)]
-int2list n = fmap to2 <$> list2 n ucInt
+int2list !n = fmap to2 <$> list2 n ucInt
 
 int3list :: Int -> IO [(Int, Int, Int)]
-int3list n = fmap to3 <$> list2 n ucInt
+int3list !n = fmap to3 <$> list2 n ucInt
 
+-- Graph
+agraph :: Int -> IO (Graph Int)
+agraph !n = genGraph (1,n) <$> int2list n
+
+dgraph :: Int -> IO (Graph Int)
+dgraph !n = genDiGraph (1,n) <$> int2list n
+
+wgraph :: Int -> IO (WGraph Int Int)
+wgraph !n = genWGraph (1,n) <$> int3list n
+
+wdgraph :: Int -> IO (WGraph Int Int)
+wdgraph !n = genWDiGraph (1,n) <$> int3list n
+
+-- Grid
 charGrid :: Int -> Int -> IO (UArray (Int, Int) Char)
-charGrid h w = toGrid ((1,1),(h,w)) <$> list2 h ucChar
+charGrid !h !w = genGrid ((1,1),(h,w)) <$> list2 h ucChar
 
 -- | Converter
 type Conv = StateT BS.ByteString Maybe
@@ -45,6 +54,9 @@ ucBS = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
                          then Nothing
                          else Just $ BS.break isSpace bs')
 
+val :: Conv a -> IO a
+val !st = BS.getLine >>= maybe (error "Error: parse failed") (return . fst) . runStateT st
+
 -- | read a linear data as List
 list1 :: Conv a -> IO [a]
 list1 !st = L.unfoldr (runStateT st) <$> BS.getLine
@@ -54,8 +66,8 @@ list2 :: Int -> Conv a -> IO [[a]]
 list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 
 -- | read a line and convert to Vector
-vector1 :: (VU.Unboxable a) => Int -> Conv a -> IO (VU.Vector a)
-vector1 n !st = VU.unfoldrN n (runStateT st) <$> BS.getLine
+vector :: (VU.Unboxable a) => Int -> Conv a -> IO (VU.Vector a)
+vector !n !st = val (VU.replicateM n st)
 
 to1 :: [a] -> a
 to1 [a] = a
