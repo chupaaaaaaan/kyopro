@@ -31,6 +31,7 @@ import System.Exit
 import System.FilePath
 import System.IO
 import System.Process.Extra
+import Text.Read
 
 main :: IO ()
 main = do
@@ -39,17 +40,26 @@ main = do
 
     case args of
         [mode,mainPath] -> do
-            pragmas mainPath >>= mapM_ putStrLn
-            bundledMods (read mode) mainPath >>= putStrLn . renderMods
+            unless (isJust (readMaybe @SubmissionMode mode)) $ dieWithInvalidMode mode
+            unless (isValid mainPath) $ dieWithInvalidPath mainPath
+            execBundle mode mainPath stdout
 
         [mode,mainPath,destPath] -> do
-            withFile destPath WriteMode $ \h -> do
-                pragmas mainPath >>= mapM_ (hPutStrLn h)
-                bundledMods (read mode) mainPath >>= hPutStrLn h . renderMods
+            unless (isJust (readMaybe @SubmissionMode mode)) $ dieWithInvalidMode mode
+            unless (isValid mainPath) $ dieWithInvalidPath mainPath
+            unless (isValid destPath) $ dieWithInvalidPath destPath
+            withFile destPath WriteMode $ execBundle mode mainPath
 
-        _ -> do
-            progName <- getProgName
-            die $ "Usage: " <> progName <> " <mode> <mainPath> [destPath]"
+        _ -> getProgName >>= dieWithUsage
+
+    where
+        execBundle mode mainPath h = do
+            pragmas mainPath >>= mapM_ (hPutStrLn h)
+            bundledMods (read mode) mainPath >>= hPutStrLn h . renderMods
+
+        dieWithInvalidPath path = die $ "Error: '" <> path <> "' is not a valid file path."
+        dieWithInvalidMode mode = die $ "Error: '" <> mode <> "' is not a valid SubmissionMode."
+        dieWithUsage progName   = die $ "Usage: " <> progName <> " <mode> <mainPath> [destPath]"
 
 newtype BundlerException = BundlerException String
     deriving Show
