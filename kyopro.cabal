@@ -116,6 +116,7 @@ library
     My.Math.IntMod
     My.Math.Prime
     My.Misc
+    My.Test.QuickCheck
 
   hs-source-dirs:  src
 
