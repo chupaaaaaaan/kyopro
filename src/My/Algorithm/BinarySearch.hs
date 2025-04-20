@@ -1,10 +1,10 @@
 module My.Algorithm.BinarySearch
     ( bsearch
     , bsearchF
-    , condGT
-    , condGE
-    , condLE
-    , condLT
+    , _iGT
+    , _iGE
+    , _iLT
+    , _iLE
     ) where
 
 import Data.Vector.Unboxing qualified as VU
@@ -52,26 +52,26 @@ bsearchBase f ep isOk = go
                       in ok
 
 -- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
-    -- >>> let sorted :: Vector Int = U.fromList [3,4,5,5,6,7]
--- >>>     l = U.length sorted
+-- >>> let sorted :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
+-- >>>     l = VU.length sorted
 --
--- >>> U.indexed sorted
+-- >>> VU.indexed sorted
 -- [(0,3),(1,4),(2,5),(3,5),(4,6),(5,7)]
 --
--- >>> bsearch (condGT sorted 5) l 0
+-- >>> bsearch (sorted`_iGT`5) l 0
 -- 4
 --
--- >>> bsearch (condLT sorted 5) 0 l
+-- >>> bsearch (sorted`_iLT`5) 0 l
 -- 1
 -- 
--- >>> bsearch (condGE sorted 5) l 0
+-- >>> bsearch (sorted`_iGE`5) l 0
 -- 2
 -- 
--- >>> bsearch (condLE sorted 5) 0 l
+-- >>> bsearch (sorted`_iLE`5) 0 l
 -- 3
 --
-condGT,condLT,condGE,condLE :: (Ord a, VU.Unboxable a) => VU.Vector a -> a -> Int -> Bool
-condGT vec key idx = key < vec VU.! idx
-condLT vec key idx = key > vec VU.! idx
-condGE vec key idx = key <= vec VU.! idx
-condLE vec key idx = key >= vec VU.! idx
+_iGT,_iLT,_iGE,_iLE :: (Ord a, VU.Unboxable a) => VU.Vector a -> a -> Int -> Bool
+(vec `_iGT` key) idx = vec VU.! idx > key
+(vec `_iLT` key) idx = vec VU.! idx < key
+(vec `_iGE` key) idx = vec VU.! idx >= key
+(vec `_iLE` key) idx = vec VU.! idx <= key
