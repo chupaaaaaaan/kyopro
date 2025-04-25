@@ -43,13 +43,9 @@ factorize sv n = go 1 (sv VU.! n) (n `div` sv VU.! n)
 divisors :: [(Prime,Factor)] -> [Int]
 divisors = L.foldl' (liftA2 (*)) [1] . map (\(p,f) -> map (p ^) [0..f])
 
--- | 予め作っておいたSPF配列を渡して、約数を全列挙する
-divisors' :: VU.Vector Int -> Int -> [Int]
-divisors' sv = divisors . factorize sv
-
 -- | 与えられた数の約数を全列挙する( $O(\sqrt{n})$ )
-divisors'' :: Int -> [Int]
-divisors'' n = go 1
+divisors' :: Int -> [Int]
+divisors' n = go 1
     where go f | f * f > n = []
                | f * f == n = [f]
                | otherwise = if n`mod`f == 0
@@ -73,3 +69,8 @@ isPrime' n
 -- | 予め作っておいたSPF配列を渡して、n以下の素数のリストを構築する。
 primes :: VU.Vector Int -> Int -> [Int]
 primes sv n = filter (isPrime sv) [2..n]
+
+-- | 素因数分解のリストから、与えられた数の平方因子を計算する
+-- 平方因子は、ある整数 $n$ に対して $n \times k$ が平方数となるような $k$ のこと
+squareFactor :: [(Prime,Factor)] -> Int
+squareFactor = product . map fst . filter (odd . snd)
