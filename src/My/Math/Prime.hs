@@ -71,6 +71,6 @@ primes :: VU.Vector Int -> Int -> [Int]
 primes sv n = filter (isPrime sv) [2..n]
 
 -- | 素因数分解のリストから、与えられた数の平方因子を計算する
--- 平方因子は、ある整数 $n$ に対して $n \times k$ が平方数となるような $k$ のこと
+-- 平方因子は、ある正整数 $n$ に対して $n \times k$ が平方数となるような最小の $k$ のこと
 squareFactor :: [(Prime,Factor)] -> Int
 squareFactor = product . map fst . filter (odd . snd)
