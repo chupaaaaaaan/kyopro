@@ -6,12 +6,6 @@ import qualified Data.List as L
 import qualified Data.Vector.Unboxing as VU
 import qualified Data.Vector.Unboxing.Mutable as VUM
 
--- | n以下の素数のリスト
-primes :: Int -> [Int]
-primes n = let sv = sieve n
-           in [i | i <- [2..n], sv VU.! i == i]
-
-
 -- | 添字の数字の最初の素因数（Smallest Prime Factor, SPF）を格納した配列を作る(Eratosthenesの篩)
 -- もし添字の数字と格納されている数が等しければ、素数
 sieve :: Int -> VU.Vector Int
@@ -33,7 +27,7 @@ sieve n
 type Prime = Int
 type Factor = Int
 
--- 予め作っておいたSPF配列を渡して、素因数分解を行う
+-- | 予め作っておいたSPF配列を渡して、素因数分解を行う
 factorize :: VU.Vector Int -> Int -> [(Prime,Factor)]
 factorize sv n = go 1 (sv VU.! n) (n `div` sv VU.! n)
     where go _ 0 _ = []
@@ -45,15 +39,15 @@ factorize sv n = go 1 (sv VU.! n) (n `div` sv VU.! n)
                                then go (a+1) p (m`div`m')
                                else (p, a) : go 1 m' (m`div`m')
 
--- 素因数分解のリストから、与えられた数の約数を全列挙する
+-- | 素因数分解のリストから、与えられた数の約数を全列挙する
 divisors :: [(Prime,Factor)] -> [Int]
 divisors = L.foldl' (liftA2 (*)) [1] . map (\(p,f) -> map (p ^) [0..f])
 
--- 予め作っておいたSPF配列を渡して、約数を全列挙する
+-- | 予め作っておいたSPF配列を渡して、約数を全列挙する
 divisors' :: VU.Vector Int -> Int -> [Int]
 divisors' sv = divisors . factorize sv
 
--- 与えられた数の約数を全列挙する( $O(\sqrt{n})$ )
+-- | 与えられた数の約数を全列挙する( $O(\sqrt{n})$ )
 divisors'' :: Int -> [Int]
 divisors'' n = go 1
     where go f | f * f > n = []
@@ -62,16 +56,20 @@ divisors'' n = go 1
                              then (n`div`f) : f : go (f+1)
                              else go (f+1)
 
--- 予め作っておいたSPF配列を渡して、与えられた数が素数かを判定する
+-- | 予め作っておいたSPF配列を渡して、与えられた数が素数かを判定する
 isPrime :: VU.Vector Int -> Int -> Bool
 isPrime sv n
     | n < 2 = False
     | otherwise = sv VU.! n == n
 
--- 与えられた数が素数かを判定する( $O(\sqrt{n})$ )
+-- | 与えられた数が素数かを判定する( $O(\sqrt{n})$ )
 isPrime' :: Int -> Bool
 isPrime' n
     | n < 2 = False
     | otherwise = go 2
     where go f | f * f > n = True
                | otherwise = ((n`mod`f) /= 0) && go (f+1)
+
+-- | 予め作っておいたSPF配列を渡して、n以下の素数のリストを構築する。
+primes :: VU.Vector Int -> Int -> [Int]
+primes sv n = filter (isPrime sv) [2..n]
