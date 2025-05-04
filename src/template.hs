@@ -4,11 +4,13 @@
 
 import Control.Applicative
 import Control.Monad
+import Control.Monad.Fix
 import Data.Array.IO
 import Data.Array.Unboxed
 import Data.Containers.ListUtils
 import Data.Foldable
-import qualified Data.IntMap as IM
+import qualified Data.IntMap.Strict as IM
+import qualified Data.IntPSQ as PSQ
 import qualified Data.IntSet as IS
 import qualified Data.List as L
 import Data.Ord
