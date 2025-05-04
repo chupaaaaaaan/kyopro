@@ -1,6 +1,7 @@
 module My.Algorithm.BFS where
 
 import Control.Monad
+import Control.Monad.Fix
 import Data.Array.MArray
 import qualified Data.Sequence as Seq
 
@@ -15,15 +16,13 @@ bfs :: forall a m i. (MArray a Int m, Ix i) =>
 bfs nexts b start = do
     -- 開始点からの距離を格納するarrayを作成（-1は訪れていないことを表す）
     dist <- newArray b (-1)
+
     -- 開始点に距離0を設定
     forM_ start $ \s -> writeArray dist s 0
+
     -- 探索実施
-    go dist (Seq.fromList start)
-    -- 開始点からの距離を返却
-    return dist
-    where
-        go :: a i Int -> Seq.Seq i -> m ()
-        go dist queue = case Seq.viewl queue of
+    flip fix (Seq.fromList start) $ \loop queue -> do
+        case Seq.viewl queue of
             -- キューが空であれば探索終了
             Seq.EmptyL -> return ()
             -- BFS用のキューから次の探索点を取り出す
@@ -35,4 +34,7 @@ bfs nexts b start = do
                 -- 探索候補点に、距離d+1を設定する
                 forM_ candidates $ \cand -> writeArray dist cand (d+1)
                 -- 探索候補点をキューの末尾に追加し、次の探索へ
-                go dist $ rest Seq.>< Seq.fromList candidates
+                loop (rest Seq.>< Seq.fromList candidates)
+
+    -- 開始点からの距離を返却
+    return dist
