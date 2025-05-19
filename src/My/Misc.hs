@@ -11,6 +11,19 @@ pair (f, g) x = (f x, g x)
 cross :: (a -> b, c -> d) -> (a, c) -> (b, d)
 cross (f, g) = pair (f . fst, g . snd)
 
+-- | ランレングス符号化
+-- >>> encoderl "><<>><<<<>"
+-- [('>',1),('<',2),('>',2),('<',4),('>',1)]
+encoderl :: Eq a => [a] -> [(a, Int)]
+encoderl = map (\xs -> (head xs, length xs)) . L.group
+
+-- | ランレングス符号化の復元
+-- >>> let testString = "><<>><<<<>"
+-- >>> decoderl (encoderl testString) == testString
+-- True
+decoderl :: [(a, Int)] -> [a]
+decoderl = concatMap $ uncurry $ flip replicate
+
 freq :: Ord a => [a] -> [(a, Int)]
 freq = M.toList . L.foldl' (\m k -> M.insertWith (+) k 1 m) M.empty
 
