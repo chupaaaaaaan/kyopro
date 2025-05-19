@@ -40,3 +40,6 @@ chain f (a:b:as)
     | a `f` b   = let (k:ks) = chain f (b:as)
                   in (a:k) : ks
     | otherwise = [a] : chain f (b:as)
+
+notComeHere :: a
+notComeHere = error "Not come here."
