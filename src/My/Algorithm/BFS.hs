@@ -6,7 +6,7 @@ import Data.Array.MArray
 import My.Data.Queue
 
 -- | 幅優先探索
--- ex. onGraph: dist <- bfs @IOUArray (graph !) (bounds graph) [1]
+-- ex. onGraph: dist <- bfs @IOUArray (adj graph) (bounds graph) [1]
 -- ex. onGrid:  dist <- bfs @IOUArray (candidates ((/='#').(g!)) bnd nei4) bnd [(1,1)]
 bfs :: (MArray a Int m, Ix i) =>
     (i -> [i]) -> -- ^ 現在点から探索候補点を取得
