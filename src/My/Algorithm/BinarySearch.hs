@@ -1,19 +1,11 @@
-module My.Algorithm.BinarySearch
-    ( bsearch
-    , bsearchF
-    , _iGT
-    , _iGE
-    , _iLT
-    , _iLE
-    ) where
+module My.Algorithm.BinarySearch where
 
 import qualified Data.Vector.Unboxing as VU
-import My.Debug
 
 -- | 整数区間に対する二分探索
 -- 区間は半開区間 [ok,ng) もしくは (ng,ok] とする
 -- (参考) https://qiita.com/drken/items/97e37dd6143e33a64c8c
-bsearch :: forall a. (Integral a, Num a, Show a) =>
+bsearch :: (Integral a, Num a) =>
     (a -> Bool) -> -- ^ indexに対する述語
     a ->           -- ^ ok: 解が存在するindex
     a ->           -- ^ ng: 解が存在しないindex
@@ -23,7 +15,7 @@ bsearch = bsearchBase div 1
 -- | 実数区間に対する二分探索
 -- >>> bsearchF (10**(-6)) (\x -> (x * (x + 2)) - 20 < (10**(-6))) 0 10
 -- 3.5825753211975098
-bsearchF :: forall a. (RealFrac a, Show a) =>
+bsearchF :: RealFrac a =>
     a ->           -- ^ 区間の最小単位
     (a -> Bool) -> -- ^ ある実数に対する述語
     a ->           -- ^ ok: 解が存在する実数
@@ -32,7 +24,7 @@ bsearchF :: forall a. (RealFrac a, Show a) =>
 bsearchF = bsearchBase (/)
 
 -- | 二分探索の処理の抽象
-bsearchBase :: forall a. (Num a, Ord a, Show a) =>
+bsearchBase :: (Num a, Ord a) =>
     (a -> a -> a) -> -- ^ 区間を半分にする関数
     a ->             -- ^ 区間の最小単位
     (a -> Bool) ->   -- ^ 位置に対する述語
@@ -41,15 +33,12 @@ bsearchBase :: forall a. (Num a, Ord a, Show a) =>
     a
 bsearchBase f ep isOk = go
   where
-    go :: a -> a -> a
     go ok ng
         | abs (ok - ng) > ep = let mid = (ok + ng) `f` 2
-                                   !_ = dbg $ "bsearch: ok=" <> show ok <> "\tng=" <> show ng
                                in if isOk mid
                                   then go mid ng
                                   else go ok mid
-        | otherwise = let !_ = dbg $ "bsearch result: " <> show ok
-                      in ok
+        | otherwise = ok
 
 -- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
 -- >>> let sorted :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
@@ -58,20 +47,20 @@ bsearchBase f ep isOk = go
 -- >>> VU.indexed sorted
 -- [(0,3),(1,4),(2,5),(3,5),(4,6),(5,7)]
 --
--- >>> bsearch (sorted`_iGT`5) l 0
+-- >>> bsearch (sorted`igt`5) l 0
 -- 4
 --
--- >>> bsearch (sorted`_iLT`5) 0 l
+-- >>> bsearch (sorted`ilt`5) 0 l
 -- 1
 -- 
--- >>> bsearch (sorted`_iGE`5) l 0
+-- >>> bsearch (sorted`ige`5) l 0
 -- 2
 -- 
--- >>> bsearch (sorted`_iLE`5) 0 l
+-- >>> bsearch (sorted`ile`5) 0 l
 -- 3
 --
-_iGT,_iLT,_iGE,_iLE :: (Ord a, VU.Unboxable a) => VU.Vector a -> a -> Int -> Bool
-(vec `_iGT` key) idx = vec VU.! idx > key
-(vec `_iLT` key) idx = vec VU.! idx < key
-(vec `_iGE` key) idx = vec VU.! idx >= key
-(vec `_iLE` key) idx = vec VU.! idx <= key
+igt,ilt,ige,ile :: (Ord a, VU.Unboxable a) => VU.Vector a -> a -> Int -> Bool
+(vec `igt` key) idx = vec VU.! idx > key
+(vec `ilt` key) idx = vec VU.! idx < key
+(vec `ige` key) idx = vec VU.! idx >= key
+(vec `ile` key) idx = vec VU.! idx <= key
