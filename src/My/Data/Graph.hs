@@ -1,37 +1,48 @@
+{-# LANGUAGE FunctionalDependencies #-}
 module My.Data.Graph where
 
 import Data.Array.IArray
-import Data.Tuple
 
-type Graph i = Array i [i]
-type WGraph i a = Array i [(i, a)]
+type Graph i a = Array i [(i, a)]
 
--- | 隣接リスト形式の重み付きグラフを生成する
-genWGraph, genWDiGraph, genWInvDiGraph :: Ix i =>
-    (i, i) ->      -- ^ 頂点の範囲
-    [(i, i, a)] -> -- ^ 辺のリスト (開始, 終了, 重み)
-    WGraph i a
+class BuildEdge x i a | x -> i a where
+    fAdj :: x -> [(i, (i, a))]
+    bAdj :: x -> [(i, (i, a))]
+    fbAdj :: x -> [(i, (i, a))]
+    fbAdj x = fAdj x <> bAdj x
 
--- | 無向グラフ
-genWGraph b = accumArray (flip (:)) [] b . concatMap (\(p,q,w) -> [(p,(q,w)), (q,(p,w))])
+instance BuildEdge (i, i, a) i a where
+    fAdj (p, q, a) = [(p, (q, a))]
+    bAdj (p, q, a) = [(q, (p, a))]
 
--- | 有向グラフ
-genWDiGraph b = accumArray (flip (:)) [] b . map (\(p,q,w) -> (p,(q,w)))
+instance BuildEdge (i, i) i () where
+    fAdj (p, q) = [(p, (q, ()))]
+    bAdj (p, q) = [(q, (p, ()))]
 
--- | 逆向きの有向グラフ
-genWInvDiGraph b = accumArray (flip (:)) [] b . map (\(p,q,w) -> (q,(p,w)))
+-- | 辺リストからグラフを生成する
+mkGraphWith :: (Ix i, BuildEdge x i a) =>
+    (x -> [(i, (i, a))]) -> -- ^ 辺の変換関数
+    (i, i) ->               -- ^ 頂点の範囲
+    [x] ->                  -- ^ 重み付き辺リスト
+    Graph i a
+mkGraphWith f b = accumArray (flip (:)) [] b . concatMap f
 
--- | 隣接リスト形式の重みなしグラフを生成する
-genGraph, genDiGraph, genInvDiGraph :: Ix i =>
-    (i, i) ->   -- ^ 頂点の範囲
-    [(i, i)] -> -- ^ 辺のリスト (開始, 終了)
-    Graph i
+-- | グラフの出次数を返す
+-- >>> outdeg (mkGraphWith @_ @(Int, Int) fAdj (0,2) [(0,1),(1,2)])
+-- array (0,2) [(0,1),(1,1),(2,0)]
+outdeg :: Ix i => Graph i a -> Array i Int
+outdeg = fmap length
 
--- | 無向グラフ
-genGraph b = accumArray (flip (:)) [] b . concatMap (\(p,q)->[(p,q),(q,p)])
+-- | グラフの入次数を返す
+-- >>> indeg (mkGraphWith @_ @(Int, Int) fAdj (0,2) [(0,1),(1,2)])
+-- array (0,2) [(0,0),(1,1),(2,1)]
+indeg :: Ix i => Graph i a -> Array i Int
+indeg graph = accumArray (+) 0 (bounds graph) [(v,1) | outs <- elems graph, (v,_) <- outs]
 
--- | 有向グラフ
-genDiGraph = accumArray (flip (:)) []
+-- | 隣接する頂点を返す
+adj :: Ix i => Graph i a -> i -> [i]
+adj g = map fst . (g!)
 
--- | 逆向きの有向グラフ
-genInvDiGraph b = accumArray (flip (:)) [] b . map swap
+-- | 隣接する頂点と辺の重みのペアを返す
+adjW :: Ix i => Graph i a -> i -> [(i, a)]
+adjW = (!)
