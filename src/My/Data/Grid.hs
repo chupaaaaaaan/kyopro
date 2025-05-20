@@ -7,8 +7,10 @@ genGrid :: (IArray a e, Ix i, Ix j) => ((i, j), (i, j)) -> [[e]] -> a (i, j) e
 genGrid b = listArray b . concat
 
 -- | (i, j) から上下左右4つの位置を列挙する
-nei4 :: (Ix i, Num i) => (i, i) -> [(i, i)]
-nei4 (i, j) = [bimap (i+) (j+) (p,q) | p <- [-1,0,1], q <- [-1,0,1], p/=q]
+-- >>> nei4 (0,0)
+-- [(-1,0),(0,-1),(0,1),(1,0)]
+nei4 :: (Int, Int) -> [(Int, Int)]
+nei4 (i, j) = [(i, j) ^+ ((p+q)`div`2,(p-q)`div`2) | p <- [-1,1], q <- [-1,1]]
 
 -- | (i, j) から上下左右斜め8つの位置を列挙する
 nei8 :: (Ix i, Num i) => (i, i) -> [(i, i)]
