@@ -5,9 +5,9 @@ import Data.Array.MArray
 import Data.Foldable
 
 -- | 深さ優先探索
--- ex. onGraph: (dist :: IOArray Int Int)        <- dfs (graph !) (bounds graph) [1]
--- ex. onGrid:  (dist :: IOArray (Int, Int) Int) <- dfs (candidates ((/='#').(g!)) bnd nei4) bnd [(1,1)]
-dfs :: forall a m i. (MArray a (Maybe i) m, Ix i) =>
+-- ex. onGraph: dist <- dfs @IOUArray (adj graph) (bounds graph) [1]
+-- ex. onGrid:  dist <- dfs @IOUArray (candidates ((/='#').(g!)) bnd nei4) bnd [(1,1)]
+dfs :: (MArray a (Maybe i) m, Ix i) =>
     (i -> [i]) -> -- ^ 現在点から探索候補点を取得
     (i, i) ->     -- ^ 探索範囲のbound
     [i] ->        -- ^ 開始点
