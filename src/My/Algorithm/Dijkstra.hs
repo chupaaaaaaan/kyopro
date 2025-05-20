@@ -9,8 +9,8 @@ import qualified Data.Sequence as Seq
 import My.Data.Graph
 
 -- | ダイクストラ法による最短経路探索
-dijkstra :: forall a m . (MArray a Int m, MArray a Bool m) =>
-    WGraph Int Int -> -- ^ 隣接リスト形式の重みつきグラフ
+dijkstra :: (MArray a Int m, MArray a Bool m) =>
+    Graph Int Int -> -- ^ 隣接リスト形式の重みつきグラフ
     Int ->            -- ^ 開始頂点
     m (a Int Bool, a Int Int)
 dijkstra graph v = do
@@ -51,7 +51,7 @@ dijkstra graph v = do
 
 
 -- | 01-BFS
-bfs01 :: forall a m i. (MArray a Int m, Ix i, Show i) =>
+bfs01 :: (MArray a Int m, Ix i, Show i) =>
     (i -> [i]) -> -- ^ 現在点からのコストが0の探索候補点を取得
     (i -> [i]) -> -- ^ 現在点からのコストが1の探索候補点を取得
     (i, i) ->     -- ^ 探索範囲のbound
