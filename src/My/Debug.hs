@@ -17,10 +17,10 @@ dbg = (`trace`())
 
 dbgS = (`traceShow`())
 
-dbgGrid ary = let ((s,_),(e,_)) = bounds ary
-                  separate x = let sep@(l,_) = splitAt (e-s+1) x
-                               in if null l then Nothing else Just sep
-              in dbg . unlines . map (L.intercalate "\t" . map show) . L.unfoldr separate . elems $ ary
+dbgGrid grid =
+    let ((_,s),(_,e)) = bounds grid
+        f xs = if null xs then Nothing else Just $ L.splitAt (e-s+1) xs
+    in dbg . unlines . map (L.intercalate "\t" . map show) . L.unfoldr f . elems $ grid
 
 #else
 
