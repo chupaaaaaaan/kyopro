@@ -16,11 +16,17 @@ int2 = val ((,) <$> ucInt <*> ucInt)
 int3 :: IO (Int, Int, Int)
 int3 = val ((,,) <$> ucInt <*> ucInt <*> ucInt)
 
+int4 :: IO (Int, Int, Int, Int)
+int4 = val ((,,,) <$> ucInt <*> ucInt <*> ucInt <*> ucInt)
+
 int2list :: Int -> IO [(Int, Int)]
 int2list !n = fmap to2 <$> list2 n ucInt
 
 int3list :: Int -> IO [(Int, Int, Int)]
 int3list !n = fmap to3 <$> list2 n ucInt
+
+int4list :: Int -> IO [(Int, Int, Int, Int)]
+int4list !n = fmap to4 <$> list2 n ucInt
 
 -- Graph
 agraph :: Int -> IO (Graph Int)
