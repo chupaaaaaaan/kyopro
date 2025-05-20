@@ -6,7 +6,7 @@ module My.Data.UnionFind
 import Data.Array.MArray
 
 -- | Union-Find木 配列の初期化
-ufInit :: forall a m i. (MArray a (Maybe i) m, MArray a Int m, Ix i) => (i, i) -> m (a i (Maybe i), a i Int)
+ufInit :: (MArray a (Maybe i) m, MArray a Int m, Ix i) => (i, i) -> m (a i (Maybe i), a i Int)
 ufInit r = do
     parent <- newArray r Nothing
     size <- newArray r 1
@@ -14,7 +14,7 @@ ufInit r = do
 
 -- | Union-Find木 親を求める
 -- parentの要素のうち、Nothingのものが親となる
-ufRoot :: forall a m i. (MArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> m i
+ufRoot :: (MArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> m i
 ufRoot parent v = do
     p <- readArray parent v
     case p of
@@ -25,7 +25,7 @@ ufRoot parent v = do
             return q
 
 -- | Union-Find木 グループを統合する
-ufUnite :: forall a m i. (MArray a (Maybe i) m, MArray a Int m, Ix i) => a i Int -> a i (Maybe i) -> i -> i -> m ()
+ufUnite :: (MArray a (Maybe i) m, MArray a Int m, Ix i) => a i Int -> a i (Maybe i) -> i -> i -> m ()
 ufUnite size parent u v = do
     rootU <- ufRoot parent u
     rootV <- ufRoot parent v
@@ -39,6 +39,6 @@ ufUnite size parent u v = do
                     writeArray size rootU (sizeU + sizeV)
 
 -- | Union-Find木 同じグループにいるかクエリする
-ufSame :: forall a m i. (MArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> i -> m Bool
+ufSame :: (MArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> i -> m Bool
 ufSame parent u v = (==) <$> ufRoot parent u <*> ufRoot parent v
 
