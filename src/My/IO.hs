@@ -3,6 +3,7 @@ module My.IO where
 import Control.Monad
 import Control.Monad.State.Strict
 import Data.Array.Unboxed
+import Data.Bool
 import qualified Data.ByteString.Char8 as BS
 import Data.Char
 import qualified Data.List as L
@@ -91,3 +92,15 @@ to4 :: [a] -> (a,a,a,a)
 to4 [a,b,c,d] = (a,b,c,d)
 to4 _ = error "invalid length."
 
+-- Output Utility
+yn :: Bool -> String
+yn = bool "No" "Yes"
+
+printYn :: Bool -> IO ()
+printYn = putStrLn . yn
+
+printGrid :: IArray a Char => a (Int, Int) Char -> IO ()
+printGrid grid = do
+    let ((_,s),(_,e)) = bounds grid
+        f xs = if null xs then Nothing else Just $ L.splitAt (e-s+1) xs
+    putStr . unlines . L.unfoldr f . elems $ grid
