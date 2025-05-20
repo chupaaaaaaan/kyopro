@@ -30,17 +30,17 @@ int4list :: Int -> IO [(Int, Int, Int, Int)]
 int4list !n = fmap to4 <$> list2 n ucInt
 
 -- Graph
-agraph :: Int -> IO (Graph Int)
-agraph !n = genGraph (1,n) <$> int2list n
+ugraph :: Int -> Int -> IO (Graph Int ())
+ugraph !n !m = mkGraphWith fbAdj (1,n) <$> int2list m
 
-dgraph :: Int -> IO (Graph Int)
-dgraph !n = genDiGraph (1,n) <$> int2list n
+dgraph :: Int -> Int -> IO (Graph Int ())
+dgraph !n !m = mkGraphWith fAdj (1,n) <$> int2list m
 
-wgraph :: Int -> IO (WGraph Int Int)
-wgraph !n = genWGraph (1,n) <$> int3list n
+wgraph :: Int -> Int -> IO (Graph Int Int)
+wgraph !n !m = mkGraphWith fAdj (1,n) <$> int3list m
 
-wdgraph :: Int -> IO (WGraph Int Int)
-wdgraph !n = genWDiGraph (1,n) <$> int3list n
+wdgraph :: Int -> Int -> IO (Graph Int Int)
+wdgraph !n !m = mkGraphWith fbAdj (1,n) <$> int3list m
 
 -- Grid
 charGrid :: Int -> Int -> IO (UArray (Int, Int) Char)
