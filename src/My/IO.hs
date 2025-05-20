@@ -76,10 +76,6 @@ list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 vector :: (VU.Unboxable a) => Int -> Conv a -> IO (VU.Vector a)
 vector !n !st = val (VU.replicateM n st)
 
-to1 :: [a] -> a
-to1 [a] = a
-to1 _ = error "invalid length."
-
 to2 :: [a] -> (a,a)
 to2 [a,b] = (a,b)
 to2 _ = error "invalid length."
