@@ -27,6 +27,11 @@ mkGraphWith :: (Ix i, BuildEdge x i a) =>
     Graph i a
 mkGraphWith f b = accumArray (flip (:)) [] b . concatMap f
 
+-- | 矢印の向きを逆にしたグラフを生成する
+-- DAGでDPする際の頂点リストとしても使用する
+transposeGraph :: Ix i => Graph i a -> Graph i a
+transposeGraph g = mkGraphWith bAdj (bounds g) [(u, v, w) | u <- indices g, (v, w) <- g ! u]
+
 -- | グラフの出次数を返す
 -- >>> outdeg (mkGraphWith @_ @(Int, Int) fAdj (0,2) [(0,1),(1,2)])
 -- array (0,2) [(0,1),(1,1),(2,0)]
