@@ -1,8 +1,50 @@
+{-# LANGUAGE FunctionalDependencies #-}
 module My.Data.Array where
 
-import Data.Array.MArray
+import Control.Monad.ST
 import Data.Array.IArray
+import Data.Array.IO
+import Data.Array.ST
 import Data.Foldable
+
+class (Monad m, MArray a e m) => MBArray a e m | m -> a where
+    newBArray :: Ix i => (i, i) -> e -> m (a i e)
+
+instance MBArray IOArray e IO where
+    newBArray = newArray
+
+instance MBArray (STArray s) e (ST s) where
+    newBArray = newArray
+
+class (Monad m, MArray a e m) => MUArray a e m | m -> a where
+    newUArray :: Ix i => (i, i) -> e -> m (a i e)
+
+instance MUArray IOUArray Bool IO where
+  newUArray = newArray
+instance MUArray IOUArray Char IO where
+  newUArray = newArray
+instance MUArray IOUArray Double IO where
+  newUArray = newArray
+instance MUArray IOUArray Float IO where
+  newUArray = newArray
+instance MUArray IOUArray Int IO where
+  newUArray = newArray
+instance MUArray IOUArray Word IO where
+  newUArray = newArray
+
+instance MUArray (STUArray s) Bool (ST s) where
+  newUArray = newArray
+instance MUArray (STUArray s) Char (ST s) where
+  newUArray = newArray
+instance MUArray (STUArray s) Double (ST s) where
+  newUArray = newArray
+instance MUArray (STUArray s) Float (ST s) where
+  newUArray = newArray
+instance MUArray (STUArray s) Int (ST s) where
+  newUArray = newArray
+instance MUArray (STUArray s) Word (ST s) where
+  newUArray = newArray
+
 
 modifyArray :: (MArray a e m, Ix i) => a i e -> i -> (e -> e) -> m ()
 modifyArray marr i f = readArray marr i >>= writeArray marr i . f
