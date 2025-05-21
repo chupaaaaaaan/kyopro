@@ -42,7 +42,7 @@ outdeg = fmap length
 -- >>> indeg (mkGraphWith @_ @(Int, Int) fAdj (0,2) [(0,1),(1,2)])
 -- array (0,2) [(0,0),(1,1),(2,1)]
 indeg :: Ix i => Graph i a -> Array i Int
-indeg graph = accumArray (+) 0 (bounds graph) [(v,1) | outs <- elems graph, (v,_) <- outs]
+indeg g = accumArray (+) 0 (bounds g) [(v,1) | outs <- elems g, (v,_) <- outs]
 
 -- | 隣接する頂点を返す
 adj :: Ix i => Graph i a -> i -> [i]
