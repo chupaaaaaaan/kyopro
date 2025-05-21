@@ -1,30 +1,34 @@
 module My.Algorithm.DFS where
 
 import Control.Monad.Fix
-import Data.Array.MArray
+import Control.Monad.ST
+import Data.Array.IArray
+import Data.Array.ST
 import Data.Foldable
+import My.Data.Array
+import My.Data.Ref
 
 -- | 深さ優先探索
--- ex. onGraph: dist <- dfs @IOUArray (adj graph) (bounds graph) [1]
--- ex. onGrid:  dist <- dfs @IOUArray (candidates ((/='#').(g!)) bnd nei4) bnd [(1,1)]
-dfs :: (MArray a (Maybe i) m, Ix i) =>
+-- ex. onGraph: let dist = dfs (adj graph) (bounds graph) [1]
+-- ex. onGrid:  let dist = dfs (candidates ((/='#').(g!)) bnd nei4) bnd [(1,1)]
+dfs :: forall i. Ix i =>
     (i -> [i]) -> -- ^ 現在点から探索候補点を取得
     (i, i) ->     -- ^ 探索範囲のbound
     [i] ->        -- ^ 開始点
-    m (a i (Maybe i))
-dfs nexts b start = do
+    Array i (Maybe i)
+dfs nexts b start = runSTArray $ do
 
     -- 訪問済みかを管理するarrayを作成
-    seen <- newArray b Nothing
+    seen <- newBArray b Nothing
 
     -- 探索開始
-    forM_ start $ \s -> flip fix s $ \loop v -> do
+    for_ start $ \s -> flip fix s $ \loop v -> do
         t <- readArray seen v
         case t of
             Just _ -> return ()
             Nothing -> do
                 writeArray seen v (Just s)
-                forM_ (nexts v) loop
+                for_ (nexts v) loop
 
     -- 訪問状態を返却
     return seen
