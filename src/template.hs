@@ -13,10 +13,14 @@ import qualified Data.IntMap.Strict as IM
 import qualified Data.IntPSQ as PSQ
 import qualified Data.IntSet as IS
 import qualified Data.List as L
+import qualified Data.Map.Strict as M
 import Data.Ord
 import qualified Data.Sequence as Seq
+import qualified Data.Set as S
 import Data.Traversable
+import qualified Data.Vector as V
 import qualified Data.Vector.Algorithms.Intro as VAI
+import qualified Data.Vector.Mutable as VM
 import qualified Data.Vector.Unboxing as VU
 import qualified Data.Vector.Unboxing.Mutable as VUM
 import Debug.Trace
