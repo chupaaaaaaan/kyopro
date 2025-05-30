@@ -121,6 +121,13 @@ library
 
   hs-source-dirs:  src
 
+library kyopro-experiments
+  import:
+      warnings
+    , kyopro-env
+
+  hs-source-dirs:  experiments
+
 executable submission
   import:
       warnings
