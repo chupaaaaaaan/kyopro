@@ -5,6 +5,11 @@ cradle:
         cradle:
           cabal:
             component: "lib:kyopro"
+    - path: "./experiments"
+      config:
+        cradle:
+          cabal:
+            component: "lib:kyopro-experiments"
     - path: "./submission"
       config:
         cradle:
