@@ -4,6 +4,7 @@ import Data.Array.Unboxed
 import qualified Data.IntMap.Strict as IM
 import qualified Data.List as L
 import qualified Data.Map.Strict as M
+import Data.Containers.ListUtils
 
 pair :: (a -> b, a -> c) -> a -> (b, c)
 pair (f, g) x = (f x, g x)
@@ -43,3 +44,7 @@ chain f (a:b:as)
 
 notComeHere :: a
 notComeHere = error "Not come here."
+
+-- | 一次元の座標圧縮
+compress1d :: Int -> [Int] -> IM.IntMap Int
+compress1d start = IM.fromList . flip zip [start..] . nubOrd . L.sort
