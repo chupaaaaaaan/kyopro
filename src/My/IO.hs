@@ -46,6 +46,9 @@ wdgraph !n !m = mkGraphWith fbAdj (1,n) <$> int3list m
 charGrid :: Int -> Int -> IO (UArray (Int, Int) Char)
 charGrid !h !w = genGrid ((1,1),(h,w)) <$> list2 h ucChar
 
+intGrid :: Int -> Int -> IO (UArray (Int, Int) Int)
+intGrid !h !w = genGrid ((1,1),(h,w)) <$> list2 h ucInt
+
 -- | Converter
 type Conv = StateT BS.ByteString Maybe
 
