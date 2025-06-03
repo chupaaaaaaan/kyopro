@@ -3,6 +3,21 @@
 set -euo pipefail
 cd $(dirname $0)
 
+# parse options
+OPTN=0
+
+while getopts n option 2> /dev/null
+do
+    case ${option} in
+        n) OPTN=1 ;;
+        \?)
+            echo "Invalid option: '-${option}'" 1>&2
+            exit 1
+            ;;
+    esac
+    shift
+done
+
 if [ $# -ne 1 ]; then
     echo "Invalid number of argument: $#"
     exit 1
@@ -28,15 +43,15 @@ if [ -z "${URL_FROM_FILE}" -o ! -e "${SUBMISSION_PATH}/Main.hs" ]; then
 
 else
     # 2. 上記以外の場合 =>
-    # 2-1. ファイルのURLに対応するパスにMain.hsファイルが存在すれば退避
-    if [ -s "${CODEPATH_FROM_FILE}/Main.hs" ]; then
-        T=$(stat -c %Y "${CODEPATH_FROM_FILE}"/Main.hs)
-        mv "${CODEPATH_FROM_FILE}"/Main.hs "${CODEPATH_FROM_FILE}"/Main-"${T}".hs
-    fi
-
-    # 2-2. 現在の提出コードとバンドル済みソースをファイルのURLに対応するパスに移動
+    # 2-1. 現在の提出コードとバンドル済みソースをファイルのURLに対応するパスに移動
     mkdir -p "${CODEPATH_FROM_FILE}"
     mv "${SUBMISSION_PATH}"/Main.hs "${CODEPATH_FROM_FILE}"/Main.hs
+
+    # 2-2. オプション'-n'が指定され、かつ引数のURLに対応するパスにMain.hsファイルが存在すれば退避
+    if [ ${OPTN} -eq 1 -a -s "${CODEPATH_FROM_ARG}/Main.hs" ]; then
+        T=$(stat -c %Y "${CODEPATH_FROM_ARG}"/Main.hs)
+        mv "${CODEPATH_FROM_ARG}"/Main.hs "${CODEPATH_FROM_ARG}"/Main-"${T}".hs
+    fi
 
     # 2-3. 引数のurlに対応するパスにMain.hsファイルが存在すれば提出コードに移動、存在しなければテンプレートから提出コードを新規作成
     rm -fr "${SUBMISSION_PATH}" && mkdir -p "${SUBMISSION_PATH}"
