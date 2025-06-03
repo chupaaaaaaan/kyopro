@@ -1,7 +1,4 @@
-module My.Data.UnionFind
-    ( ufInit
-    , ufUnite
-    , ufSame ) where
+module My.Data.UnionFind where
 
 import Data.Array.MArray
 import My.Data.Array
