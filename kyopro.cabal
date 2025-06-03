@@ -142,7 +142,7 @@ executable submission
 
   default-language: GHC2021
 
-  ghc-options: -O2 -prof -fprof-auto
+  ghc-options: -O2
 
 executable bundler
   import:
