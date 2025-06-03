@@ -1,6 +1,6 @@
 module My.Algorithm.BinarySearch where
 
-import qualified Data.Vector.Unboxing as VU
+import qualified Data.Vector.Generic as VG
 
 -- | 整数区間に対する二分探索
 -- 区間は半開区間 [ok,ng) もしくは (ng,ok] とする
@@ -41,6 +41,7 @@ bsearchBase f ep isOk = go
         | otherwise = ok
 
 -- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
+-- >>> import Data.Vector.Unboxed qualified as VU
 -- >>> let sorted :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
 -- >>>     l = VU.length sorted
 --
@@ -59,8 +60,8 @@ bsearchBase f ep isOk = go
 -- >>> bsearch (sorted`ile`5) 0 l
 -- 3
 --
-igt,ilt,ige,ile :: (Ord a, VU.Unboxable a) => VU.Vector a -> a -> Int -> Bool
-(vec `igt` key) idx = vec VU.! idx > key
-(vec `ilt` key) idx = vec VU.! idx < key
-(vec `ige` key) idx = vec VU.! idx >= key
-(vec `ile` key) idx = vec VU.! idx <= key
+igt,ilt,ige,ile :: (Ord a, VG.Vector v a) => v a -> a -> Int -> Bool
+(vec `igt` key) idx = vec VG.! idx > key
+(vec `ilt` key) idx = vec VG.! idx < key
+(vec `ige` key) idx = vec VG.! idx >= key
+(vec `ile` key) idx = vec VG.! idx <= key

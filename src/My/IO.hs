@@ -7,7 +7,7 @@ import Data.Bool
 import qualified Data.ByteString.Char8 as BS
 import Data.Char
 import qualified Data.List as L
-import qualified Data.Vector.Unboxing as VU
+import qualified Data.Vector.Generic as VG
 import My.Data.Graph
 import My.Data.Grid
 
@@ -76,8 +76,8 @@ list2 :: Int -> Conv a -> IO [[a]]
 list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 
 -- | read a line and convert to Vector
-vector :: (VU.Unboxable a) => Int -> Conv a -> IO (VU.Vector a)
-vector !n !st = val (VU.replicateM n st)
+vector :: (VG.Vector v a) => Int -> Conv a -> IO (v a)
+vector !n !st = val (VG.replicateM n st)
 
 to2 :: [a] -> (a,a)
 to2 [a,b] = (a,b)
