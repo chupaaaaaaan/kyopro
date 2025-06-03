@@ -40,3 +40,6 @@ ufUnite size parent u v = do
 ufSame :: (MBArray a (Maybe i) m, Ix i) => a i (Maybe i) -> i -> i -> m Bool
 ufSame parent u v = (==) <$> ufRoot parent u <*> ufRoot parent v
 
+-- | Union-Find木 ある点が属するグループのサイズを求める
+ufSize :: (MBArray a (Maybe i) m, MUArray b Int m, Ix i) => b i Int -> a i (Maybe i) -> i -> m Int
+ufSize size parent v = ufRoot parent v >>= readArray size
