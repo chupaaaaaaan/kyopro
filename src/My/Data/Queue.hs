@@ -36,6 +36,11 @@ addListQ = L.foldl' pushQ
 fromListQ :: [a] -> Queue a
 fromListQ = addListQ emptyQ
 
+-- >>> toListQ $ fromListQ [1,2,3,4,5]
+-- [1,2,3,4,5]
+toListQ :: Queue a -> [a]
+toListQ = L.unfoldr $ \q -> if isEmptyQ q then Nothing else Just (popQ q)
+
 singletonQ :: a -> Queue a
 singletonQ x = fromListQ [x]
 
