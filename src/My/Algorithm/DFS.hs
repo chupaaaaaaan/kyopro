@@ -86,3 +86,26 @@ eulerTour nextStatus b start = runST $ do
                 f v
 
     reverse <$> readRef ref
+
+-- | 有向グラフに1つ以上のサイクルが含まれているか判定する
+cycleDetection :: forall i. Ix i => (i -> [i]) -> (i, i) -> Bool
+cycleDetection nextStatus b = runST $ do
+    seen <- newUArray b False
+    finished <- newUArray b False
+    isCycle <- newRef False
+
+    for_ (range b) $ \s -> flip fix s $ \loop v -> do
+        t <- readArray seen v
+        if t then return () else do
+            writeArray seen v True
+            for_ (nextStatus v) $ \nv -> do
+
+                nt <- readArray seen nv
+                nf <- readArray finished nv
+                when (nt && not nf) $ writeRef isCycle True
+
+                unless nf $ loop nv
+
+            writeArray finished v True
+
+    readRef isCycle
