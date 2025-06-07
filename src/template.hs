@@ -6,6 +6,7 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.Fix
 import Data.Array.IO
+import Data.Array.ST
 import Data.Array.Unboxed
 import Data.Containers.ListUtils
 import Data.Foldable
@@ -20,21 +21,21 @@ import qualified Data.Set as S
 import Data.Traversable
 import qualified Data.Vector as V
 import qualified Data.Vector.Algorithms.Intro as VAI
+import qualified Data.Vector.Generic as VG
+import qualified Data.Vector.Generic.Mutable as VGM
 import qualified Data.Vector.Mutable as VM
 import qualified Data.Vector.Unboxing as VU
 import qualified Data.Vector.Unboxing.Mutable as VUM
-import Debug.Trace
-import My.Debug
 import My.IO
-import My.Test.QuickCheck
-import qualified Test.QuickCheck as QC
 
 main :: IO ()
 main = do
-    _ <- val ucInt
-    (n,k) <- int2
+    n <- val ucInt
+    (h,w) <- int2
     as <- list1 ucInt
-    av <- vector n ucInt
+    av <- vector @VU.Vector n ucInt
     xys <- int2list n
+    grid <- charGrid h w
+    graph <- ugraph n h
 
     return ()
