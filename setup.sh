@@ -64,6 +64,11 @@ fi
 
 echo "${URL_FROM_ARG}" > url
 
+## TODO 2-3で現在の提出コードと異なるMain.hsを移動する場合、一旦編集し（てタイムスタンプを更新し）ないと（ほぼ間違いなく）テストに失敗してしまう
+## バンドルする際に、以下パスの古い提出コード（の一時ファイル）を見るため
+## このスクリプトで削除するのはビミョーなので、bundler側で対処したい
+rm -fr /tmp/kyopro_lib_PreProcessed/LOCAL/submission/*
+
 rm -fr cases/sample
 mkdir -p cases/sample
 oj d -d cases/sample "${URL_FROM_ARG}"
