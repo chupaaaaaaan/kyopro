@@ -45,6 +45,41 @@ chain f (a:b:as)
 notComeHere :: a
 notComeHere = error "Not come here."
 
--- | 一次元の座標圧縮
+-- | 1次元の座標圧縮
 compress1d :: Int -> [Int] -> IM.IntMap Int
 compress1d start = IM.fromList . flip zip [start..] . nubOrd . L.sort
+
+-- | 2次元平面上の点の平行移動
+-- (x,y)を(x+dx,y+dy)に移動する
+-- >>> map (transf (1,2)) [(1,1),(3,4),(-2,0)]
+-- [(2,3),(4,6),(-1,2)]
+transf :: (Int, Int) -> (Int, Int) -> (Int, Int)
+transf (dx,dy) = cross ((dx+), (dy+))
+
+-- | 2次元平面上の点の平行移動
+-- (x,y)を(x-dx,y-dy)に移動する
+-- >>> map (transr (1,2)) [(1,1),(3,4),(-2,0)]
+-- [(0,-1),(2,2),(-3,-2)]
+transr :: (Int, Int) -> (Int, Int) -> (Int, Int)
+transr (dx,dy) = cross (subtract dx, subtract dy)
+
+-- | 2次元平面上の点の回転
+-- (0,0)を中心に\pi/2回転する
+-- >>> map rot4f [(1,1),(3,4),(-2,0)]
+-- [(-1,1),(-4,3),(0,-2)]
+--
+-- >>> map (rot4f . rot4f . rot4f . rot4f) [(1,1),(3,4),(-2,0)] == [(1,1),(3,4),(-2,0)]
+-- True
+rot4f :: (Int, Int) -> (Int, Int)
+rot4f (x,y) = (-y,x)
+
+-- | 2次元平面上の点の回転
+-- (0,0)を中心に-\pi/2回転する
+-- >>> map rot4r [(1,1),(3,4),(-2,0)]
+-- [(-1,1),(-4,3),(0,-2)]
+--
+-- True
+-- >>> map (rot4r . rot4r . rot4r . rot4r) [(1,1),(3,4),(-2,0)] == [(1,1),(3,4),(-2,0)]
+-- True
+rot4r :: (Int, Int) -> (Int, Int)
+rot4r (x,y) = (-y,x)
