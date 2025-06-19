@@ -1,10 +1,9 @@
 module My.Data.Vector where
 
-import Data.Foldable
+import Data.Bifunctor
 import Data.Ord
 import qualified Data.Vector.Algorithms.Intro as VAI
 import qualified Data.Vector.Generic as VG
-import qualified Data.Vector.Generic.Mutable as VGM
 import My.Algorithm.BinarySearch
 
 
@@ -38,23 +37,16 @@ vDiff v u = let su = vSortUniq u
                       in i == (-1) || i == ulen || su VG.! i /= x
             in VG.filter p v
 
-
--- | タプルのリストからVectorを生成する
--- タプルは (index, value) の形式で、0-based indexingを仮定する
--- >>> vFromTuples0 @Int 3 0 [(1,2)]
+-- | 0-based indexingタプルのリストからVectorを生成する
+-- >>> import qualified Data.Vector.Unboxed as VU
+-- >>> vFromTuples0 @VU.Vector @Int 3 0 [(1,2)]
 -- [0,2,0]
 vFromTuples0 :: VG.Vector v a => Int -> a -> [(Int, a)] -> v a
-vFromTuples0 n def tuples = VG.create $ do
-    v <- VGM.replicate n def
-    for_ tuples $ uncurry (VGM.write v)
-    return v
+vFromTuples0 n def = VG.accum (\_ x -> x) (VG.replicate n def)
 
--- | タプルのリストからVectorを生成する
--- タプルは (index, value) の形式で、1-based indexingを仮定する
--- >>> vFromTuples1 @Int 3 0 [(1,2)]
+-- | 1-based indexingタプルのリストからVectorを生成する
+-- >>> import qualified Data.Vector.Unboxed as VU
+-- >>> vFromTuples1 @VU.Vector @Int 3 0 [(1,2)]
 -- [2,0,0]
 vFromTuples1 :: VG.Vector v a => Int -> a -> [(Int, a)] -> v a
-vFromTuples1 n def tuples = VG.create $ do
-    v <- VGM.replicate n def
-    for_ tuples $ \(i,x) -> VGM.write v (i-1) x
-    return v
+vFromTuples1 n def = vFromTuples0 n def . map (first (subtract 1))
