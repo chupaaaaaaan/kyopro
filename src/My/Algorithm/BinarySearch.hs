@@ -9,7 +9,7 @@ bsearch :: (Integral a, Num a) =>
     (a -> Bool) -> -- ^ indexに対する述語
     a ->           -- ^ ok: 解が存在するindex
     a ->           -- ^ ng: 解が存在しないindex
-    a
+    (a, a)
 bsearch = bsearchBase div 1
 
 -- | 実数区間に対する二分探索
@@ -20,7 +20,7 @@ bsearchF :: RealFrac a =>
     (a -> Bool) -> -- ^ ある実数に対する述語
     a ->           -- ^ ok: 解が存在する実数
     a ->           -- ^ ng: 解が存在しない実数
-    a
+    (a, a)
 bsearchF = bsearchBase (/)
 
 -- | 二分探索の処理の抽象
@@ -30,7 +30,7 @@ bsearchBase :: (Num a, Ord a) =>
     (a -> Bool) ->   -- ^ 位置に対する述語
     a ->             -- ^ ok: 解が存在する位置
     a ->             -- ^ ng: 解が存在しない位置
-    a
+    (a, a)
 bsearchBase f ep isOk = go
   where
     go ok ng
@@ -38,7 +38,7 @@ bsearchBase f ep isOk = go
                                in if isOk mid
                                   then go mid ng
                                   else go ok mid
-        | otherwise = ok
+        | otherwise = (ok, ng)
 
 -- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
 -- >>> import Data.Vector.Unboxed qualified as VU
@@ -48,17 +48,17 @@ bsearchBase f ep isOk = go
 -- >>> VU.indexed sorted
 -- [(0,3),(1,4),(2,5),(3,5),(4,6),(5,7)]
 --
--- >>> bsearch (sorted`igt`5) l 0
--- 4
+-- >>> bsearch (sorted`igt`5) l (-1)
+-- (4,3)
 --
--- >>> bsearch (sorted`ilt`5) 0 l
--- 1
+-- >>> bsearch (sorted`ilt`5) (-1) l
+-- (1,2)
 -- 
--- >>> bsearch (sorted`ige`5) l 0
--- 2
+-- >>> bsearch (sorted`ige`5) l (-1)
+-- (2,1)
 -- 
--- >>> bsearch (sorted`ile`5) 0 l
--- 3
+-- >>> bsearch (sorted`ile`5) (-1) l
+-- (3,4)
 --
 igt,ilt,ige,ile :: (Ord a, VG.Vector v a) => v a -> a -> Int -> Bool
 (vec `igt` key) idx = vec VG.! idx > key
