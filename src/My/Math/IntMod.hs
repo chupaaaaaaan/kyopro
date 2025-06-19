@@ -4,6 +4,7 @@
 module My.Math.IntMod where
 
 import qualified Data.Vector.Unboxing as VU
+import Data.Semigroup
 
 modulus :: Int
 modulus = 1_000_000_007
@@ -23,11 +24,8 @@ instance Num IntMod where
   abs = undefined
   signum = undefined
 
-powMod :: IntMod -> Int -> IntMod
-powMod !x 1 = x
-powMod !x !k
-  | even k = powMod (x * x) (k `div` 2)
-  | otherwise = x * powMod (x * x) (k `div` 2)
+powMod :: Integral a => IntMod -> a -> IntMod
+powMod !x !k = getProduct $ stimes k $ Product x
 
 data NCKTable =
     NCK { size :: Int
