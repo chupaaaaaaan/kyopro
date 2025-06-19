@@ -1,24 +1,22 @@
 module My.Algorithm.DFS where
 
-import Control.Monad
 import Control.Monad.Fix
-import Control.Monad.ST
 import Data.Array.IArray
 import Data.Array.ST
 import Data.Foldable
-import Data.Traversable
 import My.Data.Array
-import My.Data.Ref
+import Data.Array.Unboxed
 
 -- | 深さ優先探索の雛形
+-- この実装では、訪問済みかを管理する配列を返す
 -- ex. onGraph: dfs (adj graph) (bounds graph) [1]
 -- ex. onGrid:  dfs (nexts ((/='#').(g!)) bnd nei4) bnd [(1,1)]
-dfs :: forall i s. Ix i =>
+dfs :: forall i. Ix i =>
     (i -> [i]) -> -- ^ 現在点から探索候補点を取得
     (i, i) ->     -- ^ 探索範囲のbound
     [i] ->        -- ^ 開始点
-    ST s ()
-dfs nextStatus b start = do
+    UArray i Bool
+dfs nextStatus b start = runSTUArray $ do
     seen <- newUArray b False
 
     for_ start $ \s -> flip fix s $ \loop v -> do
