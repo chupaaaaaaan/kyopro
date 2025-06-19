@@ -37,10 +37,10 @@ dgraph :: Int -> Int -> IO (Graph Int ())
 dgraph !n !m = mkGraphWith fAdj (1,n) <$> int2list m
 
 wgraph :: Int -> Int -> IO (Graph Int Int)
-wgraph !n !m = mkGraphWith fAdj (1,n) <$> int3list m
+wgraph !n !m = mkGraphWith fbAdj (1,n) <$> int3list m
 
 wdgraph :: Int -> Int -> IO (Graph Int Int)
-wdgraph !n !m = mkGraphWith fbAdj (1,n) <$> int3list m
+wdgraph !n !m = mkGraphWith fAdj (1,n) <$> int3list m
 
 -- Grid
 charGrid :: Int -> Int -> IO (UArray (Int, Int) Char)
