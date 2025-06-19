@@ -1,7 +1,15 @@
 {-# LANGUAGE FunctionalDependencies #-}
 module My.Data.Graph where
 
+import Control.Monad
+import Control.Monad.Fix
+import Control.Monad.ST
 import Data.Array.IArray
+import Data.Array.MArray
+import Data.Foldable
+import Data.Traversable
+import My.Data.Array
+import My.Data.Ref
 
 type Graph i a = Array i [(i, a)]
 
@@ -51,3 +59,85 @@ adj g = map fst . (g!)
 -- | 隣接する頂点と辺の重みのペアを返す
 adjW :: Ix i => Graph i a -> i -> [(i, a)]
 adjW = (!)
+
+
+-- アルゴリズム
+
+-- | DAGをトポロジカルソートして返す
+-- ex. onGraph: let dist = topologicalSort (adj graph) (bounds graph)
+topologicalSort :: forall i. Ix i => (i -> [i]) -> (i, i) -> [i]
+topologicalSort nextStatus b = runST $ do
+    seen <- newUArray b False
+    order <- newRef []
+
+    for_ (range b) $ \start -> flip fix start $ \loop v -> do
+        t <- readArray seen v
+        if t then return () else do
+            writeArray seen v True
+            for_ (nextStatus v) loop
+            modifyRef order (v:)
+
+    readRef order
+
+-- | 無向グラフの連結成分のリストを返す
+-- 各連結成分は訪問順の逆順に並んでいる
+connectedComponents :: forall i. Ix i => (i -> [i]) -> (i, i) -> [[i]]
+connectedComponents nextStatus b = filter (not . null) $ runST $ do
+    seen <- newUArray b False
+
+    for (range b) $ \s -> do
+        ref <- newRef []
+
+        flip fix s $ \loop v -> do
+            t <- readArray seen v
+            if t then return () else do
+                writeArray seen v True
+                modifyRef ref (v:)
+                for_ (nextStatus v) loop
+
+        readRef ref
+
+-- | 頂点に注目したオイラーツアーを返す
+eulerTour :: forall i. Ix i => (i -> [i]) -> (i, i) -> i -> [i]
+eulerTour nextStatus b start = runST $ do
+    seen <- newUArray b False
+    ref <- newRef []
+
+    let f u = do
+            r <- readRef ref
+            when (null r || head r /= u) (modifyRef ref (u:))
+
+    flip fix start $ \loop v -> do
+        t <- readArray seen v
+        if t then return () else do
+            writeArray seen v True
+            for_ (nextStatus v) $ \nv -> do
+                f v
+                loop nv
+                f v
+
+    reverse <$> readRef ref
+
+-- | 有向グラフに1つ以上のサイクルが含まれているか判定する
+cycleDetection :: forall i. Ix i => (i -> [i]) -> (i, i) -> Bool
+cycleDetection nextStatus b = runST $ do
+    seen <- newUArray b False
+    finished <- newUArray b False
+    isCycle <- newRef False
+
+    for_ (range b) $ \s -> flip fix s $ \loop v -> do
+        t <- readArray seen v
+        if t then return () else do
+            writeArray seen v True
+            for_ (nextStatus v) $ \nv -> do
+
+                nt <- readArray seen nv
+                nf <- readArray finished nv
+                when (nt && not nf) $ writeRef isCycle True
+
+                unless nf $ loop nv
+
+            writeArray finished v True
+
+    readRef isCycle
+
