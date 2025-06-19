@@ -7,6 +7,7 @@ import qualified Data.Vector.Unboxing as VU
 
 modulus :: Int
 modulus = 1_000_000_007
+-- modulus = 998_244_353
 
 newtype IntMod = IntMod Int
     deriving Eq deriving newtype VU.Unboxable
