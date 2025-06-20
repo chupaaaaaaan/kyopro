@@ -33,7 +33,7 @@ vSortUniqBy f v = VG.create $ do
 vDiff :: (Ord a, VG.Vector v a) => v a -> v a -> v a
 vDiff v u = let su = vSortUniq u
                 ulen = VG.length su
-                p x = let i = bsearch (su`ile`x) (-1) ulen
+                p x = let (i,_) = bsearch (su`ile`x) (-1) ulen
                       in i == (-1) || i == ulen || su VG.! i /= x
             in VG.filter p v
 
