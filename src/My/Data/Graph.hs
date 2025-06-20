@@ -1,4 +1,5 @@
 {-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE MultiWayIf #-}
 module My.Data.Graph where
 
 import Control.Monad
@@ -6,7 +7,11 @@ import Control.Monad.Fix
 import Control.Monad.ST
 import Data.Array.IArray
 import Data.Array.MArray
+import Data.Array.ST
+import Data.Array.Unboxed
 import Data.Foldable
+import qualified Data.IntPSQ as PSQ
+import qualified Data.List as L
 import Data.Traversable
 import My.Data.Array
 import My.Data.Ref
@@ -81,6 +86,45 @@ topologicalSort graph = runST $ do
             modifyRef order (v:)
 
     readRef order
+
+-- | Kahnのアルゴリズムにより、DAGをトポロジカルソートして返す
+-- トポロジカルソートは辞書順最小となっている
+-- グラフに閉路が存在する場合、空のリストを返す
+topologicalSortKahn :: Graph Int a -> [Int]
+topologicalSortKahn graph = runST $ do
+    let b = bounds graph
+        nextStatus = adj graph
+
+    indeg <- thaw (indegree graph) :: ST s (STArray s Int Int)
+    order <- newRef []
+
+    start <- map fst . filter ((==0) . snd) <$> getAssocs indeg
+
+    flip fix (addList PSQ.empty start) $ \loop psq -> do
+        case PSQ.minView psq of
+            Nothing -> return ()
+            Just (_,v,_,psq') -> do
+
+                modifyRef order (v:)
+
+                candidates <- fmap concat <$> for (nextStatus v) $ \c -> do
+                    r <- readArray indeg c
+                    if | r == 0 -> return []
+                       | r == 1 -> do
+                             writeArray indeg c 0
+                             return [c]
+                       | otherwise -> do
+                             writeArray indeg c (r-1)
+                             return []
+
+                loop $ addList psq' candidates
+
+    result <- readRef order
+    return $ if rangeSize b == length result then reverse result else []
+
+        where addList :: PSQ.IntPSQ Int () -> [Int] -> PSQ.IntPSQ Int ()
+              addList = L.foldl' $ \q i -> PSQ.insert i i () q
+
 
 -- | 無向グラフの連結成分のリストを返す
 -- 各連結成分は訪問順の逆順に並んでいる
