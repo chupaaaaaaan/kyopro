@@ -41,16 +41,16 @@ transposeGraph :: Ix i => Graph i a -> Graph i a
 transposeGraph g = mkGraphWith bAdj (bounds g) [(u, v, w) | u <- indices g, (v, w) <- g ! u]
 
 -- | グラフの出次数を返す
--- >>> outdeg (mkGraphWith @_ @(Int, Int) fAdj (0,2) [(0,1),(1,2)])
+-- >>> outdegree (mkGraphWith @_ @(Int, Int) fAdj (0,2) [(0,1),(1,2)])
 -- array (0,2) [(0,1),(1,1),(2,0)]
-outdeg :: Ix i => Graph i a -> Array i Int
-outdeg = fmap length
+outdegree :: Ix i => Graph i a -> UArray i Int
+outdegree g = array (bounds g) [(v, length outs) | (v, outs) <- assocs g]
 
 -- | グラフの入次数を返す
--- >>> indeg (mkGraphWith @_ @(Int, Int) fAdj (0,2) [(0,1),(1,2)])
+-- >>> indegree (mkGraphWith @_ @(Int, Int) fAdj (0,2) [(0,1),(1,2)])
 -- array (0,2) [(0,0),(1,1),(2,1)]
-indeg :: Ix i => Graph i a -> Array i Int
-indeg g = accumArray (+) 0 (bounds g) [(v,1) | outs <- elems g, (v,_) <- outs]
+indegree :: Ix i => Graph i a -> UArray i Int
+indegree g = accumArray (+) 0 (bounds g) [(v,1) | outs <- elems g, (v,_) <- outs]
 
 -- | 隣接する頂点を返す
 adj :: Ix i => Graph i a -> i -> [i]
