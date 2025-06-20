@@ -63,10 +63,13 @@ adjW = (!)
 
 -- アルゴリズム
 
--- | DAGをトポロジカルソートして返す
+-- | DFSにより、DAGをトポロジカルソートして返す
 -- ex. onGraph: let dist = topologicalSort (adj graph) (bounds graph)
-topologicalSort :: forall i. Ix i => (i -> [i]) -> (i, i) -> [i]
-topologicalSort nextStatus b = runST $ do
+topologicalSort :: forall i a. Ix i => Graph i a -> [i]
+topologicalSort graph = runST $ do
+    let b = bounds graph
+        nextStatus = adj graph
+
     seen <- newUArray b False
     order <- newRef []
 
@@ -81,8 +84,11 @@ topologicalSort nextStatus b = runST $ do
 
 -- | 無向グラフの連結成分のリストを返す
 -- 各連結成分は訪問順の逆順に並んでいる
-connectedComponents :: forall i. Ix i => (i -> [i]) -> (i, i) -> [[i]]
-connectedComponents nextStatus b = filter (not . null) $ runST $ do
+connectedComponents :: forall i a. Ix i => Graph i a -> [[i]]
+connectedComponents graph = filter (not . null) $ runST $ do
+    let b = bounds graph
+        nextStatus = adj graph
+
     seen <- newUArray b False
 
     for (range b) $ \s -> do
@@ -98,8 +104,11 @@ connectedComponents nextStatus b = filter (not . null) $ runST $ do
         readRef ref
 
 -- | 頂点に注目したオイラーツアーを返す
-eulerTour :: forall i. Ix i => (i -> [i]) -> (i, i) -> i -> [i]
-eulerTour nextStatus b start = runST $ do
+eulerTour :: forall i a. Ix i => Graph i a -> i -> [i]
+eulerTour graph start = runST $ do
+    let b = bounds graph
+        nextStatus = adj graph
+
     seen <- newUArray b False
     ref <- newRef []
 
@@ -119,8 +128,11 @@ eulerTour nextStatus b start = runST $ do
     reverse <$> readRef ref
 
 -- | 有向グラフに1つ以上のサイクルが含まれているか判定する
-cycleDetection :: forall i. Ix i => (i -> [i]) -> (i, i) -> Bool
-cycleDetection nextStatus b = runST $ do
+cycleDetection :: forall i a. Ix i => Graph i a -> Bool
+cycleDetection graph = runST $ do
+    let b = bounds graph
+        nextStatus = adj graph
+
     seen <- newUArray b False
     finished <- newUArray b False
     isCycle <- newRef False
@@ -140,4 +152,3 @@ cycleDetection nextStatus b = runST $ do
             writeArray finished v True
 
     readRef isCycle
-
