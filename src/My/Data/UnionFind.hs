@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 module My.Data.UnionFind where
 
 import Data.Array.MArray
@@ -22,11 +21,10 @@ ufInit :: (MUArray a i m, MUArray a Int m, Ix i) => (i, i) -> m (UnionFind a i)
 ufInit bnds = UF <$> newUListArray bnds (range bnds) <*> newUArray bnds 1
 
 -- | Union-Find木 親を求める
--- parentの要素のうち、Nothingのものが親となる
+-- parentの要素の値が自分自身と同じ場合、親である
 ufRoot :: (MUArray a i m, MUArray a Int m, Ix i) => i -> RUF a i m i
 ufRoot v = do
-    uf <- ask
-    let parent = parentUF uf
+    parent <- asks parentUF
     p <- lift (readArray parent v)
     if p == v then return v else do
         q <- ufRoot p
@@ -36,12 +34,11 @@ ufRoot v = do
 -- | Union-Find木 グループを統合する
 ufUnite :: (MUArray a i m, MUArray a Int m, Ix i) => i -> i -> RUF a i m ()
 ufUnite u v = do
-    uf <- ask
     ru <- ufRoot u
     rv <- ufRoot v
     if ru == rv then return () else do
-        let size = sizeUF uf
-            parent = parentUF uf
+        size <- asks sizeUF
+        parent <- asks parentUF
         su <- lift $ readArray size ru
         sv <- lift $ readArray size rv
         if su < sv
