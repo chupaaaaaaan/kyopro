@@ -54,6 +54,7 @@ else
                 [Yy]|[Yy][Ee][Ss])
                     T=$(stat -c %Y "${CODEPATH_FROM_ARG}"/Main.hs)
                     mv "${CODEPATH_FROM_ARG}"/Main.hs "${CODEPATH_FROM_ARG}"/Main-"${T}".hs
+                    echo "New submission file created. Continue processing..." 1>&2
                     break;;
                 *)
                     echo "File creation canceled. Continue processing..." 1>&2
