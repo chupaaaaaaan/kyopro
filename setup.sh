@@ -19,7 +19,7 @@ do
 done
 
 if [ $# -ne 1 ]; then
-    echo "Invalid number of argument: $#"
+    echo "Invalid number of argument: $#" 1>&2
     exit 1
 fi
 
@@ -49,8 +49,17 @@ else
 
     # 2-2. オプション'-n'が指定され、かつ引数のURLに対応するパスにMain.hsファイルが存在すれば退避
     if [ ${OPTN} -eq 1 -a -s "${CODEPATH_FROM_ARG}/Main.hs" ]; then
-        T=$(stat -c %Y "${CODEPATH_FROM_ARG}"/Main.hs)
-        mv "${CODEPATH_FROM_ARG}"/Main.hs "${CODEPATH_FROM_ARG}"/Main-"${T}".hs
+        while read -p "Create a new submission file? [y/N] " yn; do
+            case "${yn}" in
+                [Yy]|[Yy][Ee][Ss])
+                    T=$(stat -c %Y "${CODEPATH_FROM_ARG}"/Main.hs)
+                    mv "${CODEPATH_FROM_ARG}"/Main.hs "${CODEPATH_FROM_ARG}"/Main-"${T}".hs
+                    break;;
+                *)
+                    echo "File creation canceled. Continue processing..." 1>&2
+                    break;;
+            esac
+        done
     fi
 
     # 2-3. 引数のurlに対応するパスにMain.hsファイルが存在すれば提出コードに移動、存在しなければテンプレートから提出コードを新規作成
