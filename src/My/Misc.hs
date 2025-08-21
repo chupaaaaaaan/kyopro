@@ -25,14 +25,14 @@ encoderl = map (\xs -> (head xs, length xs)) . L.group
 decoderl :: [(a, Int)] -> [a]
 decoderl = concatMap $ uncurry $ flip replicate
 
-freq :: Ord a => [a] -> [(a, Int)]
-freq = M.toList . L.foldl' (\m k -> M.insertWith (+) k 1 m) M.empty
+freq :: Ord a => [a] -> M.Map a Int
+freq = foldl' (\m k -> M.insertWith (+) k 1 m) M.empty
 
 hist :: (Int, Int) -> [Int] -> UArray Int Int
 hist bnds = accumArray @UArray (+) 0 bnds . map (,1)
 
-freqI :: [Int] -> [(Int, Int)]
-freqI = IM.toList . L.foldl' (\m k -> IM.insertWith (+) k 1 m) IM.empty
+freqI :: [Int] -> IM.IntMap Int
+freqI = foldl' (\m k -> IM.insertWith (+) k 1 m) IM.empty
 
 chain :: (a -> a -> Bool) -> [a] -> [[a]]
 chain _ [] = []
