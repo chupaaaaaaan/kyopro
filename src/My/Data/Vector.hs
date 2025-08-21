@@ -9,7 +9,7 @@ import My.Algorithm.BinarySearch
 
 {-# INLINE vSort #-}
 vSort :: (Ord a, VG.Vector v a) => v a -> v a
-vSort = VG.modify VAI.sort
+vSort = VG.modify $ VAI.sortBy compare
 
 {-# INLINE vSortOn #-}
 vSortOn :: (Ord b, VG.Vector v a) => (a -> b) -> v a -> v a
