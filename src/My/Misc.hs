@@ -1,10 +1,11 @@
 module My.Misc where
 
 import Data.Array.Unboxed
+import Data.Containers.ListUtils
+import Data.Foldable
 import qualified Data.IntMap.Strict as IM
 import qualified Data.List as L
 import qualified Data.Map.Strict as M
-import Data.Containers.ListUtils
 
 pair :: (a -> b, a -> c) -> a -> (b, c)
 pair (f, g) x = (f x, g x)
@@ -83,3 +84,50 @@ rot4f (x,y) = (-y,x)
 -- True
 rot4r :: (Int, Int) -> (Int, Int)
 rot4r (x,y) = (-y,x)
+
+-- | 2次元平面上の3点が、同一直線状に存在するか判定する
+onSameLine :: (Int, Int) -> (Int, Int) -> (Int, Int) -> Bool
+onSameLine p0 p1 p2 =
+    let (x1,y1) = transr p0 p1
+        (x2,y2) = transr p0 p2
+    in x1 * y2 - x2 * y1 == 0
+
+-- | 2次元平面上の2点がなす傾きを、(x方向の変化量,y方向の変化量)形式で取得する
+-- x方向の変化量は非負である
+incl :: (Int, Int) -> (Int, Int) -> Rat
+incl (x1,y1) (x2,y2) = ri (y2 - y1) (x2 - x1)
+
+-- | 2次元平面上の2点をm:nに内分する点を取得する
+idp :: Int -> Int -> (Int,Int) -> (Int,Int) -> (Rat, Rat)
+idp m n (x1,y1) (x2,y2) = ((n*x1 + m*x2) `ri` (m+n), (n*y1 + m*y2) `ri` (m+n) )
+
+-- | 2次元平面上の2点の中点を取得する
+midp :: (Int,Int) -> (Int,Int) -> ((Int, Int), (Int, Int))
+midp = idp 1 1
+
+
+-- | 有理数のTupleによる表示
+-- Ratio IntがUnboxed Vectorに載らないため。
+type Numerator = Int
+type Denominator = Int
+type Rat = (Numerator, Denominator)
+
+-- | 有理数をTupleで表示する
+-- 利便性のため、分母が0の場合も許容する
+ri :: Int -> Int -> Rat
+ri num den = ((num * signum den)`div`d, abs den`div`d)
+    where d = gcd num den
+
+-- | 分母を取得する
+denom :: Rat -> Denominator
+denom (_,den) = den
+
+-- | 分子を取得する
+numer :: Rat -> Numerator
+numer (num,_) = num
+
+-- | 有理数をDouble型の値に変換する
+r2f :: Rat -> Double
+r2f (num,den)
+    | den == 0 = error "Divided by zero"
+    | otherwise = fromIntegral num / fromIntegral den
