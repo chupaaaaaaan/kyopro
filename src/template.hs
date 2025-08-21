@@ -35,12 +35,14 @@ import My.IO
 
 main :: IO ()
 main = do
-    n <- val ucInt
-    (h,w) <- int2
-    as <- list1 ucInt
-    av <- vector @VU.Vector n ucInt
-    xys <- int2list n
-    grid <- charGrid h w
-    graph <- ugraph n h
+    -- n <- val ucInt
+    -- (h,w) <- int2
+    -- (n,m,k) <- int3
+    -- as <- list1 ucInt
+    -- bs <- listN n ucInt
+    -- av <- vector @VU.Vector n ucInt
+    -- xys <- int2list n
+    -- grid <- charGrid h w
+    -- graph <- ugraph n h
 
     return ()
