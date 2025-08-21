@@ -50,3 +50,67 @@ vFromTuples0 n def = VG.accum (\_ x -> x) (VG.replicate n def)
 -- [2,0,0]
 vFromTuples1 :: VG.Vector v a => Int -> a -> [(Int, a)] -> v a
 vFromTuples1 n def = vFromTuples0 n def . map (first (subtract 1))
+
+-- | 昇順にソート済みのVectorから、初めてkey以上/超過/以下/未満の値となるindexと、その時の値を返す
+-- >>> import Data.Vector.Unboxed qualified as VU
+-- >>> let vec :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
+-- >>> vLookupGE 5 vec
+-- Just (2,5)
+--
+-- >>> vLookupGT 5 vec
+-- Just (4,6)
+--
+-- >>> vLookupGE 7 vec
+-- Just (5,7)
+--
+-- >>> vLookupGT 7 vec
+-- Nothing
+--
+-- >>> vLookupLE 5 vec
+-- Just (3,5)
+--
+-- >>> vLookupLT 5 vec
+-- Just (1,4)
+--
+-- >>> vLookupLE 3 vec
+-- Just (0,3)
+--
+-- >>> vLookupLT 3 vec
+-- Nothing
+--
+vLookupGE,vLookupGT,vLookupLE,vLookupLT :: (Ord b, VG.Vector v b) => b -> v b -> Maybe (Int, b)
+vLookupGE key vec = vLookup ige (VG.length vec) (-1) key vec
+vLookupGT key vec = vLookup igt (VG.length vec) (-1) key vec
+vLookupLE key vec = vLookup ile (-1) (VG.length vec) key vec
+vLookupLT key vec = vLookup ilt (-1) (VG.length vec) key vec
+
+vLookup :: (Ord b, VG.Vector v b) => (v b -> b -> Int -> Bool) -> Int -> Int -> b -> v b -> Maybe (Int, b)
+vLookup cond ok ng key vec =
+    let idx = bsearch (vec `cond` key) ok ng
+    in if idx == ok then Nothing else Just (idx, vec VG.! idx)
+
+-- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
+-- >>> import Data.Vector.Unboxed qualified as VU
+-- >>> let sorted :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
+-- >>>     l = VU.length sorted
+--
+-- >>> VU.indexed sorted
+-- [(0,3),(1,4),(2,5),(3,5),(4,6),(5,7)]
+--
+-- >>> bsearch (sorted`igt`5) l 0
+-- 4
+--
+-- >>> bsearch (sorted`ilt`5) 0 l
+-- 1
+--
+-- >>> bsearch (sorted`ige`5) l 0
+-- 2
+--
+-- >>> bsearch (sorted`ile`5) 0 l
+-- 3
+--
+igt,ilt,ige,ile :: (Ord a, VG.Vector v a) => v a -> a -> Int -> Bool
+(vec `igt` key) idx = vec VG.! idx > key
+(vec `ilt` key) idx = vec VG.! idx < key
+(vec `ige` key) idx = vec VG.! idx >= key
+(vec `ile` key) idx = vec VG.! idx <= key

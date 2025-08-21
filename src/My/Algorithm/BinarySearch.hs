@@ -1,7 +1,5 @@
 module My.Algorithm.BinarySearch where
 
-import qualified Data.Vector.Generic as VG
-
 -- | 整数区間に対する二分探索
 -- 区間は半開区間 [ok,ng) もしくは (ng,ok] とする
 -- (参考) https://qiita.com/drken/items/97e37dd6143e33a64c8c
@@ -39,29 +37,3 @@ bsearchBase f ep isOk = go
                                   then go mid ng
                                   else go ok mid
         | otherwise = ok
-
--- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
--- >>> import Data.Vector.Unboxed qualified as VU
--- >>> let sorted :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
--- >>>     l = VU.length sorted
---
--- >>> VU.indexed sorted
--- [(0,3),(1,4),(2,5),(3,5),(4,6),(5,7)]
---
--- >>> bsearch (sorted`igt`5) l 0
--- 4
---
--- >>> bsearch (sorted`ilt`5) 0 l
--- 1
--- 
--- >>> bsearch (sorted`ige`5) l 0
--- 2
--- 
--- >>> bsearch (sorted`ile`5) 0 l
--- 3
---
-igt,ilt,ige,ile :: (Ord a, VG.Vector v a) => v a -> a -> Int -> Bool
-(vec `igt` key) idx = vec VG.! idx > key
-(vec `ilt` key) idx = vec VG.! idx < key
-(vec `ige` key) idx = vec VG.! idx >= key
-(vec `ile` key) idx = vec VG.! idx <= key
