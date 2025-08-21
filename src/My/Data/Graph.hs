@@ -95,7 +95,7 @@ topologicalSortKahn graph = runST $ do
     let b = bounds graph
         nextStatus = adj graph
 
-    indeg <- thaw (indegree graph) :: ST s (STArray s Int Int)
+    indeg <- thaw (indegree graph) :: ST s (STUArray s Int Int)
     order <- newRef []
 
     start <- map fst . filter ((==0) . snd) <$> getAssocs indeg
