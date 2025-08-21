@@ -1,7 +1,6 @@
 {-# OPTIONS_GHC -Wno-type-defaults #-}
 module My.Math.Util where
 
-import Data.Foldable
 import My.Algorithm.BinarySearch
 
 
@@ -46,20 +45,35 @@ isqrt n
     where go x = let x' = (x + n `div` x) `div` 2
                  in if x' >= x then x else go x'
 
--- | 非負整数を逆順で2進表示したリストを返す
--- >>> be 187
--- [1,1,0,1,1,1,0,1]
-be :: Integral a => a -> [a]
-be x
- | x == 0 = [0]
- | x > 0  = map (`mod`2) . takeWhile (>0) . iterate (`div`2) $ x
- | otherwise = error "Arg must not be negative"
+-- | 非負整数の立方根を返す
+-- >>> (cbrt 17) ** 3
+-- 17.000000000000004
+cbrt :: (Ord a, Fractional a) => a -> a
+cbrt n
+    | n < 0 = error "Arg must not be negative"
+    | otherwise = go $ n / 2
+    where go x = let x' = (2*x + n / x^^2) / 3
+                 in if x' >= x then x else go x'
 
--- | 逆順2進表示リストから非負整数を返す
--- >>> de [1,1,0,1,1,1,0,1]
--- 187
-de :: forall a. Integral a => [a] -> a
-de x = let d = all (\i -> i == 0 || i == 1) x
-       in if d
-          then foldr' (\ !i !acc -> i + 2 * acc) 0 x
-          else error "List must not contain anything other than 0 or 1"
+-- | 非負整数を逆順p進表示したリストを返す
+-- >>> endig 10 392
+-- [2,9,3]
+endig :: Integral a => a -> a -> [a]
+endig !p !x
+    | p <= 0 = error "Cardinal must be positive"
+    | x < 0 = error "Input must be non-negative"
+    | x == 0 = [0]
+    | otherwise = map (`mod`p) . takeWhile (>0) $ iterate (`div`p) x
+-- L.unfoldr (\ !k -> if k == 0 then Nothing else Just (k`mod`p, k`div`p))
+
+-- | 逆順p進表示リストから非負整数を返す
+-- >>> dedig 10 [2,9,3]
+-- 392
+dedig :: Integral a => a -> [a] -> a
+dedig !p !xs
+    | p <= 0 = error "Cardinal must be positive"
+    | otherwise = sum $ zipWith f (map (p ^) [0..]) xs
+    where f x y = if 0 <= y && y < p
+                  then x * y
+                  else error "Elements of input list must be between [0,p)"
+-- foldr' (\x acc -> acc * p + x) 0
