@@ -107,6 +107,7 @@ library
     My.Algorithm.Dijkstra
     My.Data.Array
     My.Data.Graph
+    My.Data.IntBag
     My.Data.Grid
     My.Data.Queue
     My.Data.Ref
@@ -116,6 +117,7 @@ library
     My.IO
     My.Math.IntMod
     My.Math.Prime
+    My.Math.Util
     My.Misc
     My.Test.QuickCheck
 
