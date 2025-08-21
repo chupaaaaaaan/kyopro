@@ -21,13 +21,13 @@ int4 :: IO (Int, Int, Int, Int)
 int4 = val ((,,,) <$> ucInt <*> ucInt <*> ucInt <*> ucInt)
 
 int2list :: Int -> IO [(Int, Int)]
-int2list !n = fmap to2 <$> list2 n ucInt
+int2list !n = fmap to2 <$> listN n ucInt
 
 int3list :: Int -> IO [(Int, Int, Int)]
-int3list !n = fmap to3 <$> list2 n ucInt
+int3list !n = fmap to3 <$> listN n ucInt
 
 int4list :: Int -> IO [(Int, Int, Int, Int)]
-int4list !n = fmap to4 <$> list2 n ucInt
+int4list !n = fmap to4 <$> listN n ucInt
 
 -- Graph
 ugraph :: Int -> Int -> IO (Graph Int ())
@@ -44,10 +44,10 @@ wdgraph !n !m = mkGraphWith fAdj (1,n) <$> int3list m
 
 -- Grid
 charGrid :: Int -> Int -> IO (UArray (Int, Int) Char)
-charGrid !h !w = genGrid ((1,1),(h,w)) <$> list2 h ucChar
+charGrid !h !w = genGrid ((1,1),(h,w)) <$> listN h ucChar
 
 intGrid :: Int -> Int -> IO (UArray (Int, Int) Int)
-intGrid !h !w = genGrid ((1,1),(h,w)) <$> list2 h ucInt
+intGrid !h !w = genGrid ((1,1),(h,w)) <$> listN h ucInt
 
 -- | Converter
 type Conv = StateT BS.ByteString Maybe
@@ -65,15 +65,15 @@ ucBS = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
                          else Just $ BS.break isSpace bs')
 
 val :: Conv a -> IO a
-val !st = BS.getLine >>= maybe (error "Error: parse failed") (return . fst) . runStateT st
+val !st = BS.getLine >>= maybe (error "Failed to parse input: val") (return . fst) . runStateT st
 
 -- | read a linear data as List
 list1 :: Conv a -> IO [a]
 list1 !st = L.unfoldr (runStateT st) <$> BS.getLine
 
 -- | read multi line data as List
-list2 :: Int -> Conv a -> IO [[a]]
-list2 !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
+listN :: Int -> Conv a -> IO [[a]]
+listN !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 
 -- | read a line and convert to Vector
 vector :: (VG.Vector v a) => Int -> Conv a -> IO (v a)
@@ -81,15 +81,15 @@ vector !n !st = val (VG.replicateM n st)
 
 to2 :: [a] -> (a,a)
 to2 [a,b] = (a,b)
-to2 _ = error "invalid length."
+to2 _ = error "invalid length"
 
 to3 :: [a] -> (a,a,a)
 to3 [a,b,c] = (a,b,c)
-to3 _ = error "invalid length."
+to3 _ = error "invalid length"
 
 to4 :: [a] -> (a,a,a,a)
 to4 [a,b,c,d] = (a,b,c,d)
-to4 _ = error "invalid length."
+to4 _ = error "invalid length"
 
 -- Output Utility
 yn :: Bool -> String
