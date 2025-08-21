@@ -37,7 +37,7 @@ if [ $# -ne 1 ]; then
 fi
 
 # 引数で与えたURL（引数のURL）
-URL_FROM_ARG="$1"
+export URL_FROM_ARG="$1"
 # 引数のURLに対応するパス
 CODEPATH_FROM_ARG="code/${URL_FROM_ARG##*://}"
 # urlファイルから取得したURL（ファイルのURL）
@@ -52,7 +52,7 @@ TEMPLATE_FILE=src/template.hs
 if [ -z "${URL_FROM_FILE}" -o ! -e "${SUBMISSION_PATH}/Main.hs" ]; then
     # 1. ファイルのURLが空 or 提出コードが存在しない場合 => テンプレートから提出コードを新規作成
     rm -fr "${SUBMISSION_PATH}" && mkdir -p "${SUBMISSION_PATH}"
-    cat "${TEMPLATE_FILE}" > "${SUBMISSION_PATH}"/Main.hs
+    envsubst < "${TEMPLATE_FILE}" > "${SUBMISSION_PATH}"/Main.hs
 
 else
     # 2. 上記以外の場合 =>
@@ -71,7 +71,7 @@ else
     if [ -s "${CODEPATH_FROM_ARG}/Main.hs" ]; then
         mv "${CODEPATH_FROM_ARG}"/Main.hs "${SUBMISSION_PATH}"/Main.hs
     else
-        cat "${TEMPLATE_FILE}" > "${SUBMISSION_PATH}"/Main.hs
+        envsubst < "${TEMPLATE_FILE}" > "${SUBMISSION_PATH}"/Main.hs
     fi
 fi
 
