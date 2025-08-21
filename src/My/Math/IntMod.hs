@@ -5,10 +5,11 @@ module My.Math.IntMod where
 
 import qualified Data.Vector.Unboxing as VU
 import Data.Semigroup
+import My.Math.Util
 
 modulus :: Int
-modulus = 1_000_000_007
--- modulus = 998_244_353
+-- modulus = 1_000_000_007
+modulus = 998_244_353
 
 newtype IntMod = IntMod Int
     deriving Eq deriving newtype VU.Unboxable
@@ -69,6 +70,12 @@ invMod _ 0  = error "inverse of 0"
 invMod (NCK size _ invTable _) n
     | size < n = error "too large arguments"
     | otherwise = invTable VU.! n
+
+invMod' :: Int -> IntMod
+invMod' n = case extgcd n modulus of
+    (u,_,1) -> fromIntegral u
+    (u,_,-1) -> fromIntegral (-u)
+    _ -> error $ show n <> " has no inverse modulo " <> show modulus
 
 nPkMod :: Int -> Int -> IntMod
 nPkMod !n' !k' = go 1 n' k'
