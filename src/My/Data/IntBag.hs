@@ -85,3 +85,6 @@ unionsIB = foldl' unionIB emptyIB
 
 lookupMinIB :: IntBag -> Maybe (Int, Int)
 lookupMinIB IB{..} = IM.lookupMin intbag
+
+lookupMaxIB :: IntBag -> Maybe (Int, Int)
+lookupMaxIB IB{..} = IM.lookupMax intbag
