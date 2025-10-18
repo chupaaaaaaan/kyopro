@@ -5,6 +5,7 @@ import Data.Ord
 import qualified Data.Vector.Algorithms.Intro as VAI
 import qualified Data.Vector.Generic as VG
 import My.Algorithm.BinarySearch
+import Data.Maybe
 
 
 {-# INLINE vSort #-}
@@ -83,6 +84,21 @@ vLookupGE key vec = vLookup ige (VG.length vec) (-1) key vec
 vLookupGT key vec = vLookup igt (VG.length vec) (-1) key vec
 vLookupLE key vec = vLookup ile (-1) (VG.length vec) key vec
 vLookupLT key vec = vLookup ilt (-1) (VG.length vec) key vec
+
+-- | 昇順にソート済みのVectorから、keyと等しい値となるindexの範囲を返す
+-- >>> import Data.Vector.Unboxed qualified as VU
+-- >>> let vec :: VU.Vector Int = VU.fromList [3,5,5,7]
+-- vLookupEQ 3 vec
+vLookupEQ :: (Ord b, VG.Vector v b) => b -> v b -> Maybe (Int, Int)
+vLookupEQ key vec = let ge = vLookupGE key vec
+                        le = vLookupLE key vec
+                    in case (ge,le) of
+                           (Just (b,_),Just (t,_)) -> if b <= t then Just (b,t) else Nothing
+                           _ -> Nothing
+
+vMember :: (Ord b, VG.Vector v b) => b -> v b -> Bool
+vMember key vec = isJust $ vLookupEQ key vec
+
 
 vLookup :: (Ord b, VG.Vector v b) => (v b -> b -> Int -> Bool) -> Int -> Int -> b -> v b -> Maybe (Int, b)
 vLookup cond ok ng key vec =
