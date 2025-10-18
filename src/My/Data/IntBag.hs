@@ -32,22 +32,26 @@ fromListIB xs =
        }
 
 insertIB :: Int -> IntBag -> IntBag
-insertIB x ib =
-    IB { ibSize = ibSize ib + 1
-       , intbag = IM.insertWith (+) x 1 (intbag ib)
+insertIB = insertMultiIB 1
+
+insertMultiIB :: Int -> Int -> IntBag -> IntBag
+insertMultiIB n x ib =
+    IB { ibSize = ibSize ib + n
+       , intbag = IM.insertWith (+) x n (intbag ib)
        }
 
 deleteIB :: Int -> IntBag -> IntBag
-deleteIB x ib =
-    IB { ibSize = ibSize ib - 1
-       , intbag = delIB (intbag ib) x
-       }
-    where delIB :: IM.IntMap Int -> Int -> IM.IntMap Int
-          delIB im z = case im IM.!? z of
-              Nothing -> im
-              Just y -> if y <= 1
-                  then IM.delete z im
-                  else IM.insert z (y-1) im
+deleteIB = deleteMultiIB 1
+
+deleteMultiIB :: Int -> Int -> IntBag -> IntBag
+deleteMultiIB n x ib =
+    let (delCount, ib') = IM.alterF f x (intbag ib)
+    in IB { ibSize = max 0 $ ibSize ib - delCount
+          , intbag = ib'
+          }
+    where f :: Maybe Int -> (Int, Maybe Int)
+          f Nothing = (0, Nothing)
+          f (Just y) = if y <= n then (y, Nothing) else (n, Just (y - n))
 
 sizeIB :: IntBag -> Int
 sizeIB IB{..} = ibSize
