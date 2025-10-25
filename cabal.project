@@ -1,0 +1,12 @@
+packages: ./kyopro.cabal
+
+allow-newer: witherable:containers,
+             semialign:containers,
+             scientific:containers,
+             parallel:containers,
+             megaparsec:containers,
+             foldl:containers,
+             linear-generics:containers,
+             indexed-traversable:containers,
+             hashable:containers,
+             ghc-lib-parser:containers
