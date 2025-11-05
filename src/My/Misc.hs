@@ -1,11 +1,12 @@
 module My.Misc where
 
 import Data.Array.Unboxed
-import Data.Containers.ListUtils
 import Data.Foldable
 import qualified Data.IntMap.Strict as IM
 import qualified Data.List as L
 import qualified Data.Map.Strict as M
+import qualified Data.Vector.Algorithms as VA
+import qualified Data.Vector.Unboxing as VU
 
 pair :: (a -> b, a -> c) -> a -> (b, c)
 pair (f, g) x = (f x, g x)
@@ -47,8 +48,19 @@ notComeHere :: a
 notComeHere = error "Not come here."
 
 -- | 1次元の座標圧縮
-compress1d :: Int -> [Int] -> IM.IntMap Int
-compress1d start = IM.fromList . flip zip [start..] . nubOrd . L.sort
+-- 元座標から圧縮座標を得るIntMapと圧縮座標から元座標を得るIntMapを返す
+-- >>> import qualified Data.IntMap.Strict as IM
+-- >>> let ts = [1,20,300,4000,50000]
+-- >>>     (f,r) = compress1d 0 ts
+-- >>> f IM.! 50000
+-- >>> r IM.! 3
+-- 4
+-- 4000
+compress1d :: Int -> [Int] -> (IM.IntMap Int, IM.IntMap Int)
+compress1d start coor = let nubbed = VA.nub (VU.fromList coor)
+                            compressed = VU.enumFromN start (VU.length nubbed)
+                            f = IM.fromList . VU.toList . uncurry VU.zip
+                        in (f (nubbed, compressed), f (compressed, nubbed))
 
 -- | 2次元平面上の点の平行移動
 -- (x,y)を(x+dx,y+dy)に移動する
