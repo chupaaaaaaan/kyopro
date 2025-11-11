@@ -14,13 +14,12 @@ import Data.Set qualified as S
 import Distribution.ModuleName hiding (ModuleName)
 import Distribution.PackageDescription hiding (PackageFlag)
 import Distribution.Simple.PackageDescription
+import Distribution.Utils.Path (makeSymbolicPath)
 import Distribution.Verbosity
 import GHC.Driver.Session
 import GHC.Hs
 import GHC.Parser.Lexer
 import GHC.Types.SrcLoc
-import GHC.Unit.Module.Name
-import GHC.Utils.Error
 import GHC.Utils.Outputable (renderWithContext, Outputable (ppr))
 import Language.Haskell.GhclibParserEx.GHC.Parser(parseFile)
 import Language.Haskell.GhclibParserEx.GHC.Settings.Config
@@ -117,14 +116,14 @@ pragmas mainPath = do
     mainExt <- fromFile $ installPath </> mainPath
     libExts <- fmap concat $ mapM (fromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
 
-    return (L.sort . L.nub $ "{-# LANGUAGE GHC2021 #-}" : mainExt <> libExts)
+    return $ S.toList $ S.fromList $ mainExt <> libExts
 
     where fromFile :: (MonadThrow m, MonadIO m) => FilePath -> m [String]
           fromFile path = do
               content <- lines <$> liftIO (readFile' path)
               return $ filter (\x -> ("LANGUAGE" `L.isInfixOf` x || "OPTIONS_GHC" `L.isInfixOf` x) && not ("CPP" `L.isInfixOf` x)) content
 
-bundledMods :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> m HsModule
+bundledMods :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> m (HsModule GhcPs)
 bundledMods mode mainPath = do
     mainMod <- fromFile (installPath </> mainPath)
     libMods <- mapM (fromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
@@ -133,20 +132,20 @@ bundledMods mode mainPath = do
                            , hsmodImports = nubIDecls (hsmodImports mainMod <> foldMap hsmodImports libMods)
                            }) <$> kyoproExposedMods
 
-    where fromFile :: (MonadThrow m, MonadIO m) => FilePath -> m HsModule
+    where fromFile :: (MonadThrow m, MonadIO m) => FilePath -> m (HsModule GhcPs)
           fromFile path = parse path =<< withPreProcessed mode path (liftIO . readFile')
 
-renderMods :: HsModule -> String
+renderMods :: HsModule GhcPs -> String
 renderMods = renderWithContext (initDefaultSDocContext dynFlags) . ppr
 
 renderErrors :: PState -> String
-renderErrors = renderWithContext (initDefaultSDocContext dynFlags) . pprMessages . getPsErrorMessages
+renderErrors = renderWithContext (initDefaultSDocContext dynFlags) . ppr . getPsErrorMessages
 
 kyoproExposedMods :: (MonadThrow m, MonadIO m) => m [String]
 kyoproExposedMods = do
-    let cabalFile = installPath </> "kyopro.cabal"
+    let cabalFile = makeSymbolicPath (installPath </> "kyopro.cabal")
 
-    gpd <- liftIO $ readGenericPackageDescription normal cabalFile
+    gpd <- liftIO $ readGenericPackageDescription normal Nothing cabalFile
     case condLibrary gpd of
         Nothing -> return []
         Just (CondNode libs _ _) -> return $ map (L.intercalate "." . components) $ exposedModules libs
@@ -154,7 +153,7 @@ kyoproExposedMods = do
 modNameToPath :: FilePath -> String -> FilePath
 modNameToPath basePath modName = basePath </> map (\x -> if x == '.' then '/' else x) modName <.> "hs"
 
-rmIDecl :: String -> HsModule -> HsModule
+rmIDecl :: String -> HsModule GhcPs -> HsModule GhcPs
 rmIDecl name hsMod = let ilist = filter ((/=name) . moduleNameString . unLoc . ideclName . unLoc) . hsmodImports $ hsMod
                      in hsMod {hsmodImports = ilist}
 
@@ -172,7 +171,7 @@ nubIDecls = snd . foldr (\idecl (set, acc) ->
                         alias = moduleNameString . unLoc <$> ideclAs impDecl
                     in (modName, qualifiedFlag, alias)
 
-parse :: MonadThrow m => FilePath -> String -> m HsModule
+parse :: MonadThrow m => FilePath -> String -> m (HsModule GhcPs)
 parse filename code =
     case parseFile filename dynFlags code of
         POk _ (L _ hsMod) -> return hsMod
@@ -182,4 +181,4 @@ installPath :: FilePath
 installPath = $(do dir <- runIO getCurrentDirectory; [e|dir|])
 
 dynFlags :: DynFlags
-dynFlags = defaultDynFlags fakeSettings fakeLlvmConfig
+dynFlags = defaultDynFlags fakeSettings
