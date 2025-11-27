@@ -2,13 +2,13 @@
 {-# LANGUAGE RecordWildCards #-}
 module My.Data.SegTree where
 
-import Control.Monad.Primitive
-import Data.Foldable
-import qualified Data.Vector.Unboxing.Mutable as VUM
-import qualified Data.Vector.Unboxing as VU
-import My.Math.Util
 import Control.Monad.Fix
+import Control.Monad.Primitive
 import Data.Bits
+import Data.Foldable
+import qualified Data.Vector.Unboxing as VU
+import qualified Data.Vector.Unboxing.Mutable as VUM
+import My.Math.Util
 
 data SegTree s e =
     SgT { sizeSgT :: Int
@@ -56,19 +56,20 @@ sgtRead :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -
 sgtRead SgT{..} p = VUM.read segtree (sizeSgT + p - 1)
 
 sgtQuery :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> Int -> m e
-sgtQuery SgT{..} l r = do
-    let go iL iR smL smR
+sgtQuery SgT{..} l r = go ((l-1) + sizeSgT) ((r-1) + sizeSgT) mempty mempty
+    where
+        go !iL !iR !smL !smR
             | iL < iR = do
-                  vL <- VUM.read segtree iL
-                  vR <- VUM.read segtree (iR-1)
-                  let smL' = if odd iL then vL <> smL else smL
-                      smR' = if odd iR then smR <> vR else smR
-                      iL'  = if odd iL then iL+1 else iL
+                  smL' <- if odd iL
+                          then (<> smL) <$> VUM.read segtree iL
+                          else return smL
+                  smR' <- if odd iR
+                          then (smR <>) <$> VUM.read segtree (iR-1)
+                          else return smR
+                  let iL'  = if odd iL then iL+1 else iL
                       iR'  = if odd iR then iR-1 else iR
                   go (iL' .>>. 1) (iR' .>>. 1) smL' smR'
             | otherwise = return $ smL <> smR
-
-    go ((l-1) + sizeSgT) ((r-1) + sizeSgT) mempty mempty
 
 sgtInnerUpdate :: (Monoid e, VUM.Unboxable e, PrimMonad m) => VUM.MVector (PrimState m) e -> Int -> m ()
 sgtInnerUpdate tree u = do
