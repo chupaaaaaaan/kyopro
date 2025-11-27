@@ -80,7 +80,11 @@ vLookupLT key vec = vLookup ilt (-1) (VG.length vec) key vec
 -- | 昇順にソート済みのVectorから、keyと等しい値となるindexの範囲を返す
 -- >>> import Data.Vector.Unboxed qualified as VU
 -- >>> let vec :: VU.Vector Int = VU.fromList [3,5,5,7]
--- vLookupEQ 3 vec
+-- >>> vLookupEQ 5 vec
+-- Just (1,2)
+--
+-- >>> vLookupEQ 6 vec
+-- Nothing
 vLookupEQ :: (Ord b, VG.Vector v b) => b -> v b -> Maybe (Int, Int)
 vLookupEQ key vec = let ge = vLookupGE key vec
                         le = vLookupLE key vec
