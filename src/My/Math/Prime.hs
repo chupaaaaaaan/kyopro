@@ -1,6 +1,5 @@
 module My.Math.Prime where
 
-import Control.Applicative
 import Control.Monad
 import qualified Data.List as L
 import qualified Data.Vector.Unboxing as VU
