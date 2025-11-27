@@ -73,9 +73,13 @@ vFromTuples1 n def = vFromTuples0 n def . map (first (subtract 1))
 --
 vLookupGE,vLookupGT,vLookupLE,vLookupLT :: (Ord b, VG.Vector v b) => b -> v b -> Maybe Int
 vLookupGE key vec = vLookup ige (VG.length vec) (-1) key vec
+    where (v `ige` k) idx = v VG.! idx >= k
 vLookupGT key vec = vLookup igt (VG.length vec) (-1) key vec
+    where (v `igt` k) idx = v VG.! idx > k
 vLookupLE key vec = vLookup ile (-1) (VG.length vec) key vec
+    where (v `ile` k) idx = v VG.! idx <= k
 vLookupLT key vec = vLookup ilt (-1) (VG.length vec) key vec
+    where (v `ilt` k) idx = v VG.! idx < k
 
 -- | 昇順にソート済みのVectorから、keyと等しい値となるindexの範囲を返す
 -- >>> import Data.Vector.Unboxed qualified as VU
@@ -99,30 +103,4 @@ vMember key vec = isJust $ vLookupEQ key vec
 vLookup :: (Ord b, VG.Vector v b) => (v b -> b -> Int -> Bool) -> Int -> Int -> b -> v b -> Maybe Int
 vLookup cond ok ng key vec =
     let idx = bsearch (vec `cond` key) ok ng
-    in if idx == ok then Nothing else Just (idx, vec VG.! idx)
-
--- | Vector上の二分探索で使用可能な「超過・未満・以上・以下」の判定条件
--- >>> import Data.Vector.Unboxed qualified as VU
--- >>> let sorted :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
--- >>>     l = VU.length sorted
---
--- >>> VU.indexed sorted
--- [(0,3),(1,4),(2,5),(3,5),(4,6),(5,7)]
---
--- >>> bsearch (sorted`igt`5) l 0
--- 4
---
--- >>> bsearch (sorted`ilt`5) 0 l
--- 1
---
--- >>> bsearch (sorted`ige`5) l 0
--- 2
---
--- >>> bsearch (sorted`ile`5) 0 l
--- 3
---
-igt,ilt,ige,ile :: (Ord a, VG.Vector v a) => v a -> a -> Int -> Bool
-(vec `igt` key) idx = vec VG.! idx > key
-(vec `ilt` key) idx = vec VG.! idx < key
-(vec `ige` key) idx = vec VG.! idx >= key
-(vec `ile` key) idx = vec VG.! idx <= key
+    in if idx == ok then Nothing else Just idx
