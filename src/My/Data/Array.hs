@@ -61,10 +61,6 @@ instance MUArray (STUArray s) Word (ST s) where
   newUArray = newArray
   newUListArray = newListArray
 
-
-modifyArray :: (MArray a e m, Ix i) => a i e -> i -> (e -> e) -> m ()
-modifyArray marr i f = readArray marr i >>= writeArray marr i . f
-
 -- | 2次元Array用のscanl
 ascanl2dBase :: (MArray a e m, IArray b e) => (e -> e -> e) -> e -> b (Int, Int) e -> m (a (Int, Int) e)
 ascanl2dBase f a arr = do
