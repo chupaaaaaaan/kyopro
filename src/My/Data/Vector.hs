@@ -30,14 +30,6 @@ vSortUniqBy f v = VG.create $ do
     mv <- VG.thaw v
     VAI.sortUniqBy f mv
 
-{-# INLINE vDiff #-}
-vDiff :: (Ord a, VG.Vector v a) => v a -> v a -> v a
-vDiff v u = let su = vSortUniq u
-                ulen = VG.length su
-                p x = let i = bsearch (su`ile`x) (-1) ulen
-                      in i == (-1) || i == ulen || su VG.! i /= x
-            in VG.filter p v
-
 -- | 0-based indexingタプルのリストからVectorを生成する
 -- >>> import qualified Data.Vector.Unboxed as VU
 -- >>> vFromTuples0 @VU.Vector @Int 3 0 [(1,2)]
