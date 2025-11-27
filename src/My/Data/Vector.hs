@@ -52,34 +52,34 @@ vFromTuples0 n def = VG.accum (\_ x -> x) (VG.replicate n def)
 vFromTuples1 :: VG.Vector v a => Int -> a -> [(Int, a)] -> v a
 vFromTuples1 n def = vFromTuples0 n def . map (first (subtract 1))
 
--- | 昇順にソート済みのVectorから、初めてkey以上/超過/以下/未満の値となるindexと、その時の値を返す
+-- | 昇順にソート済みのVectorから、初めてkey以上/超過/以下/未満の値となるindexを返す
 -- >>> import Data.Vector.Unboxed qualified as VU
 -- >>> let vec :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
 -- >>> vLookupGE 5 vec
--- Just (2,5)
+-- Just 2
 --
 -- >>> vLookupGT 5 vec
--- Just (4,6)
+-- Just 4
 --
 -- >>> vLookupGE 7 vec
--- Just (5,7)
+-- Just 5
 --
 -- >>> vLookupGT 7 vec
 -- Nothing
 --
 -- >>> vLookupLE 5 vec
--- Just (3,5)
+-- Just 3
 --
 -- >>> vLookupLT 5 vec
--- Just (1,4)
+-- Just 1
 --
 -- >>> vLookupLE 3 vec
--- Just (0,3)
+-- Just 0
 --
 -- >>> vLookupLT 3 vec
 -- Nothing
 --
-vLookupGE,vLookupGT,vLookupLE,vLookupLT :: (Ord b, VG.Vector v b) => b -> v b -> Maybe (Int, b)
+vLookupGE,vLookupGT,vLookupLE,vLookupLT :: (Ord b, VG.Vector v b) => b -> v b -> Maybe Int
 vLookupGE key vec = vLookup ige (VG.length vec) (-1) key vec
 vLookupGT key vec = vLookup igt (VG.length vec) (-1) key vec
 vLookupLE key vec = vLookup ile (-1) (VG.length vec) key vec
@@ -93,14 +93,14 @@ vLookupEQ :: (Ord b, VG.Vector v b) => b -> v b -> Maybe (Int, Int)
 vLookupEQ key vec = let ge = vLookupGE key vec
                         le = vLookupLE key vec
                     in case (ge,le) of
-                           (Just (b,_),Just (t,_)) -> if b <= t then Just (b,t) else Nothing
-                           _ -> Nothing
+                           (Just b,Just t) -> if b <= t then Just (b,t) else Nothing
+                           _anyOthers -> Nothing
 
 vMember :: (Ord b, VG.Vector v b) => b -> v b -> Bool
 vMember key vec = isJust $ vLookupEQ key vec
 
 
-vLookup :: (Ord b, VG.Vector v b) => (v b -> b -> Int -> Bool) -> Int -> Int -> b -> v b -> Maybe (Int, b)
+vLookup :: (Ord b, VG.Vector v b) => (v b -> b -> Int -> Bool) -> Int -> Int -> b -> v b -> Maybe Int
 vLookup cond ok ng key vec =
     let idx = bsearch (vec `cond` key) ok ng
     in if idx == ok then Nothing else Just (idx, vec VG.! idx)
