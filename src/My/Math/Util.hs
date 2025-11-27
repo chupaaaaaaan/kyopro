@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wno-type-defaults #-}
 module My.Math.Util where
 
+import Data.Bits
 import My.Algorithm.BinarySearch
 
 
@@ -77,3 +78,18 @@ dedig !p !xs
                   then x * y
                   else error "Elements of input list must be between [0,p)"
 -- foldr' (\x acc -> acc * p + x) 0
+
+-- | 正整数n以上の最小の「2^k型整数」を返す
+-- >>> bitceil 3
+-- 4
+--
+-- >>> bitceil 4
+-- 4
+--
+-- >>> bitceil 5
+-- 8
+--
+bitceil :: Int -> Int
+bitceil n = go 1
+    where go k | k < n = go (k `unsafeShiftL` 1)
+               | otherwise = k
