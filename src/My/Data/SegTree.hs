@@ -34,7 +34,7 @@ sgtBuild iv = do
 
 sgtWrite :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> e -> m ()
 sgtWrite SgT{..} p v = do
-    let pos = sizeSgT + p - 1
+    let pos = sizeSgT + p
 
     VUM.write segtree pos v
     flip fix pos $ \loop i -> if i <= 1 then return () else do
@@ -44,7 +44,7 @@ sgtWrite SgT{..} p v = do
 
 sgtModify :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> e -> m ()
 sgtModify SgT{..} p v = do
-    let pos = sizeSgT + p - 1
+    let pos = sizeSgT + p
 
     VUM.modify segtree (v<>) pos
     flip fix pos $ \loop i -> if i <= 1 then return () else do
@@ -53,10 +53,10 @@ sgtModify SgT{..} p v = do
                      loop parent
 
 sgtRead :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> m e
-sgtRead SgT{..} p = VUM.read segtree (sizeSgT + p - 1)
+sgtRead SgT{..} p = VUM.read segtree (sizeSgT + p)
 
 sgtQuery :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> Int -> m e
-sgtQuery SgT{..} l r = go ((l-1) + sizeSgT) ((r-1) + sizeSgT) mempty mempty
+sgtQuery SgT{..} l r = go (l + sizeSgT) (r + sizeSgT) mempty mempty
     where
         go !iL !iR !smL !smR
             | iL < iR = do
