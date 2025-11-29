@@ -59,14 +59,14 @@ sgtQuery SgT{..} l r = go (l + sizeSgT) (r + sizeSgT) mempty mempty
     where
         go !iL !iR !smL !smR
             | iL < iR = do
-                  smL' <- if odd iL
+                  smL' <- if iL `testBit` 0
                           then (<> smL) <$> VUM.read segtree iL
                           else return smL
-                  smR' <- if odd iR
+                  smR' <- if iR `testBit` 0
                           then (smR <>) <$> VUM.read segtree (iR-1)
                           else return smR
-                  let iL'  = if odd iL then iL+1 else iL
-                      iR'  = if odd iR then iR-1 else iR
+                  let iL'  = if iL `testBit` 0 then iL+1 else iL
+                      iR'  = if iR `testBit` 0 then iR-1 else iR
                   go (iL' .>>. 1) (iR' .>>. 1) smL' smR'
             | otherwise = return $ smL <> smR
 
