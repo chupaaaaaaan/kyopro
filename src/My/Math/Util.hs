@@ -90,6 +90,26 @@ dedig !p !xs
 -- 8
 --
 bitceil :: Int -> Int
-bitceil n = go 1
-    where go k | k < n = go (k `unsafeShiftL` 1)
-               | otherwise = k
+bitceil n = until (>=n) (.<<.1) 1
+
+-- | 正整数を2で割れるだけ割った値を返す
+-- >>> strip2 672
+-- 21
+--
+-- >>> strip2 1024
+-- 1
+--
+-- >>> strip2 1155
+-- 1155
+strip2 :: Int -> Int
+strip2 = until (`testBit` 0) (.>>. 1)
+
+
+-- | 正整数が2のべきか判定する
+-- >>> isv2 8
+-- True
+--
+-- >>> isv2 65
+-- False
+isv2 :: Int -> Bool
+isv2 n = n > 0 && n .&. (n-1) == 0
