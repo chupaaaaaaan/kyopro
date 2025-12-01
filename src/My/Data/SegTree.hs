@@ -43,11 +43,11 @@ sgtWrite SgT{..} p v = do
                      sgtInnerUpdate segtree parent
                      loop parent
 
-sgtModify :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> e -> m ()
-sgtModify SgT{..} p v = do
+sgtModify :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> (e -> e) -> Int -> m ()
+sgtModify SgT{..} f p = do
     let pos = sizeSgT + p
 
-    VUM.modify segtree (v<>) pos
+    VUM.modify segtree f pos
     flip fix pos $ \loop i -> if i <= 1 then return () else do
                      let parent = i .>>. 1
                      sgtInnerUpdate segtree parent
