@@ -122,6 +122,7 @@ library
     My.Data.Grid
     My.Data.Queue
     My.Data.Ref
+    My.Data.SegTree
     My.Data.UnionFind
     My.Data.Vector
     My.Debug
