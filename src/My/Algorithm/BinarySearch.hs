@@ -3,7 +3,7 @@ module My.Algorithm.BinarySearch where
 -- | 整数区間に対する二分探索
 -- 区間は半開区間 [ok,ng) もしくは (ng,ok] とする
 -- (参考) https://qiita.com/drken/items/97e37dd6143e33a64c8c
-bsearch :: (Integral a, Num a) =>
+bsearch :: Integral a =>
     (a -> Bool) -> -- ^ indexに対する述語
     a ->           -- ^ ok: 解が存在するindex
     a ->           -- ^ ng: 解が存在しないindex
@@ -22,7 +22,7 @@ bsearchF :: RealFrac a =>
 bsearchF = bsearchBase (/)
 
 -- | 二分探索の処理の抽象
-bsearchBase :: (Num a, Ord a) =>
+bsearchBase :: Real a =>
     (a -> a -> a) -> -- ^ 区間を半分にする関数
     a ->             -- ^ 区間の最小単位
     (a -> Bool) ->   -- ^ 位置に対する述語
