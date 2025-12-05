@@ -47,29 +47,18 @@ vFromTuples1 n def = vFromTuples0 n def . map (first (subtract 1))
 -- | 昇順にソート済みのVectorから、初めてkey以上/超過/以下/未満の値となるindexを返す
 -- >>> import Data.Vector.Unboxed qualified as VU
 -- >>> let vec :: VU.Vector Int = VU.fromList [3,4,5,5,6,7]
--- >>> vLookupGE 5 vec
--- Just 2
 --
--- >>> vLookupGT 5 vec
--- Just 4
+-- >>> map (\i -> (i, vLookupGE i vec)) [2,3,5,7,8]
+-- [(2,Just 0),(3,Just 0),(5,Just 2),(7,Just 5),(8,Nothing)]
 --
--- >>> vLookupGE 7 vec
--- Just 5
+-- >>> map (\i -> (i, vLookupGT i vec)) [2,3,5,7,8]
+-- [(2,Just 0),(3,Just 1),(5,Just 4),(7,Nothing),(8,Nothing)]
 --
--- >>> vLookupGT 7 vec
--- Nothing
+-- >>> map (\i -> (i, vLookupLE i vec)) [2,3,5,7,8]
+-- [(2,Nothing),(3,Just 0),(5,Just 3),(7,Just 5),(8,Just 5)]
 --
--- >>> vLookupLE 5 vec
--- Just 3
---
--- >>> vLookupLT 5 vec
--- Just 1
---
--- >>> vLookupLE 3 vec
--- Just 0
---
--- >>> vLookupLT 3 vec
--- Nothing
+-- >>> map (\i -> (i, vLookupLT i vec)) [2,3,5,7,8]
+-- [(2,Nothing),(3,Nothing),(5,Just 1),(7,Just 4),(8,Just 5)]
 --
 vLookupGE,vLookupGT,vLookupLE,vLookupLT :: (Ord b, VG.Vector v b) => b -> v b -> Maybe Int
 vLookupGE key vec = vLookup ige (VG.length vec) (-1) key vec
