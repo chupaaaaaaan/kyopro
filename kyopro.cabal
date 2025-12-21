@@ -115,6 +115,7 @@ library
     My.Algorithm.BFS
     My.Algorithm.BinarySearch
     My.Algorithm.DFS
+    My.Algorithm.DP
     My.Algorithm.Dijkstra
     My.Data.Array
     My.Data.Graph
