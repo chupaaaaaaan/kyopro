@@ -25,6 +25,9 @@ instance Num IntMod where
   abs = undefined
   signum = undefined
 
+addMod :: Int -> Int -> Int
+addMod x y = (x + y) `mod` modulus
+
 powMod :: Integral a => IntMod -> a -> IntMod
 powMod !x !k = getProduct $ stimes k $ Product x
 
