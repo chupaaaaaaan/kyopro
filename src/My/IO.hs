@@ -1,3 +1,4 @@
+{-# LANGUAGE BlockArguments #-}
 module My.IO where
 
 import Control.Monad
@@ -79,8 +80,16 @@ listN :: Int -> Conv a -> IO [[a]]
 listN !n !st = fmap (L.unfoldr (runStateT st)) <$> replicateM n BS.getLine
 
 -- | read a line and convert to Vector
-vector :: (VG.Vector v a) => Int -> Conv a -> IO (v a)
-vector !n !st = val (VG.replicateM n st)
+vector0 :: (VG.Vector v a) => Int -> Conv a -> IO (v a)
+vector0 !n !st = val (VG.replicateM n st)
+
+vector1 :: (VG.Vector v a) => a -> Int -> Conv a -> IO (v a)
+vector1 dummy !n !st = val do
+    vec <- VG.replicateM n st
+    return $ dummy `VG.cons` vec
+
+toVec1 :: (VG.Vector v a) => a -> v a -> v a
+toVec1 = VG.cons
 
 to2 :: [a] -> (a,a)
 to2 [a,b] = (a,b)
