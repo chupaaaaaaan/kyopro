@@ -36,6 +36,9 @@ ugraph !n !m = mkGraphWith fbAdj (1,n) <$> int2list m
 dgraph :: Int -> Int -> IO (Graph Int ())
 dgraph !n !m = mkGraphWith fAdj (1,n) <$> int2list m
 
+digraph :: Int -> Int -> IO (Graph Int ())
+digraph !n !m = mkGraphWith bAdj (1,n) <$> int2list m
+
 wgraph :: Int -> Int -> IO (Graph Int Int)
 wgraph !n !m = mkGraphWith fbAdj (1,n) <$> int3list m
 
