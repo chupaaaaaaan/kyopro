@@ -8,12 +8,12 @@ import qualified Data.IntPSQ as PSQ
 import qualified Data.Sequence as Seq
 import My.Data.Graph
 
--- | ダイクストラ法による最短経路探索
-dijkstra :: (MArray a Int m, MArray a Bool m) =>
+-- | ダイクストラ法による最短経路探索の雛形
+dijkstraSample :: (MArray a Int m, MArray a Bool m) =>
     Graph Int Int -> -- ^ 隣接リスト形式の重みつきグラフ
     Int ->            -- ^ 開始頂点
     m (a Int Bool, a Int Int)
-dijkstra graph v = do
+dijkstraSample graph v = do
 
     -- 確定済みか否かを保持する配列
     fixed <- newArray (bounds graph) False
@@ -50,14 +50,14 @@ dijkstra graph v = do
         insertList = foldr $ \(i,p,l) q -> PSQ.insert i p l q
 
 
--- | 01-BFS
-bfs01 :: (MArray a Int m, Ix i, Show i) =>
+-- | 01-BFSの雛形
+bfs01Sample :: (MArray a Int m, Ix i, Show i) =>
     (i -> [i]) -> -- ^ 現在点からのコストが0の探索候補点を取得
     (i -> [i]) -> -- ^ 現在点からのコストが1の探索候補点を取得
     (i, i) ->     -- ^ 探索範囲のbound
     [i] ->        -- ^ 開始点
     m (a i Int)
-bfs01 next0 next1 b start = do
+bfs01Sample next0 next1 b start = do
     -- 開始点からのコストを格納するarrayを作成（maxBoundは訪れていないことを表す）
     cost <- newArray b maxBound
 
