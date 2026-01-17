@@ -42,7 +42,7 @@ main = do
     -- (n,m,k) <- int3
     -- as <- list1 ucInt
     -- bs <- listN n ucInt
-    -- av <- vector @VU.Vector n ucInt
+    -- av <- vector0 @VU.Vector n ucInt
     -- xys <- int2list n
     -- grid <- charGrid h w
     -- graph <- ugraph n h
