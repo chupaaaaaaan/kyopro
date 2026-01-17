@@ -15,13 +15,16 @@ import Control.Monad.Fix
 import Control.Monad.ST
 import Data.Array.ST
 import Data.Array.Unboxed
-import Data.Containers.ListUtils
+import qualified Data.ByteString.Char8 as BS
+import Data.Char
+import Data.Either
 import Data.Foldable
 import qualified Data.IntMap.Strict as IM
 import qualified Data.IntPSQ as PSQ
 import qualified Data.IntSet as IS
 import qualified Data.List as L
 import qualified Data.Map.Strict as M
+import Data.Maybe
 import Data.Ord
 import qualified Data.Sequence as Seq
 import qualified Data.Set as S
