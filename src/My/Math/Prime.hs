@@ -99,3 +99,17 @@ primes sv n = filter (isPrime sv) [2..n]
 -- 平方因子は、ある正整数 $n$ に対して $n \times k$ が平方数となるような最小の $k$ のこと
 squareFactor :: [(Prime,Factor)] -> Int
 squareFactor = product . map fst . filter (odd . snd)
+
+-- | v_p(N!) : N!中の素因数pの指数を返す
+-- >>> vpFact 2 32
+-- 31
+--
+vpFact :: Int -> Int -> Int
+vpFact p n
+    | p < 2 = error "vpFact: p must be >= 2"
+    | n < 0 = error "vpFact: n must be >= 0"
+    | otherwise = go 0 n
+    where go :: Int -> Int -> Int
+          go !a !k | p > k = a
+                   | otherwise = let b = k `div` p
+                                 in go (a+b) b
