@@ -38,6 +38,32 @@ factorize sv n = go 1 (sv VU.! n) (n `div` sv VU.! n)
                                then go (a+1) p (m`div`m')
                                else (p, a) : go 1 m' (m`div`m')
 
+-- | 与えられた数を素因数分解する( $O(\sqrt{n})$)
+-- >>> factorize' 548634589304
+-- [(2,3),(109,1),(3767,1),(167021,1)]
+--
+-- >>> factorize' 123456789011
+-- [(123456789011,1)]
+--
+-- >>> factorize' 100
+-- [(2,2),(5,2)]
+--
+factorize' :: Int -> [(Prime,Factor)]
+factorize' n0
+    | n0 <= 1 = []
+    | otherwise = go2 n0
+    where go2 n = let (f,k) = peel 2 0 n
+                  in if f == 0 then go 3 k else (2,f) : go 3 k
+          go p n
+              | n == 1 = []
+              | p * p > n = [(n,1)]
+              | otherwise = let (f,k) = peel p 0 n
+                            in if f == 0 then go (p+2) k else (p,f) : go (p+2) k
+
+          peel p f n = if n`mod`p == 0
+                       then peel p (f+1) (n`div`p)
+                       else (f,n)
+
 -- | 素因数分解のリストから、与えられた数の約数を全列挙する
 divisors :: [(Prime,Factor)] -> [Int]
 divisors = L.foldl' (liftA2 (*)) [1] . map (\(p,f) -> map (p ^) [0..f])
