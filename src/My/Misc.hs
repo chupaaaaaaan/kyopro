@@ -104,10 +104,10 @@ onSameLine p0 p1 p2 =
         (x2,y2) = transr p0 p2
     in x1 * y2 - x2 * y1 == 0
 
--- | 2次元平面上の2点がなす傾きを、(x方向の変化量,y方向の変化量)形式で取得する
+-- | 2次元平面上の2点がなす傾きを、(y方向の変化量,x方向の変化量)形式で取得する
 -- x方向の変化量は非負である
 incl :: (Int, Int) -> (Int, Int) -> Rat
-incl (x1,y1) (x2,y2) = ri (y2 - y1) (x2 - x1)
+incl (x1,y1) (x2,y2) = (y2 - y1) `ri` (x2 - x1)
 
 -- | 2次元平面上の2点をm:nに内分する点を取得する
 idp :: Int -> Int -> (Int,Int) -> (Int,Int) -> (Rat, Rat)
