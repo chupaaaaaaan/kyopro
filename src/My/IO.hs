@@ -21,6 +21,9 @@ int3 = val ((,,) <$> ucInt <*> ucInt <*> ucInt)
 int4 :: IO (Int, Int, Int, Int)
 int4 = val ((,,,) <$> ucInt <*> ucInt <*> ucInt <*> ucInt)
 
+int5 :: IO (Int, Int, Int, Int, Int)
+int5 = val ((,,,,) <$> ucInt <*> ucInt <*> ucInt <*> ucInt <*> ucInt)
+
 int2list :: Int -> IO [(Int, Int)]
 int2list !n = fmap to2 <$> listN n ucInt
 
@@ -29,6 +32,9 @@ int3list !n = fmap to3 <$> listN n ucInt
 
 int4list :: Int -> IO [(Int, Int, Int, Int)]
 int4list !n = fmap to4 <$> listN n ucInt
+
+int5list :: Int -> IO [(Int, Int, Int, Int, Int)]
+int5list !n = fmap to5 <$> listN n ucInt
 
 -- Graph
 ugraph :: Int -> Int -> IO (Graph Int ())
@@ -102,6 +108,10 @@ to3 _ = error "invalid length"
 to4 :: [a] -> (a,a,a,a)
 to4 [a,b,c,d] = (a,b,c,d)
 to4 _ = error "invalid length"
+
+to5 :: [a] -> (a,a,a,a,a)
+to5 [a,b,c,d,e] = (a,b,c,d,e)
+to5 _ = error "invalid length"
 
 -- Output Utility
 yn :: Bool -> String
