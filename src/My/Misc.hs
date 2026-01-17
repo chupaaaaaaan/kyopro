@@ -126,7 +126,21 @@ type Rat = (Numerator, Denominator)
 
 -- | 有理数をTupleで表示する
 -- 利便性のため、分母が0の場合も許容する
+-- >>> ri 4 3
+-- (4,3)
+--
+-- >>> ri 6 4
+-- (3,2)
+--
+-- >>> ri 4 0
+-- (1,0)
+--
+-- >>> ri 0 4
+-- (0,1)
 ri :: Int -> Int -> Rat
+ri 0 0 = error "Undefined rational value: (0,0)"
+ri _ 0 = (1,0)
+ri 0 _ = (0,1)
 ri num den = ((num * signum den)`div`d, abs den`div`d)
     where d = gcd num den
 
