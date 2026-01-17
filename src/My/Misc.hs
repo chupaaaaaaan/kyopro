@@ -40,8 +40,9 @@ chain :: (a -> a -> Bool) -> [a] -> [[a]]
 chain _ [] = []
 chain _ [a] = [[a]]
 chain f (a:b:as)
-    | a `f` b   = let (k:ks) = chain f (b:as)
-                  in (a:k) : ks
+    | a `f` b = case chain f (b:as) of
+                    [] -> notComeHere
+                    (k:ks) -> (a:k) : ks
     | otherwise = [a] : chain f (b:as)
 
 notComeHere :: a
