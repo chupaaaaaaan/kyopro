@@ -10,10 +10,9 @@ import Data.Array.MArray
 import Data.Array.ST
 import Data.Array.Unboxed
 import Data.Foldable
-import qualified Data.IntPSQ as PSQ
-import qualified Data.List as L
 import Data.Traversable
 import My.Data.Array
+import My.Data.Queue
 import My.Data.Ref
 
 type Graph i a = Array i [(i, a)]
@@ -93,43 +92,37 @@ topologicalSort graph = runST $ do
     readRef order
 
 -- | Kahnのアルゴリズムにより、DAGをトポロジカルソートして返す
--- トポロジカルソートは辞書順最小となっている
 -- グラフに閉路が存在する場合、空のリストを返す
-topologicalSortKahn :: Graph Int a -> [Int]
-topologicalSortKahn graph = runST $ do
+topoSortKahn :: Graph Int a -> [Int]
+topoSortKahn graph = runST $ do
     let b = bounds graph
-        nextStatus = adj graph
+        succs = adj graph
 
     indeg <- thaw (indegree graph) :: ST s (STUArray s Int Int)
     order <- newRef []
+    count <- newRef (0::Int)
 
     start <- map fst . filter ((==0) . snd) <$> getAssocs indeg
 
-    flip fix (addList PSQ.empty start) $ \loop psq -> do
-        case PSQ.minView psq of
-            Nothing -> return ()
-            Just (_,v,_,psq') -> do
+    flip fix (fromListQ start) $ \loop queue -> do
+        case viewQ queue of
+            EmptyQ -> return ()
+            (v :@ rest) -> do
 
                 modifyRef order (v:)
+                modifyRef' count (1+)
 
-                candidates <- fmap concat <$> for (nextStatus v) $ \c -> do
-                    r <- readArray indeg c
-                    if | r == 0 -> return []
-                       | r == 1 -> do
-                             writeArray indeg c 0
-                             return [c]
-                       | otherwise -> do
-                             writeArray indeg c (r-1)
-                             return []
+                let step q cand = do
+                        r <- readArray indeg cand
+                        if r == 0 then return q else do
+                            writeArray indeg cand (r-1)
+                            return $ if r == 1 then q .> cand else q
 
-                loop $ addList psq' candidates
+                foldlM step rest (succs v) >>= loop
 
     result <- readRef order
-    return $ if rangeSize b == length result then reverse result else []
-
-        where addList :: PSQ.IntPSQ Int () -> [Int] -> PSQ.IntPSQ Int ()
-              addList = L.foldl' $ \q i -> PSQ.insert i i () q
-
+    reslen <- readRef count
+    return $ if rangeSize b == reslen then reverse result else []
 
 -- | 無向グラフの連結成分のリストを返す
 -- 各連結成分は訪問順の逆順に並んでいる
