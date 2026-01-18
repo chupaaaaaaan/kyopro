@@ -3,9 +3,6 @@ module My.Data.Grid where
 import Data.Array.IArray
 import Data.Bifunctor
 
-genGrid :: (IArray a e, Ix i, Ix j) => ((i, j), (i, j)) -> [[e]] -> a (i, j) e
-genGrid b = listArray b . concat
-
 data Direction = L | R | U | D
     deriving (Show, Read, Eq, Bounded, Enum)
 
