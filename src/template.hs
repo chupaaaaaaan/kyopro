@@ -37,14 +37,14 @@ import qualified Data.Vector.Mutable as VM
 import qualified Data.Vector.Unboxing as VU
 import qualified Data.Vector.Unboxing.Mutable as VUM
 import My.IO
+import My.Launcher
 
 main :: IO ()
-main = do
-    -- n <- val ucInt
-    -- (h,w) <- int2
-    -- (n,m,k) <- int3
-    -- as <- list1 ucInt
-    -- bs <- listN n ucInt
+main = launch print do
+
+    n <- ucInt
+    -- c <- ucChar
+    -- as <- listN n ucInt
     -- av <- vector0 @VU.Vector n ucInt
     -- xys <- int2list n
     -- grid <- charGrid h w
