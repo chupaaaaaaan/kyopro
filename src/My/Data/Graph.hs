@@ -21,20 +21,15 @@ class BuildEdge x i a | x -> i a where
     fAdj :: x -> [(i, (i, a))]
     bAdj :: x -> [(i, (i, a))]
     fbAdj :: x -> [(i, (i, a))]
+    fbAdj x = fAdj x <> bAdj x
 
-instance Eq i => BuildEdge (i, i, a) i a where
+instance BuildEdge (i, i, a) i a where
     fAdj (p, q, a) = [(p, (q, a))]
     bAdj (p, q, a) = [(q, (p, a))]
-    fbAdj e@(p, q, _)
-        | p == q = fAdj e
-        | otherwise = fAdj e <> bAdj e
 
-instance Eq i => BuildEdge (i, i) i () where
+instance BuildEdge (i, i) i () where
     fAdj (p, q) = [(p, (q, ()))]
     bAdj (p, q) = [(q, (p, ()))]
-    fbAdj e@(p, q)
-        | p == q = fAdj e
-        | otherwise = fAdj e <> bAdj e
 
 -- | 辺リストからグラフを生成する
 mkGraphWith :: (Ix i, BuildEdge x i a) =>
