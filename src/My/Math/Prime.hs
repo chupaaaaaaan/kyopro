@@ -64,18 +64,15 @@ factorize' n0
                        then peel p (f+1) (n`div`p)
                        else (f,n)
 
--- | 素因数分解のリストから、与えられた数の約数を全列挙する
-divisors :: [(Prime,Factor)] -> [Int]
-divisors = L.foldl' (liftA2 (*)) [1] . map (\(p,f) -> map (p ^) [0..f])
+-- | 予め作っておいたSPF配列を渡して、与えられた数の約数を全列挙する
+divisors :: VU.Vector Int -> Int -> [Int]
+divisors sv = f2d . factorize sv
+    where f2d = L.foldl' (liftA2 (*)) [1] . map (\(p,f) -> map (p ^) [0..f])
 
 -- | 与えられた数の約数を全列挙する( $O(\sqrt{n})$ )
 divisors' :: Int -> [Int]
-divisors' n = go 1
-    where go f | f * f > n = []
-               | f * f == n = [f]
-               | otherwise = if n`mod`f == 0
-                             then (n`div`f) : f : go (f+1)
-                             else go (f+1)
+divisors' = f2d . factorize'
+    where f2d = L.foldl' (liftA2 (*)) [1] . map (\(p,f) -> map (p ^) [0..f])
 
 -- | 予め作っておいたSPF配列を渡して、与えられた数が素数かを判定する
 isPrime :: VU.Vector Int -> Int -> Bool
