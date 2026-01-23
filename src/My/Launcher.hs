@@ -1,7 +1,8 @@
 module My.Launcher where
+
+import Control.Monad.State.Strict
 import qualified Data.ByteString.Char8 as BS
 import My.IO
-import Control.Monad.State.Strict
 
 
 launch :: (a -> IO ()) -> Conv a -> IO ()
