@@ -29,11 +29,11 @@ import Data.Ord
 import qualified Data.Sequence as Seq
 import qualified Data.Set as S
 import Data.Traversable
-import qualified Data.Vector as V
 import qualified Data.Vector.Algorithms.Intro as VAI
 import qualified Data.Vector.Generic as VG
 import qualified Data.Vector.Generic.Mutable as VGM
-import qualified Data.Vector.Mutable as VM
+import qualified Data.Vector.Strict as V
+import qualified Data.Vector.Strict.Mutable as VM
 import qualified Data.Vector.Unboxing as VU
 import qualified Data.Vector.Unboxing.Mutable as VUM
 import My.Conv
