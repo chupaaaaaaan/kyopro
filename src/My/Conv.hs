@@ -1,5 +1,5 @@
 {-# LANGUAGE BlockArguments #-}
-module My.IO where
+module My.Conv where
 
 import Control.Monad
 import Control.Monad.State.Strict

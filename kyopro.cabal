@@ -117,6 +117,7 @@ library
     My.Algorithm.DFS
     My.Algorithm.DP
     My.Algorithm.Dijkstra
+    My.Conv
     My.Data.Array
     My.Data.Graph
     My.Data.IntBag
@@ -127,12 +128,11 @@ library
     My.Data.UnionFind
     My.Data.Vector
     My.Debug
-    My.IO
-    My.Launcher
     My.Math.IntMod
     My.Math.Prime
     My.Math.Util
     My.Misc
+    My.Runtime
     My.Test.QuickCheck
 
   hs-source-dirs:  src

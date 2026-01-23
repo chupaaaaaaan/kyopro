@@ -36,8 +36,8 @@ import qualified Data.Vector.Generic.Mutable as VGM
 import qualified Data.Vector.Mutable as VM
 import qualified Data.Vector.Unboxing as VU
 import qualified Data.Vector.Unboxing.Mutable as VUM
-import My.IO
-import My.Launcher
+import My.Conv
+import My.Runtime
 
 main :: IO ()
 main = launch print do
