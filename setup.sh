@@ -41,7 +41,7 @@ export URL_FROM_ARG="$1"
 # 引数のURLに対応するパス
 CODEPATH_FROM_ARG="code/${URL_FROM_ARG##*://}"
 # urlファイルから取得したURL（ファイルのURL）
-URL_FROM_FILE="$( [ -s url ] && cat url )"
+URL_FROM_FILE="$( touch url && cat url )"
 # ファイルのURLに対応するパス
 CODEPATH_FROM_FILE="code/${URL_FROM_FILE##*://}"
 # 提出コードのパス
