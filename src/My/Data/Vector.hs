@@ -1,11 +1,11 @@
 module My.Data.Vector where
 
 import Data.Bifunctor
+import Data.Maybe
 import Data.Ord
 import qualified Data.Vector.Algorithms.Intro as VAI
 import qualified Data.Vector.Generic as VG
 import My.Algorithm.BinarySearch
-import Data.Maybe
 
 
 {-# INLINE vSort #-}
