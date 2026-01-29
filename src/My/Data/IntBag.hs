@@ -8,53 +8,75 @@ import Data.Maybe
 
 
 data IntBag = IB
-    { ibSize :: Int
-    , intbag :: IM.IntMap Int
+    { ibSize         :: !Int
+    , ibDistinctSize :: !Int
+    , intbag         :: !(IM.IntMap Int)
     }
     deriving (Show)
 
 emptyIB :: IntBag
 emptyIB =
     IB { ibSize = 0
+       , ibDistinctSize = 0
        , intbag = IM.empty
        }
 
 singletonIB :: Int -> IntBag
 singletonIB x =
     IB { ibSize = 1
+       , ibDistinctSize = 1
        , intbag = IM.singleton x 1
        }
 
 fromListIB :: [Int] -> IntBag
 fromListIB xs =
-    IB { ibSize = length xs
-       , intbag = foldl' (\im x -> IM.insertWith (+) x 1 im) IM.empty xs
-       }
+    let (sz,ds,im) = foldl' f (0,0,IM.empty) xs
+    in IB { ibSize = sz
+          , ibDistinctSize = ds
+          , intbag = im
+          }
+    where
+        f :: (Int, Int, IM.IntMap Int) -> Int -> (Int, Int, IM.IntMap Int)
+        f (!sz',!ds',!im') k =
+            let (old,newIm) = IM.insertLookupWithKey (const (+)) k 1 im'
+                newDs = case old of
+                    Nothing -> ds'+1
+                    Just _ -> ds'
+            in (sz'+1,newDs,newIm)
 
 insertIB :: Int -> IntBag -> IntBag
 insertIB = insertMultiIB 1
 
 insertMultiIB :: Int -> Int -> IntBag -> IntBag
-insertMultiIB n x ib =
-    IB { ibSize = ibSize ib + n
-       , intbag = IM.insertWith (+) x n (intbag ib)
-       }
+insertMultiIB n x ib
+    | n <= 0 = ib
+    | otherwise = let (old,im) = IM.insertLookupWithKey (const (+)) x n (intbag ib)
+                      ds = ibDistinctSize ib + if isNothing old then 1 else 0
+                  in IB { ibSize = ibSize ib + n
+                        , ibDistinctSize = ds
+                        , intbag = im
+                        }
 
 deleteIB :: Int -> IntBag -> IntBag
 deleteIB = deleteMultiIB 1
 
 deleteMultiIB :: Int -> Int -> IntBag -> IntBag
-deleteMultiIB n x ib =
-    let (delCount, ib') = IM.alterF f x (intbag ib)
-    in IB { ibSize = max 0 $ ibSize ib - delCount
-          , intbag = ib'
-          }
-    where f :: Maybe Int -> (Int, Maybe Int)
-          f Nothing = (0, Nothing)
-          f (Just y) = if y <= n then (y, Nothing) else (n, Just (y - n))
+deleteMultiIB n x ib
+    | n <= 0 = ib
+    | otherwise = let (delDistCount, delCount, ib') = IM.alterF f x (intbag ib)
+                  in IB { ibSize = ibSize ib - delCount
+                        , ibDistinctSize = ibDistinctSize ib - delDistCount
+                        , intbag = ib'
+                        }
+    where f :: Maybe Int -> (Int, Int, Maybe Int)
+          f Nothing = (0, 0, Nothing)
+          f (Just y) = if y <= n then (1, y, Nothing) else (0, n, Just (y - n))
 
 sizeIB :: IntBag -> Int
 sizeIB IB{..} = ibSize
+
+distinctSizeIB :: IntBag -> Int
+distinctSizeIB IB{..} = ibDistinctSize
 
 nullIB :: IntBag -> Bool
 nullIB IB{..} = ibSize == 0
@@ -76,9 +98,21 @@ lookupGEIB x IB{..} = IM.lookupGE x intbag
 
 unionIB :: IntBag -> IntBag -> IntBag
 unionIB iba ibb =
-    IB { ibSize = ibSize iba + ibSize ibb
-       , intbag = IM.unionWith (+) (intbag iba) (intbag ibb)
-       }
+    let (big, small) | ibDistinctSize iba >= ibDistinctSize ibb = (intbag iba, intbag ibb)
+                     | otherwise = (intbag ibb, intbag iba)
+        (overlap,im) = IM.foldlWithKey' f (0,big) small
+    in IB { ibSize = ibSize iba + ibSize ibb
+          , ibDistinctSize = ibDistinctSize iba + ibDistinctSize ibb - overlap
+          , intbag = im
+          }
+    where
+        f :: (Int, IM.IntMap Int) -> Int -> Int -> (Int, IM.IntMap Int)
+        f (!ov',!im') k v =
+            let (old,newIm) = IM.insertLookupWithKey (const (+)) k v im'
+                newOv = case old of
+                    Nothing -> ov'
+                    Just _ -> ov' + 1
+            in (newOv,newIm)
 
 unionsIB :: Foldable f => f IntBag -> IntBag
 unionsIB = foldl' unionIB emptyIB
