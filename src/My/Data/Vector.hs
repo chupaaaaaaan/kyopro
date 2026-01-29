@@ -88,8 +88,7 @@ vLookupEQ key vec = let ge = vLookupGE key vec
 vMember :: (Ord b, VG.Vector v b) => b -> v b -> Bool
 vMember key vec = isJust $ vLookupEQ key vec
 
-
-vLookup :: (Ord b, VG.Vector v b) => (v b -> b -> Int -> Bool) -> Int -> Int -> b -> v b -> Maybe Int
+vLookup :: VG.Vector v b => (v b -> b -> Int -> Bool) -> Int -> Int -> b -> v b -> Maybe Int
 vLookup cond ok ng key vec =
     let idx = bsearch (vec `cond` key) ok ng
     in if idx == ok then Nothing else Just idx
