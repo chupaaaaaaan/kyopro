@@ -8,12 +8,6 @@ import qualified Data.Map.Strict as M
 import qualified Data.Vector.Algorithms as VA
 import qualified Data.Vector.Unboxing as VU
 
-pair :: (a -> b, a -> c) -> a -> (b, c)
-pair (f, g) x = (f x, g x)
-
-cross :: (a -> b, c -> d) -> (a, c) -> (b, d)
-cross (f, g) = pair (f . fst, g . snd)
-
 -- | ランレングス符号化
 -- >>> encoderl "><<>><<<<>"
 -- [('>',1),('<',2),('>',2),('<',4),('>',1)]
