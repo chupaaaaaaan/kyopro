@@ -18,7 +18,10 @@ cross (f, g) = pair (f . fst, g . snd)
 -- >>> encoderl "><<>><<<<>"
 -- [('>',1),('<',2),('>',2),('<',4),('>',1)]
 encoderl :: Eq a => [a] -> [(a, Int)]
-encoderl = map (\xs -> (head xs, length xs)) . L.group
+encoderl = map f . L.group
+    where f xs = case xs of
+              (x:_) -> (x, length xs)
+              [] -> error "impossible: Data.List.group produced []"
 
 -- | ランレングス符号化の復元
 -- >>> let testString = "><<>><<<<>"

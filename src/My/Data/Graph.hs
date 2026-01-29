@@ -151,7 +151,9 @@ eulerTour graph start = runST $ do
 
     let f u = do
             r <- readRef ref
-            when (null r || head r /= u) (modifyRef ref (u:))
+            case r of
+                [] -> return ()
+                (x:_) -> when (x /= u) (modifyRef ref (u:))
 
     flip fix start $ \loop v -> do
         t <- readArray seen v
