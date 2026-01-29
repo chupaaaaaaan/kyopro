@@ -10,6 +10,8 @@ import qualified Data.Vector.Unboxing as VU
 import qualified Data.Vector.Unboxing.Mutable as VUM
 import My.Math.Util
 
+-- | セグメント木
+-- APIはいずれも0-indexedである（内部的には1-indexedのVectorとして値を保持している）。
 data SegTree s e =
     SgT { sizeSgT :: Int
         , nSgT :: Int
@@ -18,10 +20,12 @@ data SegTree s e =
 
 type SegTreeIO = SegTree (PrimState IO)
 
+-- | サイズ \(n\) のセグメント木を、値 \(v\) で初期化する。
 sgtInit :: (Monoid e, VUM.Unboxable e, PrimMonad m) => Int -> e -> m (SegTree (PrimState m) e)
 sgtInit n v = let size = bitceil n
               in SgT size n <$> VUM.replicate (size*2) v
 
+-- | Unboxed Vectorからセグメント木を構築する。
 sgtBuild :: (Monoid e, VUM.Unboxable e, PrimMonad m) => VU.Vector e -> m (SegTree (PrimState m) e)
 sgtBuild iv = do
     let il = VU.length iv
@@ -33,6 +37,7 @@ sgtBuild iv = do
 
     return $ SgT size il mv
 
+-- | セグメント木の \(p\) 番目の要素に値 \(v\) を書き込む。
 sgtWrite :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> e -> m ()
 sgtWrite SgT{..} p v = do
     let pos = sizeSgT + p
@@ -43,6 +48,7 @@ sgtWrite SgT{..} p v = do
                      sgtInnerUpdate segtree parent
                      loop parent
 
+-- | セグメント木の \(p\) 番目の要素を関数 \(f\) で更新する。
 sgtModify :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> (e -> e) -> Int -> m ()
 sgtModify SgT{..} f p = do
     let pos = sizeSgT + p
@@ -53,9 +59,13 @@ sgtModify SgT{..} f p = do
                      sgtInnerUpdate segtree parent
                      loop parent
 
+-- | セグメント木の \(p\) 番目の要素を読み取る。
 sgtRead :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> m e
 sgtRead SgT{..} p = VUM.read segtree (sizeSgT + p)
 
+-- | セグメント木上の @[l,r)@ 区間クエリを処理する。
+-- 区間は0-indexed前提であることに注意せよ。
+-- （例: 1-indexedで \(l \le i \le r\) なる区間において、左端= @l-1@ 、右端= @r@）
 sgtQuery :: (Monoid e, VUM.Unboxable e, PrimMonad m) => SegTree (PrimState m) e -> Int -> Int -> m e
 sgtQuery SgT{..} l r = go (l + sizeSgT) (r + sizeSgT) mempty mempty
     where
