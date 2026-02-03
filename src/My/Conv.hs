@@ -9,7 +9,24 @@ import qualified Data.ByteString.Char8 as BS
 import Data.Char
 import qualified Data.List as L
 import qualified Data.Vector.Generic as VG
-import My.Data.Graph
+
+-- | Converter
+type Conv = StateT BS.ByteString Maybe
+
+-- | 入力から1文字読みこむ。空白は無視する。
+ucChar :: Conv Char
+ucChar = StateT (BS.uncons . BS.dropWhile isSpace)
+
+-- | 空白に到達するまで、入力をIntとして読み込む。
+ucInt :: Conv Int
+ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
+
+-- | 空白に到達するまで、入力をByteString.Char8として読み込む。
+ucBS :: Conv BS.ByteString
+ucBS = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
+                      in if BS.null bs'
+                         then Nothing
+                         else Just $ BS.break isSpace bs')
 
 int2 :: Conv (Int, Int)
 int2 = (,) <$> ucInt <*> ucInt
@@ -38,48 +55,6 @@ int4list !n = listN n int4
 int5list :: Int -> Conv [(Int, Int, Int, Int, Int)]
 int5list !n = listN n int5
 
--- Graph
-ugraph :: Int -> Int -> Conv (Graph Int ())
-ugraph !n !m = mkGraphWith fbAdj (1,n) <$> int2list m
-
-dgraph :: Int -> Int -> Conv (Graph Int ())
-dgraph !n !m = mkGraphWith fAdj (1,n) <$> int2list m
-
-digraph :: Int -> Int -> Conv (Graph Int ())
-digraph !n !m = mkGraphWith bAdj (1,n) <$> int2list m
-
-wgraph :: Int -> Int -> Conv (Graph Int Int)
-wgraph !n !m = mkGraphWith fbAdj (1,n) <$> int3list m
-
-wdgraph :: Int -> Int -> Conv (Graph Int Int)
-wdgraph !n !m = mkGraphWith fAdj (1,n) <$> int3list m
-
--- Grid
-charGrid :: Int -> Int -> Conv (UArray (Int, Int) Char)
-charGrid !h !w = listArray ((1,1),(h,w)) <$> listN (h*w) ucChar
-
-intGrid :: Int -> Int -> Conv (UArray (Int, Int) Int)
-intGrid !h !w = listArray ((1,1),(h,w)) <$> listN (h*w) ucInt
-
--- | Converter
-type Conv = StateT BS.ByteString Maybe
-
--- | 入力から1文字読みこむ。
--- 空白は無視する。
-ucChar :: Conv Char
-ucChar = StateT (BS.uncons . BS.dropWhile isSpace)
-
--- | 空白に到達するまで、入力をIntとして読み込む。
-ucInt :: Conv Int
-ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
-
--- | 空白に到達するまで、入力をByteString.Char8として読み込む。
-ucBS :: Conv BS.ByteString
-ucBS = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
-                      in if BS.null bs'
-                         then Nothing
-                         else Just $ BS.break isSpace bs')
-
 -- | read a line and convert to Vector
 vector0 :: (VG.Vector v a) => Int -> Conv a -> Conv (v a)
 vector0 !n !st = VG.replicateM n st
@@ -92,12 +67,9 @@ vector1 dummy !n !st = do
 toVec1 :: (VG.Vector v a) => a -> v a -> v a
 toVec1 = VG.cons
 
--- Output Utility
-yn :: Bool -> String
-yn = bool "No" "Yes"
-
-pyn :: Bool -> Conv String
-pyn = pure . yn
+-- | Output Utility
+printYn :: Bool -> Conv String
+printYn = pure . bool "No" "Yes"
 
 printGrid :: IArray a Char => a (Int, Int) Char -> Conv String
 printGrid grid = do
