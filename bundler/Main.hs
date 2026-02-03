@@ -2,15 +2,18 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE PackageImports #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE BlockArguments #-}
 
 module Main where
 
 import Control.Exception.Safe
 import Control.Monad
 import Control.Monad.IO.Class
+import Data.Foldable
 import Data.List qualified as L
 import Data.Maybe
 import Data.Set qualified as S
+import Data.Traversable
 import Distribution.ModuleName hiding (ModuleName)
 import Distribution.PackageDescription hiding (PackageFlag)
 import Distribution.Simple.PackageDescription
@@ -53,7 +56,7 @@ main = do
 
     where
         execBundle mode mainPath h = do
-            pragmas mainPath >>= mapM_ (hPutStrLn h)
+            pragmas (read mode) mainPath >>= mapM_ (hPutStrLn h)
             bundledMods (read mode) mainPath >>= hPutStrLn h . renderMods
 
         dieWithInvalidPath path = die $ "Error: '" <> path <> "' is not a valid file path."
@@ -110,11 +113,12 @@ withPreProcessed mode path f = do
                 ExitSuccess -> g cppFile
                 ExitFailure _ -> throw $ BundlerException "Parsing error occured!"
 
-pragmas :: (MonadThrow m, MonadIO m) => FilePath -> m [String]
-pragmas mainPath = do
+pragmas :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> m [String]
+pragmas mode mainPath = do
 
     mainExt <- fromFile $ installPath </> mainPath
-    libExts <- fmap concat $ mapM (fromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
+    reachables <- reachableKyoproMods mode (installPath </> mainPath)
+    libExts <- fmap concat <$> for reachables $ fromFile . modNameToPath (installPath </> "src/")
 
     return $ S.toList $ S.fromList $ mainExt <> libExts
 
@@ -125,21 +129,39 @@ pragmas mainPath = do
 
 bundledMods :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> m (HsModule GhcPs)
 bundledMods mode mainPath = do
-    mainMod <- fromFile (installPath </> mainPath)
-    libMods <- mapM (fromFile . modNameToPath (installPath </> "src/")) =<< kyoproExposedMods
+    mainMod <- parseHs mode (installPath </> mainPath)
+    reachables <- reachableKyoproMods mode (installPath </> mainPath)
+    libMods <- for reachables $ parseHs mode . modNameToPath (installPath </> "src/")
 
-    foldr rmIDecl (mainMod { hsmodDecls = hsmodDecls mainMod <> foldMap hsmodDecls libMods
-                           , hsmodImports = nubIDecls (hsmodImports mainMod <> foldMap hsmodImports libMods)
-                           }) <$> kyoproExposedMods
-
-    where fromFile :: (MonadThrow m, MonadIO m) => FilePath -> m (HsModule GhcPs)
-          fromFile path = parse path =<< withPreProcessed mode path (liftIO . readFile')
+    pure $ foldr rmIDecl (mainMod { hsmodDecls = hsmodDecls mainMod <> foldMap hsmodDecls libMods
+                                  , hsmodImports = nubIDecls (hsmodImports mainMod <> foldMap hsmodImports libMods)
+                                  }) reachables
 
 renderMods :: HsModule GhcPs -> String
 renderMods = renderWithContext (initDefaultSDocContext dynFlags) . ppr
 
 renderErrors :: PState -> String
 renderErrors = renderWithContext (initDefaultSDocContext dynFlags) . ppr . getPsErrorMessages
+
+importedModuleName :: HsModule GhcPs -> [String]
+importedModuleName hsMod = [ moduleNameString . unLoc . ideclName . unLoc $ imp | imp <- hsmodImports hsMod]
+
+reachableKyoproMods :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> m [String]
+reachableKyoproMods mode mainPath = do
+    kyoproSet <- S.fromList <$> kyoproExposedMods
+    mainHs <- parseHs mode (installPath </> mainPath)
+
+    let modsInMain = filter (`S.member`kyoproSet) $ importedModuleName mainHs
+
+        go seen m = if m `S.member` seen then return seen  else do
+            hs <- parseHs mode (modNameToPath (installPath </> "src/") m)
+            let cands = filter (`S.member`kyoproSet) $ importedModuleName hs
+            foldlM go (S.insert m seen) cands
+
+    S.toList <$> foldlM go S.empty modsInMain
+
+parseHs :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> m (HsModule GhcPs)
+parseHs mode path = parse path =<< withPreProcessed mode path (liftIO . readFile')
 
 kyoproExposedMods :: (MonadThrow m, MonadIO m) => m [String]
 kyoproExposedMods = do
@@ -174,7 +196,7 @@ nubIDecls = snd . foldr (\idecl (set, acc) ->
 parse :: MonadThrow m => FilePath -> String -> m (HsModule GhcPs)
 parse filename code =
     case parseFile filename dynFlags code of
-        POk _ (L _ hsMod) -> return hsMod
+        POk _ located -> return $ unLoc located
         PFailed ps -> throw $ BundlerException $ renderErrors ps
 
 installPath :: FilePath
