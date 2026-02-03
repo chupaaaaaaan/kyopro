@@ -112,11 +112,8 @@ library
     , kyopro-env
 
   exposed-modules:
-    My.Algorithm.BFS
     My.Algorithm.BinarySearch
-    My.Algorithm.DFS
     My.Algorithm.DP
-    My.Algorithm.Dijkstra
     My.Conv
     My.Data.Array
     My.Data.Graph
