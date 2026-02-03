@@ -122,6 +122,7 @@ library
     My.Data.IntBag
     My.Data.Grid
     My.Data.Queue
+    My.Data.Rational
     My.Data.Ref
     My.Data.SegTree
     My.Data.UnionFind
@@ -130,7 +131,6 @@ library
     My.Math.Geometry
     My.Math.IntMod
     My.Math.Prime
-    My.Math.Rational
     My.Math.Util
     My.Misc
     My.Runtime

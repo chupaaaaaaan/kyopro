@@ -1,7 +1,7 @@
 module My.Math.Geometry where
 
 import qualified Control.Arrow as A
-import My.Math.Rational
+import My.Data.Rational
 
 -- | 2次元平面上の点の平行移動
 -- (x,y)を(x+dx,y+dy)に移動する

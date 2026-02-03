@@ -1,6 +1,6 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE UndecidableInstances #-}
-module My.Math.Rational where
+module My.Data.Rational where
 
 import qualified Data.Vector.Unboxing as VU
 import Data.Ratio
