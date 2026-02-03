@@ -115,6 +115,8 @@ library
     My.Algorithm.BinarySearch
     My.Algorithm.DP
     My.Conv
+    My.Conv.Graph
+    My.Conv.Grid
     My.Data.Array
     My.Data.Graph
     My.Data.IntBag
