@@ -44,6 +44,9 @@ fromListIB xs =
                     Just _ -> ds'
             in (sz'+1,newDs,newIm)
 
+toAssocListIB :: IntBag -> [(Int,Int)]
+toAssocListIB IB{..} = IM.assocs intbag
+
 insertIB :: Int -> IntBag -> IntBag
 insertIB = insertMultiIB 1
 
