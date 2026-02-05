@@ -54,9 +54,8 @@ insertMultiIB :: Int -> Int -> IntBag -> IntBag
 insertMultiIB n x ib
     | n <= 0 = ib
     | otherwise = let (old,im) = IM.insertLookupWithKey (const (+)) x n (intbag ib)
-                      ds = ibDistinctSize ib + if isNothing old then 1 else 0
                   in IB { ibSize = ibSize ib + n
-                        , ibDistinctSize = ds
+                        , ibDistinctSize = ibDistinctSize ib + if isNothing old then 1 else 0
                         , intbag = im
                         }
 
