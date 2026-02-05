@@ -11,6 +11,9 @@ fi
 URL=$(cat url)
 BUNDLEDHS=submission/Bundled.hs
 
+# check
+./check.sh
+
 # build
 ./build.sh -j
 
