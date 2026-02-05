@@ -4,7 +4,9 @@ module My.Data.IntBag where
 
 import Data.Foldable
 import qualified Data.IntMap.Strict as IM
+import qualified Data.List as L
 import Data.Maybe
+import Data.Ord
 
 
 data IntBag = IB
@@ -117,7 +119,17 @@ unionIB iba ibb =
             in (newOv,newIm)
 
 unionsIB :: Foldable f => f IntBag -> IntBag
-unionsIB = foldl' unionIB emptyIB
+unionsIB = foldl' unionIB emptyIB . L.sortOn (Down . distinctSizeIB) . toList
+-- unionsIB = go . PSQ.fromList . zipWith (\i ib -> (i, distinctSizeIB ib, ib)) [1..] . toList
+--     where
+--         go :: PSQ.IntPSQ Int IntBag -> IntBag
+--         go psq = case PSQ.minView psq of
+--             Nothing -> emptyIB
+--             Just (i1,_,ib1,psq') -> case PSQ.minView psq' of
+--                 Nothing -> ib1
+--                 Just (_,_,ib2,psq'') ->
+--                     let merged = ib1 `unionIB` ib2
+--                     in go (PSQ.insert i1 (distinctSizeIB merged) merged psq'')
 
 lookupMinIB :: IntBag -> Maybe (Int, Int)
 lookupMinIB IB{..} = IM.lookupMin intbag
