@@ -3,11 +3,8 @@ module My.Conv where
 
 import Control.Monad
 import Control.Monad.State.Strict
-import Data.Array.Unboxed
-import Data.Bool
 import qualified Data.ByteString.Char8 as BS
 import Data.Char
-import qualified Data.List as L
 import qualified Data.Vector.Generic as VG
 
 -- | Converter
@@ -66,14 +63,3 @@ vector1 dummy !n !st = do
 
 toVec1 :: (VG.Vector v a) => a -> v a -> v a
 toVec1 = VG.cons
-
--- | Output Utility
-printYn :: Bool -> Conv String
-printYn = pure . bool "No" "Yes"
-
-printGrid :: IArray a Char => a (Int, Int) Char -> Conv String
-printGrid grid = do
-    let ((_,s),(_,e)) = bounds grid
-        f xs = if null xs then Nothing else Just $ L.splitAt (e-s+1) xs
-
-    pure . unlines . L.unfoldr f . elems $ grid
