@@ -133,6 +133,7 @@ library
     My.Math.Prime
     My.Math.Util
     My.Misc
+    My.Output
     My.Runtime
     My.Test.QuickCheck
 
