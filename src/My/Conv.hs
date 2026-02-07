@@ -25,6 +25,23 @@ ucBS = StateT (\bs -> let bs' = BS.dropWhile isSpace bs
                          then Nothing
                          else Just $ BS.break isSpace bs')
 
+-- | 改行に到達するまで、入力をByteString.Char8として読み込む。
+ucBSLine :: Conv BS.ByteString
+ucBSLine = StateT f
+    where f bs = do
+              let bs' = BS.dropWhile isSpace bs
+              case BS.findIndex (\c -> c == '\n' || c == '\r') bs' of
+                  Nothing | BS.null bs' -> Nothing
+                          | otherwise -> Just (bs', BS.empty)
+                  Just i -> let (l,r0) = BS.splitAt i bs'
+                            in case BS.uncons r0 of
+                      Nothing -> Just (l, BS.empty)
+                      Just (c1,r1) ->
+                          let r2 = case BS.uncons r1 of
+                                  Just (c2, rest) | c1 == '\r' && c2 == '\n' -> rest
+                                  _ -> r1
+                          in Just (l, r2)
+
 int2 :: Conv (Int, Int)
 int2 = (,) <$> ucInt <*> ucInt
 

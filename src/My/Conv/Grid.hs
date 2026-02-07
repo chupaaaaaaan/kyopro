@@ -11,7 +11,7 @@ import My.Data.Array
 
 charGrid :: Int -> Int -> Conv (UArray (Int, Int) Char)
 charGrid !h !w = do
-    rows <- vector0 h ucBS
+    rows <- vector0 h ucBSLine
     pure $ runSTUArray do
         res <- newUArray_ ((1,1),(h,w))
         for_ [1..h] \i -> for_ [1..w] \j -> do
