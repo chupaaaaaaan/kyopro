@@ -118,8 +118,8 @@ library
     My.Conv.Graph
     My.Conv.Grid
     My.Data.Array
+    My.Data.Bag
     My.Data.Graph
-    My.Data.IntBag
     My.Data.Grid
     My.Data.Queue
     My.Data.Rational
