@@ -13,3 +13,9 @@ printGrid grid = do
         f xs = if null xs then Nothing else Just $ L.splitAt (e-s+1) xs
 
     putStr . unlines . L.unfoldr f . elems $ grid
+
+printR :: Show a => [a] -> IO ()
+printR = putStrLn . unwords . map show
+
+printC :: Show a => [a] -> IO ()
+printC = putStr . unlines . map show
