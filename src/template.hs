@@ -8,6 +8,7 @@ Problem url: ${URL_FROM_ARG}
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 import Control.Applicative
 import Control.Monad
@@ -44,10 +45,10 @@ main = launch print do
 
     n <- ucInt
     -- c <- ucChar
-    -- as <- listN n ucInt
-    -- av <- vector0 @VU.Vector n ucInt
+    -- as <- intlist n
+    -- av <- intvec n
     -- xys <- int2list n
     -- grid <- charGrid h w
-    -- graph <- ugraph n h
+    -- graph <- ugraph n m
 
     return ()
