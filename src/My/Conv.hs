@@ -68,20 +68,20 @@ int4 = (,,,) <$> ucInt <*> ucInt <*> ucInt <*> ucInt
 int5 :: Conv (Int, Int, Int, Int, Int)
 int5 = (,,,,) <$> ucInt <*> ucInt <*> ucInt <*> ucInt <*> ucInt
 
-listN :: Int -> Conv a -> Conv [a]
-listN !n !st = replicateM n st
+intlist :: Int -> Conv [Int]
+intlist !n = replicateM n ucInt
 
 int2list :: Int -> Conv [(Int, Int)]
-int2list !n = listN n int2
+int2list !n = replicateM n int2
 
 int3list :: Int -> Conv [(Int, Int, Int)]
-int3list !n = listN n int3
+int3list !n = replicateM n int3
 
 int4list :: Int -> Conv [(Int, Int, Int, Int)]
-int4list !n = listN n int4
+int4list !n = replicateM n int4
 
 int5list :: Int -> Conv [(Int, Int, Int, Int, Int)]
-int5list !n = listN n int5
+int5list !n = replicateM n int5
 
 -- | read a line and convert to Vector
 vector0 :: (VG.Vector v a) => Int -> Conv a -> Conv (v a)
