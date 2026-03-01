@@ -6,6 +6,7 @@ import Control.Monad.State.Strict
 import qualified Data.ByteString.Char8 as BS
 import Data.Char
 import qualified Data.Vector.Generic as VG
+import qualified Data.Attoparsec.ByteString.Char8 as AP
 
 -- | Converter
 type Conv = StateT BS.ByteString Maybe
@@ -17,6 +18,19 @@ ucChar = StateT (BS.uncons . BS.dropWhile isSpace)
 -- | 空白に到達するまで、入力をIntとして読み込む。
 ucInt :: Conv Int
 ucInt = StateT (BS.readInt . BS.dropWhile isSpace)
+
+-- | ByteStringからDoubleの読み取りを試行する。
+-- 成功した場合は Just (値, 残りのByteString) を返す。
+-- 失敗した場合は Nothing を返す。
+readDoubleBS :: BS.ByteString -> Maybe (Double, BS.ByteString)
+readDoubleBS bs =
+  case AP.parse AP.double bs of
+    AP.Done rest x -> Just (x, rest)
+    _otherwise     -> Nothing
+
+-- | 空白に到達するまで、入力をDoubleとして読み込む。
+ucDouble :: Conv Double
+ucDouble = StateT (readDoubleBS . BS.dropWhile isSpace)
 
 -- | 空白に到達するまで、入力をByteString.Char8として読み込む。
 ucBS :: Conv BS.ByteString
