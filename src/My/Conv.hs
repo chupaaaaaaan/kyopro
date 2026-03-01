@@ -6,6 +6,7 @@ import Control.Monad.State.Strict
 import qualified Data.ByteString.Char8 as BS
 import Data.Char
 import qualified Data.Vector.Generic as VG
+import qualified Data.Vector.Unboxing as VU
 import qualified Data.Attoparsec.ByteString.Char8 as AP
 
 -- | Converter
@@ -84,13 +85,28 @@ int5list :: Int -> Conv [(Int, Int, Int, Int, Int)]
 int5list !n = replicateM n int5
 
 -- | read a line and convert to Vector
-vector0 :: (VG.Vector v a) => Int -> Conv a -> Conv (v a)
+vector0 :: VG.Vector v a => Int -> Conv a -> Conv (v a)
 vector0 !n !st = VG.replicateM n st
 
-vector1 :: (VG.Vector v a) => a -> Int -> Conv a -> Conv (v a)
+vector1 :: VG.Vector v a => a -> Int -> Conv a -> Conv (v a)
 vector1 dummy !n !st = do
     vec <- VG.replicateM n st
     return $ dummy `VG.cons` vec
 
 toVec1 :: (VG.Vector v a) => a -> v a -> v a
 toVec1 = VG.cons
+
+intvec :: Int -> Conv (VU.Vector Int)
+intvec !n = vector0 n ucInt
+
+int2vec :: Int -> Conv (VU.Vector (Int, Int))
+int2vec !n = vector0 n int2
+
+int3vec :: Int -> Conv (VU.Vector (Int, Int, Int))
+int3vec !n = vector0 n int3
+
+int4vec :: Int -> Conv (VU.Vector (Int, Int, Int, Int))
+int4vec !n = vector0 n int4
+
+int5vec :: Int -> Conv (VU.Vector (Int, Int, Int, Int, Int))
+int5vec !n = vector0 n int5
