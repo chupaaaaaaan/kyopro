@@ -114,6 +114,7 @@ library
   exposed-modules:
     My.Algorithm.BinarySearch
     My.Algorithm.DP
+    My.Algorithm.Graph
     My.Conv
     My.Conv.Graph
     My.Conv.Grid
