@@ -38,13 +38,18 @@ done
     exit 1
 }
 
+[ bundler/Main.hs -nt ~/.local/bin/bundler ] && {
+    cabal build exe:bundler
+    install "$(cabal list-bin exe:bundler)" ~/.local/bin/bundler
+}
+
 if [ ${OPTL} -eq 1 ]; then
     # build for local environment
-    cabal run bundler "Local" "${MAINHS}" "${BUNDLEDHS}"
+    bundler "Local" "${MAINHS}" "${BUNDLEDHS}"
     # ghc -package-env .package.local -o submission/a.out -O2 -prof -fprof-auto "${BUNDLEDHS}"
     ghc -package-env .package.local -o submission/a.out -O2 "${BUNDLEDHS}"
 
 elif [ ${OPTJ} -eq 1 ]; then
     # build for judge environment
-    cabal run bundler "Judge" "${MAINHS}" "${BUNDLEDHS}"
+    bundler "Judge" "${MAINHS}" "${BUNDLEDHS}"
 fi
