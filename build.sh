@@ -38,7 +38,8 @@ done
     exit 1
 }
 
-[ bundler/Main.hs -nt ~/.local/bin/bundler ] && {
+BUNDLER="$(command -v bundler)"
+[ $? -ne 0 ] || [ bundler/Main.hs -nt "${BUNDLER}" ] && {
     cabal build exe:bundler
     install "$(cabal list-bin exe:bundler)" ~/.local/bin/bundler
 }
