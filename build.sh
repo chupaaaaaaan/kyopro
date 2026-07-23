@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -uo pipefail
 cd $(dirname $0)
 
 MAINHS=submission/Main.hs
