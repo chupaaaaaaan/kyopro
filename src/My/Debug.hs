@@ -2,41 +2,45 @@
 
 module My.Debug where
 
-import Debug.Trace
 import Data.Array.IArray
+#ifndef JUDGE
+import Debug.Trace
 import qualified Data.List as L
-
+#endif
 
 dbg :: String -> ()
 dbgWhen :: Bool -> String -> ()
-dbgS :: Show a => a -> String -> ()
-dbgSWhen :: Show a => Bool -> a -> String -> ()
-dbgGrid :: (IArray a e, Show e) => a (Int, Int) e -> ()
-dbgGridWhen :: (IArray a e, Show e) => Bool -> a (Int, Int) e -> ()
+dbgS :: Show a => String -> a -> a
+dbgSWhen :: Show a => Bool -> String -> a -> a
+dbgGrid :: (IArray a e, Show e) => a (Int, Int) e -> a (Int, Int) e
+dbgGridC :: IArray a Char => a (Int, Int) Char -> a (Int, Int) Char
 
 #ifndef JUDGE
 
 dbg = (`trace`())
-dbgWhen p msg = if p then dbg msg else ()
+dbgWhen p x = if p then dbg x else ()
 
-dbgS x s = if null s then traceShow x () else trace (s <> show x) ()
-dbgSWhen p x s = if p then dbgS x s else ()
+dbgS s x = trace (s <> " = " <> show x) x
+dbgSWhen p s x = if p then dbgS s x else x
 
-dbgGrid grid =
+dbgGrid grid = trace (gridString (L.intercalate "\t" . map show) grid) grid
+dbgGridC grid = trace (gridString id grid) grid
+
+gridString :: IArray a e => ([e] -> String) -> a (Int, Int) e -> String
+gridString g grid =
     let ((_,s),(_,e)) = bounds grid
-        f xs = if null xs then Nothing else Just $ L.splitAt (e-s+1) xs
-    in dbg . unlines . map (L.intercalate "\t" . map show) . L.unfoldr f . elems $ grid
-dbgGridWhen p g = if p then dbgGrid g else ()
+        f xs = if null xs then Nothing else Just (L.splitAt (e-s+1) xs)
+    in unlines . map g . L.unfoldr f . elems $ grid
 
 #else
 
 dbg = const ()
 dbgWhen _ = const ()
 
-dbgS _ = const ()
-dbgSWhen _ _ = const ()
+dbgS _ = id
+dbgSWhen _ _ = id
 
-dbgGrid = const ()
-dbgGridWhen _ = const ()
+dbgGrid = id
+dbgGridC = id
 
 #endif
