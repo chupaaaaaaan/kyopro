@@ -43,12 +43,11 @@ import My.Runtime
 main :: IO ()
 main = launch print do
 
-    n <- ucInt
-    -- c <- ucChar
-    -- as <- intlist n
-    -- av <- intvec n
-    -- xys <- int2list n
-    -- grid <- charGrid h w
-    -- graph <- ugraph n m
+    _N <- ucInt
+    -- _As <- intlist _N
+    -- _Av <- intvec _N
+    -- _XY <- int2list _N
+    -- _Grid <- charGrid _H _W
+    -- _Graph <- ugraph _N _M
 
     return ()
