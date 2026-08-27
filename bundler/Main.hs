@@ -61,7 +61,7 @@ main = do
 
         dieWithInvalidPath path = die $ "Error: '" <> path <> "' is not a valid file path."
         dieWithInvalidMode mode = die $ "Error: '" <> mode <> "' is not a valid SubmissionMode."
-        dieWithUsage progName   = die $ "Usage: " <> progName <> " <mode> <mainPath> [destPath]"
+        dieWithUsage progName   = die $ "Usage: " <> progName <> " <Judge|Local> <mainPath> [destPath]"
 
 newtype BundlerException = BundlerException String
     deriving Show
