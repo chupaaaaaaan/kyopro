@@ -10,14 +10,14 @@ import My.Algorithm.BinarySearch
 
 {-# INLINE vSort #-}
 vSort :: (Ord a, VG.Vector v a) => v a -> v a
-vSort = VG.modify $ VAI.sortBy compare
+vSort = vSortBy compare
 
 {-# INLINE vSortOn #-}
 vSortOn :: (Ord b, VG.Vector v a) => (a -> b) -> v a -> v a
 vSortOn f = VG.modify $ VAI.sortBy (comparing f)
 
 {-# INLINE vSortBy #-}
-vSortBy :: (Ord a, VG.Vector v a) => VAI.Comparison a -> v a -> v a
+vSortBy :: VG.Vector v a => VAI.Comparison a -> v a -> v a
 vSortBy f = VG.modify $ VAI.sortBy f
 
 {-# INLINE vSortUniq #-}
@@ -25,7 +25,7 @@ vSortUniq :: (Ord a, VG.Vector v a) => v a -> v a
 vSortUniq = vSortUniqBy compare
 
 {-# INLINE vSortUniqBy #-}
-vSortUniqBy :: (Ord a, VG.Vector v a) => VAI.Comparison a -> v a -> v a
+vSortUniqBy :: VG.Vector v a => VAI.Comparison a -> v a -> v a
 vSortUniqBy f v = VG.create $ do
     mv <- VG.thaw v
     VAI.sortUniqBy f mv

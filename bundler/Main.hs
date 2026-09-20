@@ -56,6 +56,7 @@ main = do
 
     where
         execBundle mode mainPath h = do
+            forM_ extraGhcOptions $ hPutStrLn h
             pragmas (read mode) mainPath >>= mapM_ (hPutStrLn h)
             bundledMods (read mode) mainPath >>= hPutStrLn h . renderMods
 
@@ -71,6 +72,14 @@ data SubmissionMode = Local | Judge deriving (Eq,Read)
 instance Show SubmissionMode where
     show Local = "LOCAL"
     show Judge = "JUDGE"
+
+extraGhcOptions :: [String]
+extraGhcOptions = [ "{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}"
+                  , "{-# OPTIONS_GHC -fno-warn-unused-imports #-}"
+                  , "{-# OPTIONS_GHC -fno-warn-type-defaults #-}"
+                  , "{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}"
+                  , "{-# OPTIONS_GHC -Wno-incomplete-patterns #-}"
+                  ]
 
 withPreProcessed :: (MonadThrow m, MonadIO m) => SubmissionMode -> FilePath -> (FilePath -> m a) -> m a
 withPreProcessed mode path f = do

@@ -3,9 +3,6 @@ Submission code.
 Problem url: ${URL_FROM_ARG}
 -}
 
-{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}
-{-# OPTIONS_GHC -fno-warn-unused-imports #-}
-{-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
