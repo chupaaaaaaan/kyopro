@@ -47,10 +47,11 @@ BUNDLER="$(command -v bundler)"
 if [ ${OPTL} -eq 1 ]; then
     # build for local environment
     bundler "Local" "${MAINHS}" "${BUNDLEDHS}"
-    # ghc -package-env .package.local -o submission/a.out -O2 -prof -fprof-auto "${BUNDLEDHS}"
-    ghc -package-env .package.local -o submission/a.out -O2 "${BUNDLEDHS}"
 
 elif [ ${OPTJ} -eq 1 ]; then
     # build for judge environment
     bundler "Judge" "${MAINHS}" "${BUNDLEDHS}"
 fi
+
+# ghc -package-env .package.local -o submission/a.out -O2 -prof -fprof-auto "${BUNDLEDHS}"
+ghc -package-env .package.local -o submission/a.out -O2 "${BUNDLEDHS}"
