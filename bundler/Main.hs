@@ -52,10 +52,11 @@ main = do
             unless (isValid destPath) $ dieWithInvalidPath destPath
             withFile destPath WriteMode $ execBundle mode mainPath
 
-        _ -> getProgName >>= dieWithUsage
+        _otherwise -> getProgName >>= dieWithUsage
 
     where
         execBundle mode mainPath h = do
+            forM_ headerComment $ hPutStrLn h
             forM_ extraGhcOptions $ hPutStrLn h
             pragmas (read mode) mainPath >>= mapM_ (hPutStrLn h)
             bundledMods (read mode) mainPath >>= hPutStrLn h . renderMods
@@ -72,6 +73,14 @@ data SubmissionMode = Local | Judge deriving (Eq,Read)
 instance Show SubmissionMode where
     show Local = "LOCAL"
     show Judge = "JUDGE"
+
+headerComment :: [String]
+headerComment = [ "{--"
+                , "This submission includes bundled source code from the following repository:"
+                , "https://github.com/chupaaaaaaan/kyopro"
+                , "--}"
+                ]
+
 
 extraGhcOptions :: [String]
 extraGhcOptions = [ "{-# OPTIONS_GHC -fno-warn-unused-top-binds #-}"
