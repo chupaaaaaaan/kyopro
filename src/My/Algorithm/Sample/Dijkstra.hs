@@ -2,23 +2,27 @@ module My.Algorithm.Dijkstra where
 
 import Control.Monad
 import Control.Monad.Fix
-import Data.Array.IArray
+import Control.Monad.ST
 import Data.Array.MArray
+import Data.Array.Unboxed
+import Data.Foldable
 import qualified Data.IntPSQ as PSQ
 import qualified Data.Sequence as Seq
+import Data.Traversable
+import My.Data.Array
 import My.Data.Graph
 
 -- | ダイクストラ法による最短経路探索の雛形
-dijkstraSample :: (MArray a Int m, MArray a Bool m) =>
+dijkstraSample ::
     Graph Int Int -> -- ^ 隣接リスト形式の重みつきグラフ
     Int ->            -- ^ 開始頂点
-    m (a Int Bool, a Int Int)
-dijkstraSample graph v = do
+    (UArray Int Bool, UArray Int Int)
+dijkstraSample graph v = runST $ do
 
     -- 確定済みか否かを保持する配列
-    fixed <- newArray (bounds graph) False
+    fixed <- newUArray (bounds graph) False
     -- 現時点の距離の最小値を保持する配列
-    curr <- newArray (bounds graph) maxBound
+    curr <- newUArray (bounds graph) maxBound
 
     -- 開始地点の距離を設定
     writeArray curr v 0
@@ -35,7 +39,7 @@ dijkstraSample graph v = do
                     -- 点を確定済みにマークする
                     writeArray fixed i True
                     -- 隣の点について、距離を更新し、優先度付きキューに追加
-                    newPsq <- fmap (insertList psq) $ forM (graph ! i) $ \(nv,nw) -> do
+                    newPsq <- fmap (insertList psq) $ for (graph ! i) $ \(nv,nw) -> do
                         cw <- readArray curr nv
                         let new = min cw (c+nw)
                         writeArray curr nv new
@@ -43,7 +47,10 @@ dijkstraSample graph v = do
                     -- 次の計算へ
                     loop newPsq
 
-    return (fixed, curr)
+    fixed' <- unsafeUFreeze fixed
+    curr' <- unsafeUFreeze curr
+
+    return (fixed', curr')
 
     where
         insertList :: Ord p => PSQ.IntPSQ p v -> [(Int, p, v)] -> PSQ.IntPSQ p v
@@ -51,18 +58,21 @@ dijkstraSample graph v = do
 
 
 -- | 01-BFSの雛形
-bfs01Sample :: (MArray a Int m, Ix i, Show i) =>
+bfs01Sample :: (Ix i, Show i) =>
     (i -> [i]) -> -- ^ 現在点からのコストが0の探索候補点を取得
     (i -> [i]) -> -- ^ 現在点からのコストが1の探索候補点を取得
     (i, i) ->     -- ^ 探索範囲のbound
     [i] ->        -- ^ 開始点
-    m (a i Int)
-bfs01Sample next0 next1 b start = do
-    -- 開始点からのコストを格納するarrayを作成（maxBoundは訪れていないことを表す）
-    cost <- newArray b maxBound
+    (UArray i Int, UArray i Bool)
+bfs01Sample next0 next1 b start = runST $ do
+
+    -- 確定済みか否かを保持する配列
+    fixed <- newUArray b False
+    -- 現時点のコストの最小値を格納する配列
+    cost <- newUArray b maxBound
 
     -- 開始点にコスト0を設定
-    forM_ start $ \s -> writeArray cost s 0
+    for_ start $ \s -> writeArray cost s 0
 
     -- 探索実施
     flip fix (Seq.fromList start) $ \loop queue -> do
@@ -71,16 +81,23 @@ bfs01Sample next0 next1 b start = do
             Seq.EmptyL -> return ()
             -- 両端キューの左から次の探索点を取り出す
             v Seq.:< rest -> do
-                -- 開始点から探索点までのコストを取得
-                d <- readArray cost v
-                -- 探索候補点を取得
-                cand0 <- filterM (fmap (>d) . readArray cost) . next0 $ v
-                cand1 <- filterM (fmap (>d+1) . readArray cost) . next1 $ v
-                -- コストを更新
-                forM_ cand0 $ \cand -> writeArray cost cand d
-                forM_ cand1 $ \cand -> writeArray cost cand (d+1)
-                -- コスト0の探索候補点を両端キューの左、コスト1の探索候補点を両端キューの右に追加し、次の探索へ
-                loop (Seq.fromList cand0 Seq.>< rest Seq.>< Seq.fromList cand1)
+                r <- readArray fixed v
+                -- コストが確定している場合はスキップ
+                if r then loop rest else do
+                    -- 点を確定済みにマークする
+                    writeArray fixed v True
+                    -- 開始点から探索点までのコストを取得
+                    d <- readArray cost v
+                    -- コスト0の候補点についてコストを更新
+                    cand0 <- filterM (fmap (>d) . readArray cost) $ next0 v
+                    for_ cand0 $ \cand -> writeArray cost cand d
+                    -- コスト1の候補点についてコストを更新
+                    cand1 <- filterM (fmap (>d+1) . readArray cost) $ next1 v
+                    for_ cand1 $ \cand -> writeArray cost cand (d+1)
+                    -- コスト0、1の探索候補点をそれぞれ両端キューの左、右に追加し、次の探索へ
+                    loop (Seq.fromList cand0 Seq.>< rest Seq.>< Seq.fromList cand1)
 
-    -- 開始点からのコストを返却
-    return cost
+    fixed' <- unsafeUFreeze fixed
+    cost' <- unsafeUFreeze cost
+
+    return (cost', fixed')
